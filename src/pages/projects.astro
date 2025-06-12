@@ -1,0 +1,140 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { projects } from '../data/portfolio';
+---
+
+<Layout title="Projects - Portfolio">
+  <div class="max-w-6xl mx-auto px-4 py-12">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4 text-[var(--color-primary)]">Projects</h1>
+      <p class="text-xl text-[var(--color-secondary)]">
+        A collection of my work showcasing various technologies and solutions
+      </p>
+    </div>
+
+    <!-- Filter buttons -->
+    <div class="flex flex-wrap justify-center gap-2 mb-8">
+      <button class="filter-btn active px-4 py-2 rounded-lg glass" data-filter="all">All</button>
+      <button class="filter-btn px-4 py-2 rounded-lg glass" data-filter="web">Web</button>
+      <button class="filter-btn px-4 py-2 rounded-lg glass" data-filter="mobile">Mobile</button>
+      <button class="filter-btn px-4 py-2 rounded-lg glass" data-filter="desktop">Desktop</button>
+      <button class="filter-btn px-4 py-2 rounded-lg glass" data-filter="library">Library</button>
+    </div>
+
+    <!-- Projects grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {projects.map(project => (
+        <div class={`project-card terminal-card ${project.category}`} data-category={project.category}>
+          {project.featured && (
+            <div class="absolute top-2 right-2 px-2 py-1 text-xs bg-[var(--color-accent)] text-black rounded">
+              Featured
+            </div>
+          )}
+          
+          <div class="relative mb-4 aspect-video overflow-hidden rounded-lg">
+            <img 
+              src={project.images[0]} 
+              alt={project.title}
+              class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+              loading="lazy"
+            />
+          </div>
+          
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-xl font-semibold text-[var(--color-accent)]">{project.title}</h3>
+              <span class="text-sm text-[var(--color-secondary)] capitalize">{project.type}</span>
+            </div>
+            
+            <p class="text-[var(--color-text)] text-sm line-clamp-3">{project.description}</p>
+            
+            <div class="flex flex-wrap gap-1">
+              {project.technologies.slice(0, 3).map(tech => (
+                <span class="px-2 py-1 text-xs glass rounded">{tech}</span>
+              ))}
+              {project.technologies.length > 3 && (
+                <span class="px-2 py-1 text-xs glass rounded">+{project.technologies.length - 3}</span>
+              )}
+            </div>
+            
+            <div class="flex space-x-2 pt-2">
+              <a 
+                href={`/projects/${project.id}`}
+                class="flex-1 text-center py-2 px-4 glass rounded hover:bg-[var(--color-primary)] hover:text-white transition-all"
+              >
+                Details
+              </a>
+              {project.live_url && (
+                <a 
+                  href={project.live_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="px-4 py-2 glass rounded hover:bg-[var(--color-accent)] hover:text-black transition-all"
+                >
+                  Live
+                </a>
+              )}
+              {project.code_repo_url && !project.isPrivate && (
+                <a 
+                  href={project.code_repo_url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="px-4 py-2 glass rounded hover:bg-[var(--color-secondary)] hover:text-black transition-all"
+                >
+                  Code
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .filter-btn.active {
+    background-color: var(--color-primary);
+    color: white;
+  }
+
+  .project-card {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .project-card.hidden {
+    display: none;
+  }
+</style>
+
+<script>
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const projectCards = document.querySelectorAll('.project-card');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Remove active class from all buttons
+      filterBtns.forEach(b => b.classList.remove('active'));
+      // Add active class to clicked button
+      btn.classList.add('active');
+
+      const filter = btn.getAttribute('data-filter');
+
+      projectCards.forEach(card => {
+        if (filter === 'all' || card.classList.contains(filter)) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+  });
+</script>

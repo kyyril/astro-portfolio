@@ -1,0 +1,109 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { projects } from '../../data/portfolio';
+
+export function getStaticPaths() {
+  return projects.map(project => ({
+    params: { id: project.id },
+    props: { project }
+  }));
+}
+
+const { project } = Astro.props;
+---
+
+<Layout title={`${project.title} - Projects`}>
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <!-- Back button -->
+    <a href="/projects" class="inline-flex items-center mb-8 text-[var(--color-primary)] hover:text-[var(--color-accent)] transition-colors">
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      Back to Projects
+    </a>
+
+    <div class="space-y-8">
+      <!-- Header -->
+      <div class="terminal-card">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+          <div>
+            <h1 class="text-3xl font-bold text-[var(--color-primary)] mb-2">{project.title}</h1>
+            <div class="flex items-center space-x-4 text-sm text-[var(--color-secondary)]">
+              <span class="capitalize">{project.type}</span>
+              <span>•</span>
+              <span class="capitalize">{project.category}</span>
+              <span>•</span>
+              <span>{new Date(project.date).toLocaleDateString()}</span>
+            </div>
+          </div>
+          <div class="flex space-x-2 mt-4 md:mt-0">
+            {project.live_url && (
+              <a 
+                href={project.live_url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="px-4 py-2 glass rounded hover:bg-[var(--color-accent)] hover:text-black transition-all"
+              >
+                Live Demo
+              </a>
+            )}
+            {project.code_repo_url && !project.isPrivate && (
+              <a 
+                href={project.code_repo_url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="px-4 py-2 glass rounded hover:bg-[var(--color-secondary)] hover:text-black transition-all"
+              >
+                View Code
+              </a>
+            )}
+          </div>
+        </div>
+
+        <p class="text-[var(--color-text)] text-lg leading-relaxed">{project.description}</p>
+      </div>
+
+      <!-- Image Gallery -->
+      <div class="terminal-card">
+        <h2 class="text-2xl font-semibold mb-4 text-[var(--color-accent)]">Gallery</h2>
+        <div class="space-y-4">
+          {project.images.map((image, index) => (
+            <div class="aspect-video overflow-hidden rounded-lg">
+              <img 
+                src={image}
+                alt={`${project.title} screenshot ${index + 1}`}
+                class="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Technologies -->
+      <div class="terminal-card">
+        <h2 class="text-2xl font-semibold mb-4 text-[var(--color-accent)]">Technologies Used</h2>
+        <div class="flex flex-wrap gap-2">
+          {project.technologies.map(tech => (
+            <span class="px-3 py-2 glass rounded-lg font-medium">{tech}</span>
+          ))}
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="terminal-card">
+        <h2 class="text-2xl font-semibold mb-4 text-[var(--color-accent)]">Key Features</h2>
+        <ul class="space-y-2">
+          {project.features.map(feature => (
+            <li class="flex items-start">
+              <svg class="w-5 h-5 mr-3 mt-0.5 text-[var(--color-primary)] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              <span class="text-[var(--color-text)]">{feature}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</Layout>

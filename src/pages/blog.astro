@@ -1,0 +1,103 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Mock blog posts data - in real app, this would come from your CMS or MDX files
+const blogPosts = [
+  {
+    id: '1',
+    title: 'Building Modern Web Applications with Astro.js',
+    slug: 'building-modern-web-apps-with-astro',
+    excerpt: 'Exploring the benefits of Astro.js for building fast, modern websites with optimal performance.',
+    publishedAt: new Date('2024-01-15'),
+    tags: ['Astro.js', 'Web Development', 'Performance'],
+    readTime: '5 min read'
+  },
+  {
+    id: '2', 
+    title: 'The Art of Clean Code: Principles for Better Software',
+    slug: 'art-of-clean-code-principles',
+    excerpt: 'Discover the fundamental principles that make code more readable, maintainable, and enjoyable to work with.',
+    publishedAt: new Date('2024-01-10'),
+    tags: ['Clean Code', 'Best Practices', 'Software Engineering'],
+    readTime: '8 min read'
+  },
+  {
+    id: '3',
+    title: 'Database Design Patterns for Scalable Applications',
+    slug: 'database-design-patterns-scalable-apps',
+    excerpt: 'Learn essential database design patterns that help build applications that scale effectively.',
+    publishedAt: new Date('2024-01-05'),
+    tags: ['Database', 'PostgreSQL', 'Architecture'],
+    readTime: '6 min read'
+  }
+];
+---
+
+<Layout title="Blog - Portfolio">
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl font-bold mb-4 text-[var(--color-primary)]">Blog</h1>
+      <p class="text-xl text-[var(--color-secondary)]">
+        Thoughts on technology, development, and building great software
+      </p>
+    </div>
+
+    <div class="space-y-8">
+      {blogPosts.map(post => (
+        <article class="terminal-card hover:shadow-lg transition-all duration-300">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+            <div class="flex items-center space-x-4 text-sm text-[var(--color-secondary)]">
+              <time datetime={post.publishedAt.toISOString()}>
+                {post.publishedAt.toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </time>
+              <span>•</span>
+              <span>{post.readTime}</span>
+            </div>
+          </div>
+
+          <h2 class="text-2xl font-bold mb-3">
+            <a 
+              href={`/blog/${post.slug}`}
+              class="text-[var(--color-accent)] hover:text-[var(--color-primary)] transition-colors"
+            >
+              {post.title}
+            </a>
+          </h2>
+
+          <p class="text-[var(--color-text)] mb-4 leading-relaxed">
+            {post.excerpt}
+          </p>
+
+          <div class="flex flex-wrap gap-2 mb-4">
+            {post.tags.map(tag => (
+              <span class="px-2 py-1 text-xs glass rounded">{tag}</span>
+            ))}
+          </div>
+
+          <a 
+            href={`/blog/${post.slug}`}
+            class="inline-flex items-center text-[var(--color-primary)] hover:text-[var(--color-accent)] transition-colors"
+          >
+            Read more
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        </article>
+      ))}
+    </div>
+
+    <!-- Empty state if no posts -->
+    {blogPosts.length === 0 && (
+      <div class="text-center py-16">
+        <div class="text-6xl mb-4">📝</div>
+        <h2 class="text-2xl font-semibold mb-2 text-[var(--color-secondary)]">No posts yet</h2>
+        <p class="text-[var(--color-text)]">Check back soon for new content!</p>
+      </div>
+    )}
+  </div>
+</Layout>

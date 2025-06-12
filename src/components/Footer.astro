@@ -1,0 +1,47 @@
+---
+import { contactInfo } from '../data/portfolio';
+---
+
+<footer class="terminal-card mt-16">
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="grid md:grid-cols-3 gap-8">
+      <div>
+        <h3 class="text-lg font-semibold mb-4 text-[var(--color-primary)]">Connect</h3>
+        <div class="space-y-2">
+          <a href={contactInfo.github} target="_blank" rel="noopener noreferrer" 
+             class="block hover:text-[var(--color-accent)] transition-colors">
+            GitHub
+          </a>
+          <a href={contactInfo.linkedin} target="_blank" rel="noopener noreferrer" 
+             class="block hover:text-[var(--color-accent)] transition-colors">
+            LinkedIn
+          </a>
+          <a href={`mailto:${contactInfo.email}`} 
+             class="block hover:text-[var(--color-accent)] transition-colors">
+            Email
+          </a>
+        </div>
+      </div>
+      
+      <div>
+        <h3 class="text-lg font-semibold mb-4 text-[var(--color-primary)]">Navigation</h3>
+        <div class="space-y-2">
+          <a href="/" class="block hover:text-[var(--color-accent)] transition-colors">Home</a>
+          <a href="/projects" class="block hover:text-[var(--color-accent)] transition-colors">Projects</a>
+          <a href="/blog" class="block hover:text-[var(--color-accent)] transition-colors">Blog</a>
+          <a href="/guestbook" class="block hover:text-[var(--color-accent)] transition-colors">Guestbook</a>
+        </div>
+      </div>
+      
+      <div>
+        <h3 class="text-lg font-semibold mb-4 text-[var(--color-primary)]">Built with</h3>
+        <p class="text-sm text-[var(--color-secondary)]">
+          Astro.js • TypeScript • Tailwind CSS • Prisma • PostgreSQL
+        </p>
+        <p class="text-xs mt-4 text-[var(--color-secondary)]">
+          © 2024 Portfolio. Open source and available on GitHub.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>

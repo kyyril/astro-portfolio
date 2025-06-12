@@ -1,0 +1,56 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+---
+
+<nav class="fixed top-0 left-0 right-0 z-50 glass px-4 py-3">
+  <div class="max-w-6xl mx-auto flex items-center justify-between">
+    <a href="/" class="text-xl font-bold text-[var(--color-primary)] hover:text-[var(--color-accent)] transition-colors">
+      Portfolio
+    </a>
+    
+    <div class="flex items-center space-x-6">
+      <div class="hidden md:flex items-center space-x-6">
+        <a href="/" class="nav-link">Home</a>
+        <a href="/projects" class="nav-link">Projects</a>
+        <a href="/blog" class="nav-link">Blog</a>
+        <a href="/guestbook" class="nav-link">Guestbook</a>
+        <a href="/chat" class="nav-link">Chat</a>
+      </div>
+      
+      <ThemeToggle />
+      
+      <!-- Mobile menu button -->
+      <button id="mobile-menu-btn" class="md:hidden text-[var(--color-text)] hover:text-[var(--color-primary)]">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4">
+    <div class="flex flex-col space-y-2">
+      <a href="/" class="nav-link block">Home</a>
+      <a href="/projects" class="nav-link block">Projects</a>
+      <a href="/blog" class="nav-link block">Blog</a>
+      <a href="/guestbook" class="nav-link block">Guestbook</a>
+      <a href="/chat" class="nav-link block">Chat</a>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .nav-link {
+    @apply text-[var(--color-text)] hover:text-[var(--color-primary)] transition-colors font-medium;
+  }
+</style>
+
+<script>
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  
+  mobileMenuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+  });
+</script>

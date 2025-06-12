@@ -1,0 +1,104 @@
+---
+import { themes, defaultTheme } from '../config/themes';
+---
+
+<script is:inline define:vars={{ themes, defaultTheme }}>
+  // Theme management
+  function initTheme() {
+    const savedTheme = localStorage.getItem('theme') || defaultTheme;
+    const theme = themes[savedTheme] || themes[defaultTheme];
+    applyTheme(theme);
+    
+    // Set data attribute for theme
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  }
+
+  function applyTheme(theme) {
+    const root = document.documentElement;
+    Object.entries(theme.colors).forEach(([key, value]) => {
+      root.style.setProperty(`--color-${key}`, value);
+    });
+  }
+
+  function switchTheme(themeName) {
+    const theme = themes[themeName];
+    if (theme) {
+      applyTheme(theme);
+      localStorage.setItem('theme', themeName);
+      document.documentElement.setAttribute('data-theme', themeName);
+      
+      // Dispatch custom event for theme change
+      window.dispatchEvent(new CustomEvent('themeChange', { detail: { theme: themeName } }));
+    }
+  }
+
+  // Initialize theme on page load
+  if (typeof document !== 'undefined') {
+    initTheme();
+  }
+
+  // Export for global use
+  window.switchTheme = switchTheme;
+  window.themes = themes;
+</script>
+
+<style is:global>
+  :root {
+    --color-primary: #89b4fa;
+    --color-secondary: #cba6f7;
+    --color-accent: #f9e2af;
+    --color-background: #1e1e2e;
+    --color-surface: #313244;
+    --color-text: #cdd6f4;
+    --color-border: #45475a;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text);
+    font-family: 'JetBrains Mono', monospace;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    transition: all 0.3s ease;
+  }
+
+  /* Frosted glass effect */
+  .glass {
+    background: rgba(var(--color-surface-rgb), 0.1);
+    backdrop-filter: blur(20px);
+    border: none;
+    border-radius: 12px;
+  }
+
+  .terminal-card {
+    background: rgba(var(--color-surface-rgb), 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 1.5rem;
+    border: none;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-background);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-primary);
+  }
+</style>
