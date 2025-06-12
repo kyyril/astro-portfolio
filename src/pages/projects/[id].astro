@@ -10,6 +10,10 @@ export function getStaticPaths() {
 }
 
 const { project } = Astro.props;
+
+if (!project) {
+  return Astro.redirect('/404');
+}
 ---
 
 <Layout title={`${project.title} - Projects`}>
