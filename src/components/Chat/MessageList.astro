@@ -1,17 +1,11 @@
 ---
 import { getSession } from "auth-astro/server";
-import type { Message, User, Reply, Like } from "@prisma/client";
-
-interface MessageWithRelations extends Message {
-  author: User;
-  replies: (Reply & { author: User })[];
-  likes: (Like & { user: User })[];
-}
+import ConfirmButton from "../common/ConfirmButton.astro";
 
 const session = await getSession(Astro.request);
 const isLoggedIn = !!session?.user;
 
-let messages: MessageWithRelations[] = [];
+let messages = [];
 try {
   const response = await fetch("/api/messages");
   if (response.ok) {
@@ -26,7 +20,7 @@ try {
 
 <div class="message-list space-y-4">
   {messages.length === 0 && <p class="text-center text-gray-500">No messages yet. Be the first to say something!</p>}
-  {messages.map((message) => (
+  {messages.map((message: any) => (
     <div class="message-card bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
       <div class="flex items-center mb-2">
         <img
@@ -45,7 +39,7 @@ try {
       <div class="flex items-center space-x-2 mb-2">
         {message.likes.length > 0 && (
           <div class="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-400">
-            {message.likes.map((like) => (
+            {message.likes.map((like: any) => (
               <span class="cursor-pointer" title={like.user.username}>
                 {like.emote}
               </span>
@@ -72,7 +66,7 @@ try {
       {/* Replies Section */}
       {message.replies.length > 0 && (
         <div class="replies ml-8 mt-3 border-l-2 border-gray-200 dark:border-gray-700 pl-4 space-y-2">
-          {message.replies.map((reply) => (
+          {message.replies.map((reply: any) => (
             <div class="reply-card bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
               <div class="flex items-center mb-1">
                 <img
@@ -111,20 +105,70 @@ try {
           </button>
         </div>
       )}
+
+      {/* Edit/Delete Buttons */}
+      {isLoggedIn && session?.user && message.author.id === session.user.id && (
+        <div class="flex justify-end space-x-2">
+          <button
+            class="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm"
+            data-message-id={message.id}
+            data-action="edit"
+          >
+            Edit
+          </button>
+          <ConfirmButton
+            text="Delete"
+            className="px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm"
+            onClick={() => {}}
+          />
+        </div>
+      )}
     </div>
   ))}
 </div>
 
+<div id="confirmation-dialog" class="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex items-center justify-center hidden">
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-md shadow-xl">
+    <p class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Are you sure you want to delete this message?</p>
+    <div class="flex justify-end space-x-4">
+      <ConfirmButton
+        text="Cancel"
+        className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm"
+        onClick={() => {}}
+      />
+      <ConfirmButton
+        text="Confirm"
+        className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors text-sm"
+        onClick={() => {}}
+      />
+    </div>
+  </div>
+</div>
+
 <script>
+  let showConfirmDialog = false;
+  let messageToDeleteId: string | null = null;
+
   document.addEventListener("DOMContentLoaded", () => {
     const messageList = document.querySelector(".message-list");
+    const confirmationDialog = document.getElementById("confirmation-dialog");
 
     if (messageList) {
       messageList.addEventListener("click", async (event) => {
         const target = event.target as HTMLElement;
 
+        // Handle Delete Button Clicks
+        if (target && target.matches("[data-action='delete']")) {
+          const messageId = target.dataset.messageId;
+          if (messageId) {
+            messageToDeleteId = messageId;
+            showConfirmDialog = true;
+            confirmationDialog?.classList.remove("hidden");
+          }
+        }
+
         // Handle Like Button Clicks
-        if (target.matches("[data-action='like']")) {
+        if (target && target.matches("[data-action='like']")) {
           const messageId = target.dataset.messageId;
           const emote = target.dataset.emote;
 
@@ -153,7 +197,7 @@ try {
         }
 
         // Handle Send Reply Button Clicks
-        if (target.matches("[data-action='send-reply']")) {
+        if (target && target.matches("[data-action='send-reply']")) {
           const messageId = target.dataset.messageId;
           const replyInput = messageList.querySelector(
             `input[data-message-id='${messageId}'][data-action='reply-input']`
@@ -179,12 +223,103 @@ try {
               }
             } catch (error) {
               console.error("Error sending reply:", error);
-              alert("An error occurred while sending the reply.");
+              alert("An error occurred while liking the message.");
             }
           }
         }
+
+        // Handle Edit Button Clicks
+        if (target && target.matches("[data-action='edit']")) {
+          const messageId = target.dataset.messageId;
+
+          if (messageId) {
+            const messageCard = target.closest(".message-card");
+            const messageContent = messageCard?.querySelector(".text-gray-700.dark\\:text-gray-300.mb-3");
+            const originalContent = messageContent?.textContent || "";
+
+            if (messageContent) {
+              messageContent.innerHTML = `
+                <textarea class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm">${originalContent}</textarea>
+                <div class="flex justify-end space-x-2 mt-2">
+                  <button class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm" data-message-id="${messageId}" data-action="save-edit">Save</button>
+                  <button class="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors text-sm" data-message-id="${messageId}" data-action="cancel-edit">Cancel</button>
+                </div>
+              `;
+            }
+          }
+        }
+
+        // Handle Save Edit Button Clicks
+        if (target && target.matches("[data-action='save-edit']")) {
+          const messageId = target.dataset.messageId;
+          const messageCard = target.closest(".message-card");
+          const textarea = messageCard?.querySelector("textarea") as HTMLTextAreaElement;
+          const content = textarea?.value;
+
+          if (messageId && content) {
+            try {
+              const response = await fetch(`/api/messages/${messageId}`, {
+                method: "PUT",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ content }),
+              });
+
+              if (response.ok) {
+                window.location.reload(); // Simple reload for now
+              } else {
+                const errorData = await response.json();
+                alert(`Failed to update message: ${errorData.message}`);
+              }
+            } catch (error) {
+              console.error("Error updating message:", error);
+              alert("An error occurred while updating the message.");
+            }
+          }
+        }
+
+        // Handle Cancel Edit Button Clicks
+        if (target && target.matches("[data-action='cancel-edit']")) {
+          const messageId = target.dataset.messageId;
+          window.location.reload(); // Simple reload for now
+        }
       });
     }
+
+    // Confirmation Dialog Event Listeners
+    const cancelDeleteButton = document.querySelector("#confirmation-dialog .bg-gray-200");
+    const confirmDeleteButton = document.querySelector("#confirmation-dialog .bg-red-500");
+
+    cancelDeleteButton?.addEventListener("click", () => {
+      showConfirmDialog = false;
+      confirmationDialog?.classList.add("hidden");
+      messageToDeleteId = null;
+    });
+
+    confirmDeleteButton?.addEventListener("click", async () => {
+      if (messageToDeleteId) {
+        try {
+          const response = await fetch(`/api/messages/${messageToDeleteId}`, {
+            method: "DELETE",
+          });
+
+          if (response.ok) {
+            window.location.reload(); // Simple reload for now
+          } else {
+            const errorData = await response.json();
+            alert(`Failed to delete message: ${errorData.message}`);
+          }
+        } catch (error) {
+          console.error("Error deleting message:", error);
+          alert("An error occurred while deleting the message.");
+        } finally {
+          showConfirmDialog = false;
+          confirmationDialog?.classList.add("hidden");
+          messageToDeleteId = null;
+        }
+      }
+    });
   });
 </script>
 

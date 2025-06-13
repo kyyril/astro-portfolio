@@ -3,6 +3,7 @@ import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
 import mdx from "@astrojs/mdx";
 import node from "@astrojs/node";
+import auth from "auth-astro";
 
 export default defineConfig({
   integrations: [
@@ -11,6 +12,7 @@ export default defineConfig({
       applyBaseStyles: false,
     }),
     mdx(),
+    auth(),
   ],
   output: "server",
   adapter: node({
