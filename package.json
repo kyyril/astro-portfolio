@@ -14,18 +14,19 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
-    "@astrojs/mdx": "^3.1.7",
-    "@astrojs/node": "^8.3.4",
-    "@astrojs/react": "^3.6.2",
+    "@astrojs/mdx": "^4.3.0",
+    "@astrojs/node": "^9.2.2",
+    "@astrojs/react": "^4.3.0",
     "@astrojs/tailwind": "^5.1.2",
     "@prisma/client": "^5.22.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
-    "astro": "^4.16.18",
-    "openai": "^4.69.0",
+    "astro": "^5.9.3",
     "prisma": "^5.22.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "^3.4.17",
+    "tslib": "^2.8.1",
+    "vite": "^6.2.0"
   }
 }

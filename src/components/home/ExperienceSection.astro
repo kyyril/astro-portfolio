@@ -1,0 +1,29 @@
+---
+import { experiences } from '../../data/portfolio';
+---
+
+<section class="animate-slide-up">
+  <h2 class="text-3xl font-bold mb-8 text-[var(--color-primary)]">Experience</h2>
+  <div class="space-y-6">
+    {experiences.map(exp => (
+      <div class="terminal-card">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+          <div>
+            <h3 class="text-xl font-semibold text-[var(--color-accent)]">{exp.job}</h3>
+            <p class="text-[var(--color-secondary)]">{exp.institution} • {exp.location}</p>
+          </div>
+          <div class="text-sm text-[var(--color-secondary)] mt-2 md:mt-0">
+            <p>{new Date(exp.startDate).toLocaleDateString()} - {new Date(exp.endDate).toLocaleDateString()}</p>
+            <p class="capitalize">{exp.status} • {exp.working}</p>
+          </div>
+        </div>
+        <p class="text-[var(--color-text)] mb-4">{exp.description}</p>
+        <div class="flex flex-wrap gap-2">
+          {exp.technologies.map(tech => (
+            <span class="px-2 py-1 text-xs glass rounded">{tech}</span>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>

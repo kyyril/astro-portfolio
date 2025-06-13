@@ -1,0 +1,23 @@
+---
+import { education } from '../../data/portfolio';
+---
+
+<section class="animate-slide-up">
+  <h2 class="text-3xl font-bold mb-8 text-[var(--color-primary)]">Education</h2>
+  <div class="space-y-6">
+    {education.map(edu => (
+      <div class="terminal-card">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+          <div>
+            <h3 class="text-xl font-semibold text-[var(--color-accent)]">{edu.degree}</h3>
+            <p class="text-[var(--color-secondary)]">{edu.institution}</p>
+          </div>
+          <div class="text-sm text-[var(--color-secondary)] mt-2 md:mt-0">
+            {new Date(edu.startDate).toLocaleDateString()} - {new Date(edu.endDate).toLocaleDateString()}
+          </div>
+        </div>
+        <p class="text-[var(--color-text)]">{edu.description}</p>
+      </div>
+    ))}
+  </div>
+</section>

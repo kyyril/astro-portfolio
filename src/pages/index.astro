@@ -1,120 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { contactInfo, skills, experiences, education } from '../data/portfolio';
+import ProfileSection from '../components/Home/ProfileSection.astro';
+import ExperienceSection from '../components/Home/ExperienceSection.astro';
+import EducationSection from '../components/Home/EducationSection.astro';
+import SkillsSection from '../components/Home/SkillsSection.astro';
 ---
 
 <Layout title="Home - Portfolio">
   <div class="max-w-6xl mx-auto px-4 py-12 space-y-16">
-    <!-- Hero Section -->
-    <section class="text-center space-y-6 animate-fade-in">
-      <div class="space-y-4">
-        <h1 class="text-4xl md:text-6xl font-bold">
-          <span class="text-[var(--color-primary)]">Software</span>
-          <br>
-          <span class="text-[var(--color-accent)]">Developer</span>
-        </h1>
-        <p class="text-xl text-[var(--color-secondary)] max-w-2xl mx-auto">
-          Crafting modern web experiences with clean code, performance optimization, 
-          and user-centered design principles.
-        </p>
-      </div>
-      
-      <div class="flex justify-center space-x-4">
-        <a href={contactInfo.github} target="_blank" rel="noopener noreferrer" 
-           class="terminal-card px-6 py-3 hover:bg-[var(--color-primary)] hover:text-white transition-all">
-          GitHub
-        </a>
-        <a href={contactInfo.cv} target="_blank" rel="noopener noreferrer"
-           class="terminal-card px-6 py-3 hover:bg-[var(--color-accent)] hover:text-black transition-all">
-          CV
-        </a>
-        <a href={`mailto:${contactInfo.email}`}
-           class="terminal-card px-6 py-3 hover:bg-[var(--color-secondary)] hover:text-black transition-all">
-          Mail
-        </a>
-      </div>
-    </section>
+    <ProfileSection />
 
-    <!-- Experience Section -->
-    <section class="animate-slide-up">
-      <h2 class="text-3xl font-bold mb-8 text-[var(--color-primary)]">Experience</h2>
-      <div class="space-y-6">
-        {experiences.map(exp => (
-          <div class="terminal-card">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-              <div>
-                <h3 class="text-xl font-semibold text-[var(--color-accent)]">{exp.job}</h3>
-                <p class="text-[var(--color-secondary)]">{exp.institution} • {exp.location}</p>
-              </div>
-              <div class="text-sm text-[var(--color-secondary)] mt-2 md:mt-0">
-                <p>{new Date(exp.startDate).toLocaleDateString()} - {new Date(exp.endDate).toLocaleDateString()}</p>
-                <p class="capitalize">{exp.status} • {exp.working}</p>
-              </div>
-            </div>
-            <p class="text-[var(--color-text)] mb-4">{exp.description}</p>
-            <div class="flex flex-wrap gap-2">
-              {exp.technologies.map(tech => (
-                <span class="px-2 py-1 text-xs glass rounded">{tech}</span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- Education Section -->
-    <section class="animate-slide-up">
-      <h2 class="text-3xl font-bold mb-8 text-[var(--color-primary)]">Education</h2>
-      <div class="space-y-6">
-        {education.map(edu => (
-          <div class="terminal-card">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-              <div>
-                <h3 class="text-xl font-semibold text-[var(--color-accent)]">{edu.degree}</h3>
-                <p class="text-[var(--color-secondary)]">{edu.institution}</p>
-              </div>
-              <div class="text-sm text-[var(--color-secondary)] mt-2 md:mt-0">
-                {new Date(edu.startDate).toLocaleDateString()} - {new Date(edu.endDate).toLocaleDateString()}
-              </div>
-            </div>
-            <p class="text-[var(--color-text)]">{edu.description}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-
-     <!-- Skills Section -->
-    <section class="animate-slide-up">
-      <h2 class="text-3xl font-bold mb-8 text-[var(--color-primary)]">Technical Skills</h2>
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="terminal-card">
-          <h3 class="text-xl font-semibold mb-4 text-[var(--color-accent)]">Languages</h3>
-          <div class="flex flex-wrap gap-2">
-            {skills.languages.map(lang => (
-              <span class="px-3 py-1 text-sm glass rounded-full">{lang}</span>
-            ))}
-          </div>
-        </div>
-        
-        <div class="terminal-card">
-          <h3 class="text-xl font-semibold mb-4 text-[var(--color-accent)]">Frameworks</h3>
-          <div class="flex flex-wrap gap-2">
-            {skills.frameworks.map(framework => (
-              <span class="px-3 py-1 text-sm glass rounded-full">{framework}</span>
-            ))}
-          </div>
-        </div>
-        
-        <div class="terminal-card">
-          <h3 class="text-xl font-semibold mb-4 text-[var(--color-accent)]">Tools</h3>
-          <div class="flex flex-wrap gap-2">
-            {skills.tools.map(tool => (
-              <span class="px-3 py-1 text-sm glass rounded-full">{tool}</span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-
+    <ExperienceSection />
+    <EducationSection />
+    <SkillsSection />
   </div>
 </Layout>
