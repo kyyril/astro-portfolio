@@ -11,16 +11,16 @@ import Layout from '../layouts/Layout.astro';
       </p>
     </div>
 
-    <!-- Auth section -->
+    {/* Auth section */}
     <div id="auth-section" class="terminal-card mb-8">
       <div id="login-prompt" class="text-center">
         <p class="mb-4 text-[var(--color-text)]">Sign in with GitHub to leave a message</p>
-        <button 
+        <button
           id="github-login-btn"
           class="inline-flex items-center px-6 py-3 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-accent)] hover:text-black transition-all"
         >
           <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"></path>
+            <path fill-rule="evenodd" d="M10 0C4.477 0 0 4.484 0 10.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 0 0110 4.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.203 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0020 10.017C20 4.484 15.522 0 10 0z" clip-rule="evenodd"></path>
           </svg>
           Sign in with GitHub
         </button>
@@ -34,7 +34,7 @@ import Layout from '../layouts/Layout.astro';
               <p class="font-semibold text-[var(--color-text)]">Signed in as <span id="username"></span></p>
             </div>
           </div>
-          <button 
+          <button
             id="signout-btn"
             class="px-4 py-2 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors"
           >
@@ -44,7 +44,7 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
 
-    <!-- Message form -->
+    {/* Message form */}
     <div id="message-form" class="terminal-card mb-8 hidden">
       <form id="guestbook-form">
         <div class="mb-4">
@@ -64,7 +64,7 @@ import Layout from '../layouts/Layout.astro';
             <span id="char-count">0</span>/500 characters
           </div>
         </div>
-        <button 
+        <button
           type="submit"
           class="px-6 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-accent)] hover:text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
@@ -73,11 +73,11 @@ import Layout from '../layouts/Layout.astro';
       </form>
     </div>
 
-    <!-- Messages -->
+    {/* Messages */}
     <div class="space-y-4">
       <h2 class="text-2xl font-semibold text-[var(--color-accent)] mb-6">Messages</h2>
       <div id="messages-container">
-        <!-- Loading state -->
+        {/* Loading state */}
         <div id="loading" class="text-center py-8">
           <div class="animate-spin w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full mx-auto"></div>
           <p class="mt-2 text-[var(--color-secondary)]">Loading messages...</p>
@@ -88,9 +88,26 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
+  interface GuestbookEntry {
+    id: string;
+    message: string;
+    createdAt: string;
+    user: {
+      id: string;
+      username: string;
+      avatarUrl: string | null;
+    };
+  }
+
   class GuestbookManager {
+    user: {
+      id: string;
+      username: string;
+      avatarUrl: string | null;
+    } | null = null;
+    editingMessageId: string | null = null; // Track which message is being edited
+
     constructor() {
-      this.user = null;
       this.init();
     }
 
@@ -116,23 +133,32 @@ import Layout from '../layouts/Layout.astro';
     }
 
     showLoginPrompt() {
-      document.getElementById('login-prompt').classList.remove('hidden');
-      document.getElementById('user-info').classList.add('hidden');
-      document.getElementById('message-form').classList.add('hidden');
+      document.getElementById('login-prompt')?.classList.remove('hidden');
+      document.getElementById('user-info')?.classList.add('hidden');
+      document.getElementById('message-form')?.classList.add('hidden');
     }
 
     showUserInfo() {
-      document.getElementById('login-prompt').classList.add('hidden');
-      document.getElementById('user-info').classList.remove('hidden');
-      document.getElementById('message-form').classList.remove('hidden');
-      
-      document.getElementById('user-avatar').src = this.user.avatarUrl || '/default-avatar.png';
-      document.getElementById('username').textContent = this.user.username;
+      const loginPrompt = document.getElementById('login-prompt');
+      loginPrompt?.classList.add('hidden');
+      const userInfoEl = document.getElementById('user-info');
+      userInfoEl?.classList.remove('hidden');
+      const messageForm = document.getElementById('message-form');
+      messageForm?.classList.remove('hidden');
+
+      const userAvatar = document.getElementById('user-avatar') as HTMLImageElement;
+      if (userAvatar && this.user) {
+        userAvatar.src = this.user.avatarUrl || '/default-avatar.png';
+      }
+      const usernameElement = document.getElementById('username');
+      if (usernameElement && this.user) {
+        usernameElement.textContent = this.user.username;
+      }
     }
 
     bindEvents() {
       // GitHub login
-      document.getElementById('github-login-btn')?.addEventListener('click', () => {
+      document.getElementById('github-login-btn')?.addEventListener('click', (e: Event) => {
         window.location.href = '/api/auth/github';
       });
 
@@ -149,24 +175,27 @@ import Layout from '../layouts/Layout.astro';
       });
 
       // Character counter
-      const messageTextarea = document.getElementById('message');
+      const messageTextarea = document.getElementById('message') as HTMLTextAreaElement;
       const charCount = document.getElementById('char-count');
-      messageTextarea?.addEventListener('input', (e) => {
-        charCount.textContent = e.target.value.length;
+      messageTextarea?.addEventListener('input', (e: Event) => {
+        if (charCount) {
+          charCount.textContent = messageTextarea.value.length.toString();
+        }
       });
 
       // Form submission
-      document.getElementById('guestbook-form')?.addEventListener('submit', async (e) => {
+      document.getElementById('guestbook-form')?.addEventListener('submit', async (e: Event) => {
         e.preventDefault();
         await this.submitMessage(e);
       });
     }
 
-    async submitMessage(e) {
-      const formData = new FormData(e.target);
-      const message = formData.get('message');
+    async submitMessage(e: Event) {
+      const form = e.target as HTMLFormElement;
+      const formData = new FormData(form);
+      const message = formData.get('message')?.toString();
 
-      if (!message.trim()) return;
+      if (!message || !message.trim()) return;
 
       try {
         const response = await fetch('/api/guestbook', {
@@ -176,8 +205,11 @@ import Layout from '../layouts/Layout.astro';
         });
 
         if (response.ok) {
-          e.target.reset();
-          document.getElementById('char-count').textContent = '0';
+          form.reset();
+          const charCount = document.getElementById('char-count');
+          if (charCount) {
+            charCount.textContent = '0';
+          }
           await this.loadMessages();
         } else {
           const error = await response.json();
@@ -192,21 +224,26 @@ import Layout from '../layouts/Layout.astro';
     async loadMessages() {
       try {
         const response = await fetch('/api/guestbook');
-        const messages = await response.json();
+        const messages: GuestbookEntry[] = await response.json();
         this.renderMessages(messages);
       } catch (error) {
         console.error('Error loading messages:', error);
-        document.getElementById('messages-container').innerHTML = `
-          <div class="text-center py-8 text-[var(--color-secondary)]">
-            Failed to load messages
-          </div>
-        `;
+        const container = document.getElementById('messages-container');
+        if (container) {
+          container.innerHTML = `
+            <div class="text-center py-8 text-[var(--color-secondary)]">
+              Failed to load messages
+            </div>
+          `;
+        }
       }
     }
 
-    renderMessages(messages) {
+    renderMessages(messages: GuestbookEntry[]) {
       const container = document.getElementById('messages-container');
-      
+
+      if (!container) return;
+
       if (messages.length === 0) {
         container.innerHTML = `
           <div class="text-center py-8">
@@ -217,39 +254,145 @@ import Layout from '../layouts/Layout.astro';
         return;
       }
 
-      container.innerHTML = messages.map(message => `
-        <div class="terminal-card">
-          <div class="flex items-start space-x-3">
-            <img 
-              src="${message.user.avatarUrl || '/default-avatar.png'}" 
-              alt="${message.user.username}"
-              class="w-10 h-10 rounded-full flex-shrink-0"
-            />
-            <div class="flex-1">
-              <div class="flex items-center space-x-2 mb-2">
-                <span class="font-semibold text-[var(--color-accent)]">${message.user.username}</span>
-                <span class="text-sm text-[var(--color-secondary)]">
-                  ${new Date(message.createdAt).toLocaleDateString()}
-                </span>
+      container.innerHTML = messages
+        .map((message) => {
+          let avatarUrl = message.user?.avatarUrl;
+          let username = message.user ? message.user.username : "Unknown User";
+          
+          return `
+          <div class="terminal-card">
+            <div class="flex items-start space-x-3">
+              <img
+                src="${avatarUrl ? avatarUrl : "/default-avatar.png"}"
+                alt="${username}"
+                class="w-10 h-10 rounded-full flex-shrink-0"
+              />
+              <div class="flex-1">
+                <div class="flex items-center justify-between mb-2">
+                  <div>
+                    <span class="font-semibold text-[var(--color-accent)]">
+                      ${message.user ? message.user.username : "Unknown User"}
+                    </span>
+                    <span class="text-sm text-[var(--color-secondary)]">
+                      ${new Date(message.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div>
+                    <button class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors">
+                      Edit
+                    </button>
+                    <button class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors">
+                      Delete
+                    </button>
+                  </div>
+                </div>
+                <p class="text-[var(--color-text)] whitespace-pre-wrap">
+                  ${this.escapeHtml(message.message)}
+                </p>
               </div>
-              <p class="text-[var(--color-text)] whitespace-pre-wrap">${this.escapeHtml(message.message)}</p>
             </div>
           </div>
-        </div>
-      `).join('');
+        `;
+        })
+        .join("");
     }
 
-    escapeHtml(text) {
-      const div = document.createElement('div');
+    getUserAvatar(message: GuestbookEntry): string {
+      let avatarUrl = message.user?.avatarUrl;
+      let username = message.user ? message.user.username ?? "Unknown User" : "Unknown User";
+      return `
+        <img
+          src="${avatarUrl ? avatarUrl : "/default-avatar.png"}"
+          alt="${username}"
+          class="w-10 h-10 rounded-full flex-shrink-0"
+        />
+      `;
+    }
+
+    escapeHtml(text: string) {
+      const div = document.createElement("div");
       div.textContent = text;
       return div.innerHTML;
     }
   }
 
   // Initialize when DOM is loaded
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => new GuestbookManager());
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => new GuestbookManager());
   } else {
     new GuestbookManager();
   }
 </script>
+
+</final_file_content>
+
+IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
+
+<environment_details>
+# VSCode Visible Files
+src/pages/guestbook.astro
+
+# VSCode Open Tabs
+src/components/Navigation.astro
+src/components/Home/ExperienceSection.astro
+src/components/ThemeToggle.astro
+src/components/Chat/MessageList.astro
+src/components/Chat/MessageInput.astro
+src/pages/chat.astro
+src/pages/api/guestbook.ts
+src/types/index.ts
+src/pages/api/auth/signout.ts
+.env.example
+.env
+README.md
+package-lock.json
+src/pages/api/github.ts
+src/pages/api/auth/github/callback.ts
+prisma/schema.prisma
+src/pages/api/replies.ts
+src/pages/api/likes.ts
+src/pages/api/messages.ts
+.astro/settings.json
+.gitignore
+src/env.d.ts
+src/components/Welcome.astro
+src/layouts/Layout.astro
+src/components/Terminal.tsx
+src/components/Home/SkillsSection.astro
+src/components/Home/ProfileSection.astro
+src/components/home/ProfileContent.tsx
+src/config/themes.ts
+src/content/blog/building-modern-web-apps-with-astro.mdx
+src/content/blog/art-of-clean-code-principles.mdx
+src/content/blog/database-design-patterns-scalable-apps.mdx
+src/pages/404.astro
+src/pages/blog.astro
+tsconfig.json
+src/pages/guestbook.astro
+.astro/content.d.ts
+src/content/config.ts
+astro.config.mjs
+src/pages/blog/[...slug].astro
+tailwind.config.mjs
+package.json
+src/pages/index.astro
+src/components/ThemeProvider.astro
+src/components/StarField.astro
+
+# Recently Modified Files
+These files have been modified since you last accessed them (file was just edited so you may need to re-read it before editing):
+src/pages/guestbook.astro
+
+# Current Time
+6/14/2025, 3:45:51 AM (Asia/Bangkok, UTC+7:00)
+
+# Context Window Usage
+431,359 / 1,048.576K tokens used (41%)
+
+# Current Mode
+ACT MODE
+</environment_details>
+
+</final_file_content>
+
+IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
