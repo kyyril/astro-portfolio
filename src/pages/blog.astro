@@ -1,36 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
 
-// Mock blog posts data - in real app, this would come from your CMS or MDX files
-const blogPosts = [
-  {
-    id: '1',
-    title: 'Building Modern Web Applications with Astro.js',
-    slug: 'building-modern-web-apps-with-astro',
-    excerpt: 'Exploring the benefits of Astro.js for building fast, modern websites with optimal performance.',
-    publishedAt: new Date('2024-01-15'),
-    tags: ['Astro.js', 'Web Development', 'Performance'],
-    readTime: '5 min read'
-  },
-  {
-    id: '2', 
-    title: 'The Art of Clean Code: Principles for Better Software',
-    slug: 'art-of-clean-code-principles',
-    excerpt: 'Discover the fundamental principles that make code more readable, maintainable, and enjoyable to work with.',
-    publishedAt: new Date('2024-01-10'),
-    tags: ['Clean Code', 'Best Practices', 'Software Engineering'],
-    readTime: '8 min read'
-  },
-  {
-    id: '3',
-    title: 'Database Design Patterns for Scalable Applications',
-    slug: 'database-design-patterns-scalable-apps',
-    excerpt: 'Learn essential database design patterns that help build applications that scale effectively.',
-    publishedAt: new Date('2024-01-05'),
-    tags: ['Database', 'PostgreSQL', 'Architecture'],
-    readTime: '6 min read'
-  }
-];
+const blogPosts = (await getCollection('blog')).sort(
+  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
+);
 ---
 
 <Layout title="Blog - Portfolio">
@@ -43,19 +17,19 @@ const blogPosts = [
     </div>
 
     <div class="space-y-8">
-      {blogPosts.map(post => (
+      {blogPosts.map((post: CollectionEntry<'blog'>) => (
         <article class="terminal-card hover:shadow-lg transition-all duration-300">
           <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
             <div class="flex items-center space-x-4 text-sm text-[var(--color-secondary)]">
-              <time datetime={post.publishedAt.toISOString()}>
-                {post.publishedAt.toLocaleDateString('en-US', {
+              <time datetime={new Date(post.data.publishedAt).toISOString()}>
+                {new Date(post.data.publishedAt).toLocaleDateString('en-US', {
                   year: 'numeric',
                   month: 'long',
                   day: 'numeric'
                 })}
               </time>
               <span>•</span>
-              <span>{post.readTime}</span>
+              <span>{post.data.readTime}</span>
             </div>
           </div>
 
@@ -64,16 +38,16 @@ const blogPosts = [
               href={`/blog/${post.slug}`}
               class="text-[var(--color-accent)] hover:text-[var(--color-primary)] transition-colors"
             >
-              {post.title}
+              {post.data.title}
             </a>
           </h2>
 
           <p class="text-[var(--color-text)] mb-4 leading-relaxed">
-            {post.excerpt}
+            {post.data.excerpt}
           </p>
 
           <div class="flex flex-wrap gap-2 mb-4">
-            {post.tags.map(tag => (
+            {post.data.tags.map((tag: string) => (
               <span class="px-2 py-1 text-xs glass rounded">{tag}</span>
             ))}
           </div>

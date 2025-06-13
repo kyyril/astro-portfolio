@@ -1,0 +1,54 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, getEntryBySlug, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog');
+  return blogEntries.map((entry: CollectionEntry<'blog'>) => ({
+    params: { slug: entry.slug },
+  }));
+}
+
+const { slug } = Astro.params;
+const entry: CollectionEntry<'blog'> | undefined = await getEntryBySlug('blog', slug as string);
+
+if (!entry) {
+  return Astro.redirect('/404');
+}
+
+const { Content } = await entry.render();
+---
+
+<Layout title={entry.data.title}>
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <a href="/blog" class="inline-flex items-center text-[var(--color-primary)] hover:text-[var(--color-accent)] transition-colors mb-8">
+      <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+      Back to Blog
+    </a>
+
+    <h1 class="text-4xl font-bold mb-4 text-[var(--color-primary)]">{entry.data.title}</h1>
+    <div class="flex items-center space-x-4 text-sm text-[var(--color-secondary)] mb-6">
+      <time datetime={new Date(entry.data.publishedAt).toISOString()}>
+        {new Date(entry.data.publishedAt).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })}
+      </time>
+      <span>•</span>
+      <span>{entry.data.readTime}</span>
+    </div>
+
+    <div class="flex flex-wrap gap-2 mb-8">
+      {entry.data.tags.map((tag: string) => (
+        <span class="px-2 py-1 text-xs glass rounded">{tag}</span>
+      ))}
+    </div>
+
+    <div class="prose prose-invert max-w-none text-[var(--color-text)]">
+      <Content />
+    </div>
+  </div>
+</Layout>

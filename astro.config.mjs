@@ -1,8 +1,8 @@
-import { defineConfig } from 'astro/config';
-import react from '@astrojs/react';
-import tailwind from '@astrojs/tailwind';
-import mdx from '@astrojs/mdx';
-import node from '@astrojs/node';
+import { defineConfig } from "astro/config";
+import react from "@astrojs/react";
+import tailwind from "@astrojs/tailwind";
+import mdx from "@astrojs/mdx";
+import node from "@astrojs/node";
 
 export default defineConfig({
   integrations: [
@@ -10,15 +10,20 @@ export default defineConfig({
     tailwind({
       applyBaseStyles: false,
     }),
-    mdx()
+    mdx(),
   ],
-  output: 'server',
+  output: "server",
   adapter: node({
-    mode: 'standalone'
+    mode: "standalone",
   }),
+  collections: {
+    blog: {
+      type: "content",
+    },
+  },
   vite: {
     optimizeDeps: {
-      include: ['react', 'react-dom']
-    }
-  }
+      include: ["react", "react-dom"],
+    },
+  },
 });
