@@ -1,32 +1,5 @@
 ---
-import { contactInfo } from '../../data/portfolio';
+import ProfileContent from './ProfileContent.tsx';
 ---
 
-<section class="text-center space-y-6 animate-fade-in">
-  <div class="space-y-4">
-    <h1 class="text-4xl md:text-6xl font-bold">
-      <span class="text-[var(--color-primary)]">Software</span>
-      <br>
-      <span class="text-[var(--color-accent)]">Developer</span>
-    </h1>
-    <p class="text-xl text-[var(--color-secondary)] max-w-2xl mx-auto">
-      Crafting modern web experiences with clean code, performance optimization, 
-      and user-centered design principles.
-    </p>
-  </div>
-  
-  <div class="flex justify-center space-x-4">
-    <a href={contactInfo.github} target="_blank" rel="noopener noreferrer" 
-       class="terminal-card px-6 py-3 hover:bg-[var(--color-primary)] hover:text-white transition-all">
-      GitHub
-    </a>
-    <a href={contactInfo.cv} target="_blank" rel="noopener noreferrer"
-       class="terminal-card px-6 py-3 hover:bg-[var(--color-accent)] hover:text-black transition-all">
-      CV
-    </a>
-    <a href={`mailto:${contactInfo.email}`}
-       class="terminal-card px-6 py-3 hover:bg-[var(--color-secondary)] hover:text-black transition-all">
-      Mail
-    </a>
-  </div>
-</section>
+<ProfileContent client:load />
