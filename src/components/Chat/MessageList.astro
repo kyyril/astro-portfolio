@@ -1,0 +1,205 @@
+---
+import { getSession } from "auth-astro/server";
+import type { Message, User, Reply, Like } from "@prisma/client";
+
+interface MessageWithRelations extends Message {
+  author: User;
+  replies: (Reply & { author: User })[];
+  likes: (Like & { user: User })[];
+}
+
+const session = await getSession(Astro.request);
+const isLoggedIn = !!session?.user;
+
+let messages: MessageWithRelations[] = [];
+try {
+  const response = await fetch("/api/messages");
+  if (response.ok) {
+    messages = await response.json();
+  } else {
+    console.error("Failed to fetch messages:", response.statusText);
+  }
+} catch (error) {
+  console.error("Error fetching messages:", error);
+}
+---
+
+<div class="message-list space-y-4">
+  {messages.length === 0 && <p class="text-center text-gray-500">No messages yet. Be the first to say something!</p>}
+  {messages.map((message) => (
+    <div class="message-card bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+      <div class="flex items-center mb-2">
+        <img
+          src={message.author.avatarUrl || "/default-avatar.png"}
+          alt={message.author.username}
+          class="w-8 h-8 rounded-full mr-3"
+        />
+        <span class="font-semibold text-gray-900 dark:text-white">{message.author.username}</span>
+        <span class="text-gray-500 dark:text-gray-400 text-sm ml-auto">
+          {new Date(message.createdAt).toLocaleString()}
+        </span>
+      </div>
+      <p class="text-gray-700 dark:text-gray-300 mb-3">{message.content}</p>
+
+      {/* Likes Section */}
+      <div class="flex items-center space-x-2 mb-2">
+        {message.likes.length > 0 && (
+          <div class="flex items-center space-x-1 text-sm text-gray-600 dark:text-gray-400">
+            {message.likes.map((like) => (
+              <span class="cursor-pointer" title={like.user.username}>
+                {like.emote}
+              </span>
+            ))}
+            <span>{message.likes.length}</span>
+          </div>
+        )}
+        {isLoggedIn && (
+          <div class="flex space-x-1">
+            {["🚀", "☕", "😅", "🫡", "🤩", "😁"].map((emote) => (
+              <button
+                class="text-lg hover:scale-110 transition-transform"
+                data-message-id={message.id}
+                data-emote={emote}
+                data-action="like"
+              >
+                {emote}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Replies Section */}
+      {message.replies.length > 0 && (
+        <div class="replies ml-8 mt-3 border-l-2 border-gray-200 dark:border-gray-700 pl-4 space-y-2">
+          {message.replies.map((reply) => (
+            <div class="reply-card bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
+              <div class="flex items-center mb-1">
+                <img
+                  src={reply.author.avatarUrl || "/default-avatar.png"}
+                  alt={reply.author.username}
+                  class="w-6 h-6 rounded-full mr-2"
+                />
+                <span class="font-semibold text-gray-800 dark:text-gray-200 text-sm">
+                  {reply.author.username}
+                </span>
+                <span class="text-gray-500 dark:text-gray-400 text-xs ml-auto">
+                  {new Date(reply.createdAt).toLocaleString()}
+                </span>
+              </div>
+              <p class="text-gray-600 dark:text-gray-300 text-sm">{reply.content}</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {isLoggedIn && (
+        <div class="mt-3">
+          <input
+            type="text"
+            placeholder="Reply to this message..."
+            class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+            data-message-id={message.id}
+            data-action="reply-input"
+          />
+          <button
+            class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm"
+            data-message-id={message.id}
+            data-action="send-reply"
+          >
+            Send Reply
+          </button>
+        </div>
+      )}
+    </div>
+  ))}
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const messageList = document.querySelector(".message-list");
+
+    if (messageList) {
+      messageList.addEventListener("click", async (event) => {
+        const target = event.target as HTMLElement;
+
+        // Handle Like Button Clicks
+        if (target.matches("[data-action='like']")) {
+          const messageId = target.dataset.messageId;
+          const emote = target.dataset.emote;
+
+          if (messageId && emote) {
+            try {
+              const response = await fetch("/api/likes", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ messageId, emote }),
+              });
+
+              if (response.ok) {
+                // Reload the page or update the specific message to reflect the new like
+                window.location.reload(); // Simple reload for now
+              } else {
+                const errorData = await response.json();
+                alert(`Failed to like message: ${errorData.message}`);
+              }
+            } catch (error) {
+              console.error("Error liking message:", error);
+              alert("An error occurred while liking the message.");
+            }
+          }
+        }
+
+        // Handle Send Reply Button Clicks
+        if (target.matches("[data-action='send-reply']")) {
+          const messageId = target.dataset.messageId;
+          const replyInput = messageList.querySelector(
+            `input[data-message-id='${messageId}'][data-action='reply-input']`
+          ) as HTMLInputElement;
+          const content = replyInput?.value;
+
+          if (messageId && content) {
+            try {
+              const response = await fetch("/api/replies", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ messageId, content }),
+              });
+
+              if (response.ok) {
+                replyInput.value = ""; // Clear input
+                window.location.reload(); // Simple reload for now
+              } else {
+                const errorData = await response.json();
+                alert(`Failed to send reply: ${errorData.message}`);
+              }
+            } catch (error) {
+              console.error("Error sending reply:", error);
+              alert("An error occurred while sending the reply.");
+            }
+          }
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  /* Basic styling for chat components */
+  .message-card {
+    border: 1px solid #e2e8f0; /* Tailwind's gray-200 */
+  }
+  .dark .message-card {
+    border-color: #4a5568; /* Tailwind's gray-700 */
+  }
+  .reply-card {
+    border: 1px solid #cbd5e0; /* Tailwind's gray-300 */
+  }
+  .dark .reply-card {
+    border-color: #2d3748; /* Tailwind's gray-800 */
+  }
+</style>
