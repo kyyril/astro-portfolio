@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 const blogPosts = (await getCollection('blog')).sort(
-  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
+  (a:any, b:any) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
 );
 ---
 

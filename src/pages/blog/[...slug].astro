@@ -5,18 +5,18 @@ import { getCollection, getEntryBySlug, type CollectionEntry } from 'astro:conte
 export async function getStaticPaths() {
   const blogEntries = await getCollection('blog');
   return blogEntries.map((entry: CollectionEntry<'blog'>) => ({
-    params: { slug: entry.slug },
+    params: { slug: (entry as any).slug },
   }));
 }
 
 const { slug } = Astro.params;
-const entry: CollectionEntry<'blog'> | undefined = await getEntryBySlug('blog', slug as string);
+const entry: CollectionEntry<'blog'> | undefined = (await (getEntryBySlug as any)('blog', slug!)) as any;
 
 if (!entry) {
   return Astro.redirect('/404');
 }
 
-const { Content } = await entry.render();
+const { Content } = await (entry as any).render();
 ---
 
 <Layout title={entry.data.title}>
