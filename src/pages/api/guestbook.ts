@@ -1,5 +1,5 @@
-import type { APIRoute } from 'astro';
-import { PrismaClient } from '@prisma/client';
+import type { APIRoute } from "astro";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -15,29 +15,35 @@ export const GET: APIRoute = async () => {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
 
     return new Response(JSON.stringify(entries), {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error('Error fetching guestbook entries:', error);
-    return new Response(JSON.stringify({ error: 'Failed to fetch entries' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    console.error("Error fetching guestbook entries:", error);
+    return new Response(
+      JSON.stringify({
+        error: "Failed to fetch entries",
+        details: (error as Error).message || "Unknown error",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 };
 
 export const POST: APIRoute = async ({ request, cookies }) => {
-  const session = cookies.get('user_session');
-  
+  const session = cookies.get("user_session");
+
   if (!session?.value) {
-    return new Response(JSON.stringify({ error: 'Authentication required' }), {
+    return new Response(JSON.stringify({ error: "Authentication required" }), {
       status: 401,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     });
   }
 
@@ -46,16 +52,16 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     const { message } = await request.json();
 
     if (!message || message.trim().length === 0) {
-      return new Response(JSON.stringify({ error: 'Message is required' }), {
+      return new Response(JSON.stringify({ error: "Message is required" }), {
         status: 400,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { "Content-Type": "application/json" },
       });
     }
 
     if (message.length > 500) {
-      return new Response(JSON.stringify({ error: 'Message too long' }), {
+      return new Response(JSON.stringify({ error: "Message too long" }), {
         status: 400,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { "Content-Type": "application/json" },
       });
     }
 
@@ -75,13 +81,19 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
 
     return new Response(JSON.stringify(entry), {
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error('Error creating guestbook entry:', error);
-    return new Response(JSON.stringify({ error: 'Failed to create entry' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+    console.error("Error creating guestbook entry:", error);
+    return new Response(
+      JSON.stringify({
+        error: "Failed to create entry",
+        details: (error as Error).message || "Unknown error",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 };

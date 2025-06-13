@@ -52,6 +52,25 @@ function ProfileContent() {
       <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
         {/* Profile Content */}
         <div className="space-y-8">
+          <div className="mb-8 flex justify-center">
+            <div className="relative">
+              <img
+                src="https://res.cloudinary.com/da5ggxk01/image/upload/v1730253647/profile_xqq1pv.png"
+                alt="Profile Picture"
+                className="w-32 h-32 sm:w-40 sm:h-40 rounded-full border-4 border-primary-400/50 shadow-2xl animate-float"
+                loading="eager"
+                width="160"
+                height="160"
+              />
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary-400/20 to-accent-purple/20 animate-glow"></div>
+            </div>
+          </div>
+
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-balance mb-6 text-shadow-lg">
+            <span className="bg-gradient-to-r from-primary-400 via-accent-purple to-accent-pink bg-clip-text text-transparent animate-pulse">
+              Khairil Rahman
+            </span>
+          </h1>
           <div className="space-y-4">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
               Khairil
