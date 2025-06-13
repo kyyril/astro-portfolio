@@ -42,20 +42,66 @@ const Terminal = ({
             className="p-1 rounded hover:bg-white/10 text-white/60 hover:text-white/80 transition-colors"
             aria-label="Minimize"
           >
-            <Minimize2 size={14} />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-minimize-2"
+            >
+              <polyline points="4 14 10 14 10 20" />
+              <polyline points="20 10 14 10 14 4" />
+              <line x1="14" x2="20" y1="10" y2="4" />
+              <line x1="4" x2="10" y1="14" y2="20" />
+            </svg>
           </button>
           <button
             onClick={() => setIsMaximized(!isMaximized)}
             className="p-1 rounded hover:bg-white/10 text-white/60 hover:text-white/80 transition-colors"
             aria-label="Maximize"
           >
-            <Maximize2 size={14} />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-maximize-2"
+            >
+              <polyline points="15 3 21 3 21 9" />
+              <polyline points="9 21 3 21 3 15" />
+              <line x1="21" x2="14" y1="3" y2="10" />
+              <line x1="3" x2="10" y1="21" y2="14" />
+            </svg>
           </button>
           <button
             className="p-1 rounded hover:bg-red-500/20 text-red-400/60 hover:text-red-400 transition-colors"
             aria-label="Close"
           >
-            <X size={14} />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="lucide lucide-x"
+            >
+              <path d="M18 6 6 18" />
+              <path d="m6 6 12 12" />
+            </svg>
           </button>
         </div>
       </div>
