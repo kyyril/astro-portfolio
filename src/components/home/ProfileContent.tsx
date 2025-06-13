@@ -182,7 +182,7 @@ function ProfileContent() {
               </div>
               <div className="mt-4">
                 <span style={{ color: "var(--color-primary)" }}>$</span>{" "}
-                <span className="animate-pulse">_</span>
+                <span className="animate-pulse  text-2xl">_</span>
               </div>
             </div>
           </Terminal>

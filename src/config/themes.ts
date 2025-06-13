@@ -81,4 +81,4 @@ export const themes: Record<string, ThemeConfig> = {
   },
 };
 
-export const defaultTheme = "catppuccin";
+export const defaultTheme = "tokyo";
