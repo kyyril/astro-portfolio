@@ -126,6 +126,7 @@ export const PUT: APIRoute = async ({ request, cookies }) => {
   }
 };
 
+// Delete a guestbook entry
 export const DELETE: APIRoute = async ({ request, cookies }) => {
   const session = cookies.get("user_session");
 

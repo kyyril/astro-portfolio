@@ -105,7 +105,7 @@ import Layout from '../layouts/Layout.astro';
       username: string;
       avatarUrl: string | null;
     } | null = null;
-    editingMessageId: string | null = null; // Track which message is being edited
+    editingMessageId: string | null = null;
 
     constructor() {
       this.init();
@@ -281,7 +281,10 @@ import Layout from '../layouts/Layout.astro';
                     <button class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors">
                       Edit
                     </button>
-                    <button class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors">
+                    <button 
+                      class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors delete-btn"
+                      data-message-id="${message.id}"
+                    >
                       Delete
                     </button>
                   </div>
@@ -316,83 +319,42 @@ import Layout from '../layouts/Layout.astro';
     }
   }
 
-  // Initialize when DOM is loaded
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", () => new GuestbookManager());
-  } else {
-    new GuestbookManager();
+  let guestbookManager: GuestbookManager;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    guestbookManager = new GuestbookManager();
+
+    document.addEventListener('click', async (e) => {
+      const target = e.target as HTMLElement;
+      if (target && target.classList.contains('delete-btn')) {
+        const messageId = target.dataset.messageId;
+        if (messageId) {
+          await deleteMessage(messageId);
+        }
+      }
+    });
+  });
+
+  async function deleteMessage(messageId: string) {
+    try {
+      const response = await fetch('/api/guestbook', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: messageId })
+      });
+
+      if (response.ok) {
+        // Refresh messages after successful deletion
+        await guestbookManager.loadMessages();
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Failed to delete message');
+      }
+    } catch (error) {
+      console.error('Error deleting message:', error);
+      alert('Failed to delete message');
+    }
   }
 </script>
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
-
-<environment_details>
-# VSCode Visible Files
-src/pages/guestbook.astro
-
-# VSCode Open Tabs
-src/components/Navigation.astro
-src/components/Home/ExperienceSection.astro
-src/components/ThemeToggle.astro
-src/components/Chat/MessageList.astro
-src/components/Chat/MessageInput.astro
-src/pages/chat.astro
-src/pages/api/guestbook.ts
-src/types/index.ts
-src/pages/api/auth/signout.ts
-.env.example
-.env
-README.md
-package-lock.json
-src/pages/api/github.ts
-src/pages/api/auth/github/callback.ts
-prisma/schema.prisma
-src/pages/api/replies.ts
-src/pages/api/likes.ts
-src/pages/api/messages.ts
-.astro/settings.json
-.gitignore
-src/env.d.ts
-src/components/Welcome.astro
-src/layouts/Layout.astro
-src/components/Terminal.tsx
-src/components/Home/SkillsSection.astro
-src/components/Home/ProfileSection.astro
-src/components/home/ProfileContent.tsx
-src/config/themes.ts
-src/content/blog/building-modern-web-apps-with-astro.mdx
-src/content/blog/art-of-clean-code-principles.mdx
-src/content/blog/database-design-patterns-scalable-apps.mdx
-src/pages/404.astro
-src/pages/blog.astro
-tsconfig.json
-src/pages/guestbook.astro
-.astro/content.d.ts
-src/content/config.ts
-astro.config.mjs
-src/pages/blog/[...slug].astro
-tailwind.config.mjs
-package.json
-src/pages/index.astro
-src/components/ThemeProvider.astro
-src/components/StarField.astro
-
-# Recently Modified Files
-These files have been modified since you last accessed them (file was just edited so you may need to re-read it before editing):
-src/pages/guestbook.astro
-
-# Current Time
-6/14/2025, 3:45:51 AM (Asia/Bangkok, UTC+7:00)
-
-# Context Window Usage
-431,359 / 1,048.576K tokens used (41%)
-
-# Current Mode
-ACT MODE
-</environment_details>
-
-</final_file_content>
-
-IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
