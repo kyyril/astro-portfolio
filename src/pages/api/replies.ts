@@ -1,13 +1,12 @@
 import type { APIRoute } from "astro";
 import { PrismaClient } from "@prisma/client";
-import { getSession } from "auth-astro/server";
 
 const prisma = new PrismaClient();
 
-export const POST: APIRoute = async ({ request }) => {
-  const session = await getSession(request);
+export const POST: APIRoute = async ({ request, cookies }) => {
+  const sessionCookie = cookies.get("user_session");
 
-  if (!session || !session.user) {
+  if (!sessionCookie || !sessionCookie.value) {
     return new Response(JSON.stringify({ message: "Unauthorized" }), {
       status: 401,
       headers: {
@@ -17,6 +16,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
+    const session = JSON.parse(sessionCookie.value);
     const { content, messageId } = await request.json();
 
     if (!content || typeof content !== "string" || content.trim() === "") {
@@ -43,7 +43,7 @@ export const POST: APIRoute = async ({ request }) => {
     const newReply = await prisma.reply.create({
       data: {
         content: content.trim(),
-        authorId: session.user.id as string,
+        authorId: session.id as string,
         messageId: messageId,
       },
     });
@@ -66,9 +66,9 @@ export const POST: APIRoute = async ({ request }) => {
 };
 
 // Optional: GET replies for a specific message if needed separately from fetching all messages
-export const GET: APIRoute = async ({ url }) => {
+export const GET: APIRoute = async ({ request, url }) => {
   try {
-    const messageId = url.searchParams.get("messageId");
+    const messageId = new URL(url).searchParams.get("messageId");
 
     if (!messageId) {
       return new Response(

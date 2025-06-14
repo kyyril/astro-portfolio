@@ -278,21 +278,26 @@ import Layout from '../layouts/Layout.astro';
                     </span>
                   </div>
                   <div>
-                    <button class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors">
-                      Edit
-                    </button>
-                    <button 
-                      class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors delete-btn"
-                      data-message-id="${message.id}"
-                    >
-                      Delete
-                    </button>
-                    <button 
-                      class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors edit-btn"
-                      data-message-id="${message.id}"
-                    >
-                      Edit
-                    </button>
+                    ${guestbookManager.user?.username === username ?  `
+                      <button
+                        class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors delete-btn"
+                        data-message-id="${message.id}"
+                      >
+                        Delete
+                      </button>
+                      <button
+                        class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors edit-btn"
+                        data-message-id="${message.id}"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors reply-btn"
+                        data-message-id="${message.id}"
+                      >
+                        Reply
+                      </button>
+                    ` : ""}
                   </div>
                 </div>
                 <p class="text-[var(--color-text)] whitespace-pre-wrap message-text" data-message-id="${message.id}">
@@ -311,6 +316,21 @@ import Layout from '../layouts/Layout.astro';
                   Update Message
                 </button>
               </div>
+            </div>
+            <div class="reply-section hidden" data-message-id="${message.id}">
+              <textarea
+                class="w-full px-3 py-2 glass rounded-lg text-[var(--color-text)] placeholder-[var(--color-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] reply-textarea"
+                data-message-id="${message.id}"
+                rows="4"
+                maxlength="500"
+                placeholder="Write your reply..."
+              ></textarea>
+              <button
+                class="px-6 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-accent)] hover:text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed reply-submit-btn"
+                data-message-id="${message.id}"
+              >
+                Submit Reply
+              </button>
             </div>
           </div>
         `;
@@ -376,6 +396,27 @@ import Layout from '../layouts/Layout.astro';
           }
         }
       }
+
+      if (target && target.classList.contains('reply-btn')) {
+        const messageId = target.dataset.messageId;
+        if (messageId) {
+          const replySection = document.querySelector(`.reply-section[data-message-id="${messageId}"]`);
+          if (replySection) {
+            replySection.classList.toggle('hidden');
+          }
+        }
+      }
+
+      if (target && target.classList.contains('reply-submit-btn')) {
+        const messageId = target.dataset.messageId;
+        if (messageId) {
+          const replyTextarea = document.querySelector(`.reply-textarea[data-message-id="${messageId}"]`) as HTMLTextAreaElement;
+          if (replyTextarea) {
+            const replyContent = replyTextarea.value;
+            await submitReply(messageId, replyContent);
+          }
+        }
+      }
     });
   });
 
@@ -422,6 +463,39 @@ import Layout from '../layouts/Layout.astro';
     } catch (error) {
       console.error('Error updating message:', error);
       alert('Failed to update message');
+    }
+  }
+
+  async function submitReply(messageId: string, content: string) {
+    try {
+      const response = await fetch('/api/replies', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ messageId: messageId, content: content })
+      });
+
+      if (response.ok) {
+        // Clear the textarea and hide the reply section
+        const replyTextarea = document.querySelector(`.reply-textarea[data-message-id="${messageId}"]`) as HTMLTextAreaElement;
+        if (replyTextarea) {
+          replyTextarea.value = "";
+          const replySection = document.querySelector(`.reply-section[data-message-id="${messageId}"]`);
+          if (replySection) {
+            replySection.classList.add('hidden');
+          }
+        }
+
+        // Refresh messages after successful reply
+        await guestbookManager.loadMessages();
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Failed to submit reply');
+      }
+    } catch (error) {
+      console.error('Error submitting reply:', error);
+      alert('Failed to submit reply');
     }
   }
 </script>

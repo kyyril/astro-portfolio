@@ -1,6 +1,5 @@
 import type { APIRoute } from "astro";
 import { PrismaClient } from "@prisma/client";
-import { getSession } from "auth-astro/server";
 
 const prisma = new PrismaClient();
 
@@ -58,10 +57,10 @@ export const GET: APIRoute = async ({ request }) => {
   }
 };
 
-export const POST: APIRoute = async ({ request }) => {
-  const session = await getSession(request);
+export const POST: APIRoute = async ({ request, cookies }) => {
+  const sessionCookie = cookies.get("user_session");
 
-  if (!session || !session.user) {
+  if (!sessionCookie || !sessionCookie.value) {
     return new Response(JSON.stringify({ message: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -69,6 +68,7 @@ export const POST: APIRoute = async ({ request }) => {
   }
 
   try {
+    const session = JSON.parse(sessionCookie.value);
     const { content } = await request.json();
 
     if (!content || typeof content !== "string" || content.trim() === "") {
@@ -81,7 +81,7 @@ export const POST: APIRoute = async ({ request }) => {
     const newMessage = await prisma.message.create({
       data: {
         content: content.trim(),
-        authorId: session.user.id as string,
+        authorId: session.id,
       },
       include: {
         author: {
@@ -118,10 +118,10 @@ export const POST: APIRoute = async ({ request }) => {
   }
 };
 
-export const PUT: APIRoute = async ({ request }) => {
-  const session = await getSession(request);
+export const PUT: APIRoute = async ({ request, cookies }) => {
+  const sessionCookie = cookies.get("user_session");
 
-  if (!session || !session.user) {
+  if (!sessionCookie || !sessionCookie.value) {
     return new Response(JSON.stringify({ message: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -129,6 +129,7 @@ export const PUT: APIRoute = async ({ request }) => {
   }
 
   try {
+    const session = JSON.parse(sessionCookie.value);
     const { id, content } = await request.json();
 
     if (!id || typeof id !== "string") {
@@ -159,7 +160,7 @@ export const PUT: APIRoute = async ({ request }) => {
       });
     }
 
-    if (existingMessage.authorId !== session.user.id) {
+    if (existingMessage.authorId !== session.id) {
       return new Response(
         JSON.stringify({
           message: "Forbidden: You can only update your own messages",
@@ -189,10 +190,10 @@ export const PUT: APIRoute = async ({ request }) => {
   }
 };
 
-export const DELETE: APIRoute = async ({ request }) => {
-  const session = await getSession(request);
+export const DELETE: APIRoute = async ({ request, cookies }) => {
+  const sessionCookie = cookies.get("user_session");
 
-  if (!session || !session.user) {
+  if (!sessionCookie || !sessionCookie.value) {
     return new Response(JSON.stringify({ message: "Unauthorized" }), {
       status: 401,
       headers: { "Content-Type": "application/json" },
@@ -223,7 +224,7 @@ export const DELETE: APIRoute = async ({ request }) => {
       });
     }
 
-    if (existingMessage.authorId !== session.user.id) {
+    if (existingMessage.authorId !== session.id) {
       return new Response(
         JSON.stringify({
           message: "Forbidden: You can only delete your own messages",
