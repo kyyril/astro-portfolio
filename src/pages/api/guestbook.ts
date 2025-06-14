@@ -14,6 +14,19 @@ export const GET: APIRoute = async (): Promise<Response> => {
             avatarUrl: true,
           },
         },
+        replies: {
+          include: {
+            author: {
+              select: {
+                username: true,
+                avatarUrl: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "asc", // Order replies chronologically
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",
@@ -107,6 +120,19 @@ export const PUT: APIRoute = async ({
           select: {
             username: true,
             avatarUrl: true,
+          },
+        },
+        replies: {
+          include: {
+            author: {
+              select: {
+                username: true,
+                avatarUrl: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "asc", // Order replies chronologically
           },
         },
       },

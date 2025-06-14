@@ -32,7 +32,8 @@ model GuestbookEntry {
   updatedAt DateTime @updatedAt
   userId    String
   
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replies Reply[] @relation(name: "GuestbookEntryReplies")
   
   @@map("guestbook_entries")
 }
@@ -45,24 +46,23 @@ model Message {
   authorId  String
   
   author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  replies Reply[]
   likes   Like[]
   
   @@map("messages")
 }
 
 model Reply {
-  id        String   @id @default(uuid())
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  authorId  String
-  messageId String
-  userId    String
+  id               String   @id @default(uuid())
+  content          String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  authorId         String
+  guestbookEntryId String // Foreign key to GuestbookEntry
+  userId           String
 
-  author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade, name: "ReplyAuthor")
-  message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade, name: "ReplyUser")
+  author         User           @relation(fields: [authorId], references: [id], onDelete: Cascade, name: "ReplyAuthor")
+  guestbookEntry GuestbookEntry @relation(fields: [guestbookEntryId], references: [id], onDelete: Cascade, name: "GuestbookEntryReplies")
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade, name: "ReplyUser")
   
   @@map("replies")
 }

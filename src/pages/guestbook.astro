@@ -100,7 +100,7 @@ const isLogin = Astro.cookies.get("user_session")?.value;
       username: string;
       avatarUrl: string | null;
     };
-    replies?: Reply[];
+    replies?: Reply[]; // Renamed from 'replies' to 'replies' to match schema
   }
 
   interface Reply {
@@ -275,35 +275,33 @@ const isLogin = Astro.cookies.get("user_session")?.value;
           let avatarUrl = message.user?.avatarUrl;
           let username = message.user ? message.user.username : "Unknown User";
           
-          const repliesHtml = message.replies && message.replies.length > 0 
+          const repliesHtml = message.replies && message.replies.length > 0
             ? `
-              <div class="mt-4 pl-6 border-l-2 border-[var(--color-border)]">
-                <div class="space-y-3">
-                  ${message.replies.map(reply => `
-                    <div class="flex items-start space-x-3">
-                      <img
-                        src="${reply.author.avatarUrl || "/default-avatar.png"}"
-                        alt="${reply.author.username}"
-                        class="w-8 h-8 rounded-full flex-shrink-0"
-                      />
-                      <div class="flex-1">
-                        <div class="flex items-center space-x-2 mb-1">
-                          <span class="font-semibold text-sm text-[var(--color-accent)]">
-                            ${reply.author.username}
-                          </span>
-                          <span class="text-xs text-[var(--color-secondary)]">
-                            ${new Date(reply.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                        <p class="text-sm text-[var(--color-text)] whitespace-pre-wrap">
-                          ${this.escapeHtml(reply.content)}
-                        </p>
+              <div class="mt-4 pl-6 border-l-2 border-[var(--color-border)] space-y-3">
+                ${message.replies.map(reply => `
+                  <div class="flex items-start space-x-3 bg-[var(--color-background-light)] p-3 rounded-lg shadow-inner">
+                    <img
+                      src="${reply.author.avatarUrl || "/default-avatar.png"}"
+                      alt="${reply.author.username}"
+                      class="w-7 h-7 rounded-full flex-shrink-0 border border-[var(--color-border)]"
+                    />
+                    <div class="flex-1">
+                      <div class="flex items-center space-x-2 mb-1">
+                        <span class="font-bold text-sm text-[var(--color-primary)]">
+                          ${reply.author.username}
+                        </span>
+                        <span class="text-xs text-[var(--color-secondary)]">
+                          ${new Date(reply.createdAt).toLocaleDateString()}
+                        </span>
                       </div>
+                      <p class="text-sm text-[var(--color-text)] whitespace-pre-wrap">
+                        ${this.escapeHtml(reply.content)}
+                      </p>
                     </div>
-                  `).join('')}
-                </div>
+                  </div>
+                `).join('')}
               </div>
-            ` 
+            `
             : '';
           
           return `
@@ -580,9 +578,9 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
-          messageId: messageId, 
-          content: content 
+        body: JSON.stringify({
+          guestbookEntryId: messageId, // Changed to guestbookEntryId
+          content: content
         })
       });
  
