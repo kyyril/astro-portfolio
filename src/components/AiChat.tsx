@@ -78,7 +78,7 @@ const extractChatTitle = (chatMessages: Message[]): string => {
 };
 
 // Main Chat Component
-const Chat: React.FC = () => {
+export const AiChat: React.FC = () => {
   const [userId, setUserId] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -531,4 +531,4 @@ const Chat: React.FC = () => {
   );
 };
 
-export default Chat;
+export default AiChat;

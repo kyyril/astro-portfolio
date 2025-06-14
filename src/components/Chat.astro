@@ -1,0 +1,567 @@
+---
+// No server-side logic needed for this component
+---
+
+<div id="chat-app" class="max-w-7xl w-full h-screen px-4 md:px-8 mx-auto">
+  <div class="flex flex-col md:flex-row gap-4 h-full py-4">
+    
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-btn" class="md:hidden fixed top-4 left-4 z-50 glass p-2 rounded-lg">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+
+    <!-- Chat History Sidebar -->
+    <div id="chat-sidebar" class="fixed md:relative inset-y-0 left-0 z-40 w-64 glass md:glass-hover transition-transform transform -translate-x-full md:translate-x-0 md:flex md:flex-col h-full">
+      <div class="flex flex-col h-full">
+        <div class="p-4 border-b border-border">
+          <h2 class="text-lg font-semibold text-text">Chat History</h2>
+          <p class="text-xs text-secondary mt-1">
+            <span class="text-red-400">*</span> Saved in browser storage
+          </p>
+        </div>
+
+        <div class="p-4">
+          <button id="new-chat-btn" class="w-full bg-primary hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            New Chat
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto px-4 pb-4">
+          <div id="chat-history" class="space-y-2">
+            <p class="text-sm text-secondary text-center py-8">No chat history yet</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Overlay for mobile -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden hidden"></div>
+
+    <!-- Main Chat Area -->
+    <div class="flex-1 glass flex flex-col h-full md:ml-0 ml-0">
+      
+      <!-- Chat Header -->
+      <header class="flex items-center p-4 border-b border-border">
+        <button id="avatar-btn" class="flex-shrink-0">
+          <img 
+            src="/assets/katou.gif" 
+            alt="Katou" 
+            class="w-12 h-12 rounded-full border-2 border-primary hover:opacity-80 transition-opacity cursor-pointer"
+          />
+        </button>
+        
+        <div class="ml-3 flex-1">
+          <h1 class="text-lg font-light text-text">加藤 恵</h1>
+          <p class="text-sm text-accent">Online</p>
+        </div>
+
+        <button id="header-new-chat" class="glass-hover px-3 py-1 rounded-lg text-sm flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <span class="hidden sm:inline">New</span>
+        </button>
+      </header>
+
+      <!-- Messages Container -->
+      <div id="messages-container" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <div class="flex justify-start animate-fadeIn">
+          <div class="max-w-[85%] glass p-3 rounded-r-lg rounded-b-lg">
+            <p>How can I help you today?</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Section -->
+      <div class="p-4 border-t border-border">
+        <div class="flex gap-2">
+          <input 
+            id="message-input"
+            type="text" 
+            placeholder="Ask something..." 
+            class="flex-1 bg-surface border border-border rounded-lg px-4 py-2 text-text placeholder-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            disabled
+          />
+          <button 
+            id="send-btn"
+            class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            disabled
+          >
+            <svg id="send-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+            <svg id="loading-icon" class="w-5 h-5 animate-spin hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Avatar Modal -->
+<div id="avatar-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="glass p-4 rounded-xl max-w-md">
+    <img src="/assets/katou.gif" alt="Katou" class="w-full rounded-lg" />
+    <button id="close-modal" class="mt-4 w-full bg-secondary hover:bg-slate-600 text-white py-2 rounded-lg transition-colors">
+      Close
+    </button>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="glass p-6 rounded-xl max-w-sm w-full">
+    <h3 class="text-lg font-semibold text-text mb-2">Delete Chat?</h3>
+    <p class="text-secondary mb-4">This will permanently delete this chat history. This action cannot be undone.</p>
+    <div class="flex gap-2">
+      <button id="cancel-delete" class="flex-1 bg-secondary hover:bg-slate-600 text-white py-2 rounded-lg transition-colors">
+        Cancel
+      </button>
+      <button id="confirm-delete" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition-colors">
+        Delete
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { GeminiService } from '../services/gemini';
+  import { StorageService } from '../services/storage';
+  import { extractChatTitle, formatDate, generateMessageId, generateChatId, parseMarkdown } from '../utils/chat';
+  import type { Message, ChatHistory, GeminiMessage } from '../types/chat';
+
+  class ChatApp {
+    private geminiService: GeminiService;
+    private userId: string = '';
+    private messages: Message[] = [];
+    private aiHistory: GeminiMessage[] = [];
+    private savedChats: ChatHistory[] = [];
+    private activeChat: string | null = null;
+    private chatToDelete: string | null = null;
+    private isLoading = false;
+
+    constructor() {
+      // Initialize Gemini service - replace with your API key
+      const apiKey = import.meta.env.PUBLIC_GEMINI_API_KEY;
+      if (!apiKey) {
+        console.error('Gemini API key not found. Please set PUBLIC_GEMINI_API_KEY in your .env file');
+        return;
+      }
+      
+      this.geminiService = new GeminiService(apiKey);
+      this.init();
+    }
+
+    private init() {
+      this.userId = StorageService.getUserId();
+      this.loadSavedChats();
+      this.setupEventListeners();
+      this.initializeChat();
+      this.updateUI();
+    }
+
+    private loadSavedChats() {
+      this.savedChats = StorageService.loadChats(this.userId);
+      this.renderChatHistory();
+    }
+
+    private initializeChat() {
+      this.messages = [{
+        text: "How can I help you today?",
+        isUser: false,
+        id: generateMessageId()
+      }];
+      
+      this.aiHistory = [{
+        role: 'user',
+        parts: [{
+          text: "You're Katou, an AI chatbot, built by none other than Khairil or as we call him, Kiril. He's just a handsome and smart guy who loves computer science and philosophy, all while being endlessly inspired by the quirks of the universe. 🛸 Pretty awesome, right?"
+        }]
+      }];
+    }
+
+    private setupEventListeners() {
+      // Mobile menu
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('chat-sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      
+      mobileMenuBtn?.addEventListener('click', () => this.toggleSidebar());
+      overlay?.addEventListener('click', () => this.closeSidebar());
+
+      // New chat buttons
+      document.getElementById('new-chat-btn')?.addEventListener('click', () => {
+        this.startNewChat();
+        this.closeSidebar();
+      });
+      
+      document.getElementById('header-new-chat')?.addEventListener('click', () => this.startNewChat());
+
+      // Message input
+      const messageInput = document.getElementById('message-input') as HTMLInputElement;
+      const sendBtn = document.getElementById('send-btn');
+      
+      messageInput?.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !this.isLoading) {
+          this.sendMessage();
+        }
+      });
+      
+      sendBtn?.addEventListener('click', () => {
+        if (!this.isLoading) this.sendMessage();
+      });
+
+      // Avatar modal
+      document.getElementById('avatar-btn')?.addEventListener('click', () => this.showAvatarModal());
+      document.getElementById('close-modal')?.addEventListener('click', () => this.hideAvatarModal());
+      document.getElementById('avatar-modal')?.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) this.hideAvatarModal();
+      });
+
+      // Delete modal
+      document.getElementById('cancel-delete')?.addEventListener('click', () => this.hideDeleteModal());
+      document.getElementById('confirm-delete')?.addEventListener('click', () => this.confirmDelete());
+      document.getElementById('delete-modal')?.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) this.hideDeleteModal();
+      });
+    }
+
+    private toggleSidebar() {
+      const sidebar = document.getElementById('chat-sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      
+      sidebar?.classList.toggle('-translate-x-full');
+      overlay?.classList.toggle('hidden');
+    }
+
+    private closeSidebar() {
+      const sidebar = document.getElementById('chat-sidebar');
+      const overlay = document.getElementById('sidebar-overlay');
+      
+      sidebar?.classList.add('-translate-x-full');
+      overlay?.classList.add('hidden');
+    }
+
+    private async sendMessage() {
+      const messageInput = document.getElementById('message-input') as HTMLInputElement;
+      const message = messageInput.value.trim();
+      
+      if (!message || this.isLoading) return;
+
+      // Add user message
+      const userMessage: Message = {
+        text: message,
+        isUser: true,
+        id: generateMessageId()
+      };
+      
+      this.messages.push(userMessage);
+      this.renderMessages();
+      
+      // Clear input and set loading state
+      messageInput.value = '';
+      this.setLoading(true);
+
+      // Add to AI history
+      this.aiHistory.push({
+        role: 'user',
+        parts: [{ text: message }]
+      });
+
+      try {
+        // Create AI message placeholder
+        const aiMessage: Message = {
+          text: '',
+          isUser: false,
+          id: generateMessageId()
+        };
+        
+        this.messages.push(aiMessage);
+        this.renderMessages();
+
+        // Stream response
+        let responseText = '';
+        const stream = this.geminiService.streamGenerateContent(this.aiHistory);
+        
+        for await (const chunk of stream) {
+          responseText += chunk;
+          // Update the last message
+          this.messages[this.messages.length - 1].text = responseText;
+          this.renderMessages();
+        }
+
+        // Add to AI history
+        this.aiHistory.push({
+          role: 'model',
+          parts: [{ text: responseText }]
+        });
+
+        // Save chat
+        this.saveCurrentChat();
+        
+      } catch (error) {
+        console.error('Error:', error);
+        this.messages.push({
+          text: 'Sorry, I encountered an error. Please try again.',
+          isUser: false,
+          id: generateMessageId()
+        });
+        this.renderMessages();
+      } finally {
+        this.setLoading(false);
+      }
+    }
+
+    private setLoading(loading: boolean) {
+      this.isLoading = loading;
+      const sendBtn = document.getElementById('send-btn');
+      const messageInput = document.getElementById('message-input') as HTMLInputElement;
+      const sendIcon = document.getElementById('send-icon');
+      const loadingIcon = document.getElementById('loading-icon');
+      
+      if (sendBtn) sendBtn.disabled = loading;
+      if (messageInput) messageInput.disabled = loading;
+      
+      if (loading) {
+        sendIcon?.classList.add('hidden');
+        loadingIcon?.classList.remove('hidden');
+      } else {
+        sendIcon?.classList.remove('hidden');
+        loadingIcon?.classList.add('hidden');
+      }
+    }
+
+    private renderMessages() {
+      const container = document.getElementById('messages-container');
+      if (!container) return;
+
+      container.innerHTML = this.messages.map(msg => `
+        <div class="flex ${msg.isUser ? 'justify-end' : 'justify-start'} animate-fadeIn">
+          <div class="max-w-[85%] ${msg.isUser 
+            ? 'bg-primary text-white rounded-l-lg rounded-b-lg' 
+            : 'glass rounded-r-lg rounded-b-lg'
+          } p-3">
+            <div class="prose prose-invert max-w-none text-sm">
+              ${parseMarkdown(msg.text)}
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Scroll to bottom
+      container.scrollTop = container.scrollHeight;
+    }
+
+    private renderChatHistory() {
+      const container = document.getElementById('chat-history');
+      if (!container) return;
+
+      if (this.savedChats.length === 0) {
+        container.innerHTML = '<p class="text-sm text-secondary text-center py-8">No chat history yet</p>';
+        return;
+      }
+
+      container.innerHTML = this.savedChats.map(chat => `
+        <div class="chat-item ${this.activeChat === chat.id ? 'bg-surface' : ''} glass-hover rounded-lg p-3 cursor-pointer group" data-chat-id="${chat.id}">
+          <div class="flex items-center justify-between">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-text truncate">${chat.title}</p>
+              <p class="text-xs text-secondary">${formatDate(chat.timestamp)}</p>
+            </div>
+            <button class="delete-chat-btn opacity-0 group-hover:opacity-100 p-1 text-secondary hover:text-red-400 transition-all" data-chat-id="${chat.id}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      // Add event listeners to chat items
+      container.querySelectorAll('.chat-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          const target = e.target as HTMLElement;
+          if (!target.closest('.delete-chat-btn')) {
+            const chatId = (item as HTMLElement).dataset.chatId;
+            if (chatId) {
+              this.loadChat(chatId);
+              this.closeSidebar();
+            }
+          }
+        });
+      });
+
+      // Add event listeners to delete buttons
+      container.querySelectorAll('.delete-chat-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const chatId = (btn as HTMLElement).dataset.chatId;
+          if (chatId) this.showDeleteModal(chatId);
+        });
+      });
+    }
+
+    private startNewChat() {
+      // Save current chat if there are messages
+      if (this.messages.length > 1) {
+        this.saveCurrentChat();
+      }
+
+      // Reset chat
+      this.initializeChat();
+      this.activeChat = null;
+      this.renderMessages();
+      this.updateUI();
+      
+      // Clear input
+      const messageInput = document.getElementById('message-input') as HTMLInputElement;
+      if (messageInput) messageInput.value = '';
+    }
+
+    private loadChat(chatId: string) {
+      const chat = this.savedChats.find(c => c.id === chatId);
+      if (!chat) return;
+
+      this.messages = chat.messages.map(msg => ({
+        ...msg,
+        id: msg.id || generateMessageId()
+      }));
+      
+      this.aiHistory = chat.aiHistory || [];
+      this.activeChat = chatId;
+      
+      this.renderMessages();
+      this.renderChatHistory();
+      this.updateUI();
+    }
+
+    private saveCurrentChat() {
+      if (this.messages.length <= 1) return;
+
+      const chatId = this.activeChat || generateChatId();
+      let title: string;
+
+      if (this.activeChat) {
+        const existingChat = this.savedChats.find(chat => chat.id === this.activeChat);
+        title = existingChat?.title || extractChatTitle(this.messages);
+      } else {
+        title = extractChatTitle(this.messages);
+      }
+
+      const chatToSave: ChatHistory = {
+        id: chatId,
+        title,
+        messages: this.messages,
+        timestamp: Date.now(),
+        aiHistory: this.aiHistory,
+        userId: this.userId
+      };
+
+      this.savedChats = StorageService.updateChat(this.userId, chatToSave);
+      this.activeChat = chatId;
+      this.renderChatHistory();
+    }
+
+    private showDeleteModal(chatId: string) {
+      this.chatToDelete = chatId;
+      const modal = document.getElementById('delete-modal');
+      modal?.classList.remove('hidden');
+    }
+
+    private hideDeleteModal() {
+      this.chatToDelete = null;
+      const modal = document.getElementById('delete-modal');
+      modal?.classList.add('hidden');
+    }
+
+    private confirmDelete() {
+      if (!this.chatToDelete) return;
+
+      this.savedChats = StorageService.deleteChat(this.userId, this.chatToDelete);
+      
+      if (this.activeChat === this.chatToDelete) {
+        this.startNewChat();
+      }
+      
+      this.renderChatHistory();
+      this.hideDeleteModal();
+    }
+
+    private showAvatarModal() {
+      const modal = document.getElementById('avatar-modal');
+      modal?.classList.remove('hidden');
+    }
+
+    private hideAvatarModal() {
+      const modal = document.getElementById('avatar-modal');
+      modal?.classList.add('hidden');
+    }
+
+    private updateUI() {
+      const messageInput = document.getElementById('message-input') as HTMLInputElement;
+      const sendBtn = document.getElementById('send-btn');
+      
+      if (messageInput && sendBtn) {
+        messageInput.disabled = false;
+        sendBtn.disabled = false;
+      }
+    }
+  }
+
+  // Initialize the app when DOM is loaded
+  document.addEventListener('DOMContentLoaded', () => {
+    new ChatApp();
+  });
+</script>
+
+<style>
+  .prose {
+    color: inherit;
+  }
+  
+  .prose code {
+    background-color: var(--color-surface);
+    padding: 0.125rem 0.25rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+  }
+  
+  .prose pre {
+    background-color: var(--color-surface);
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+    overflow-x: auto;
+  }
+  
+  .prose pre code {
+    background-color: transparent;
+    padding: 0;
+  }
+  
+  .prose strong {
+    font-weight: 600;
+  }
+  
+  .prose em {
+    font-style: italic;
+  }
+
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    #chat-app {
+      padding: 0.5rem;
+    }
+    
+    .max-w-[85%] {
+      max-width: 90%;
+    }
+  }
+</style>
