@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async (): Promise<Response> => {
   try {
     // Fetch guestbook entries
     const entries = await prisma.guestbookEntry.findMany({
@@ -38,7 +38,10 @@ export const GET: APIRoute = async () => {
   }
 };
 
-export const PUT: APIRoute = async ({ request, cookies }) => {
+export const PUT: APIRoute = async ({
+  request,
+  cookies,
+}): Promise<Response> => {
   const session = cookies.get("user_session");
 
   if (!session?.value) {
@@ -128,7 +131,10 @@ export const PUT: APIRoute = async ({ request, cookies }) => {
 };
 
 // Delete a guestbook entry
-export const DELETE: APIRoute = async ({ request, cookies }) => {
+export const DELETE: APIRoute = async ({
+  request,
+  cookies,
+}): Promise<Response> => {
   const session = cookies.get("user_session");
 
   if (!session?.value) {
@@ -196,7 +202,10 @@ export const DELETE: APIRoute = async ({ request, cookies }) => {
   }
 };
 
-export const POST: APIRoute = async ({ request, cookies }) => {
+export const POST: APIRoute = async ({
+  request,
+  cookies,
+}): Promise<Response> => {
   const session = cookies.get("user_session");
 
   if (!session?.value) {
@@ -208,6 +217,19 @@ export const POST: APIRoute = async ({ request, cookies }) => {
 
   try {
     const user = JSON.parse(session.value);
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        id: user.id,
+      },
+    });
+
+    if (!existingUser) {
+      return new Response(JSON.stringify({ error: "User not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
     const { message } = await request.json();
 
     if (!message || message.trim().length === 0) {
