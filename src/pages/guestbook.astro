@@ -265,248 +265,375 @@ const isLogin = Astro.cookies.get("user_session")?.value;
       container.innerHTML = messages.map(message => this.renderMessage(message)).join('');
     }
 
-    renderMessage(message: GuestbookEntry): string {
-      const username = message.user?.username || "Unknown User";
-      const avatarUrl = message.user?.avatarUrl || "/default-avatar.png";
-      const isOwner = this.user?.username === username;
-      
-      return `
-        <div class="terminal-card">
-          <div class="flex items-start space-x-3">
-            <img
-              src="${avatarUrl}"
-              alt="${username}"
-              class="w-10 h-10 rounded-full flex-shrink-0 border border-[var(--color-border)]"
-            />
-            <div class="flex-1">
-              <!-- Message Header -->
-              <div class="flex items-center justify-between mb-2">
-                <div class="flex items-center space-x-2">
-                  <span class="font-semibold text-[var(--color-accent)]">${username}</span>
-                  <span class="text-sm text-[var(--color-secondary)]">
-                    ${new Date(message.createdAt).toLocaleDateString()}
-                  </span>
+renderMessage(message: GuestbookEntry): string {
+  const username = message.user?.username || "Unknown User";
+  const avatarUrl = message.user?.avatarUrl || "/default-avatar.png";
+  const isOwner = this.user?.username === username;
+  
+  return `
+    <div class="terminal-card mb-4 hover:shadow-lg transition-all duration-300 hover:scale-[1.02] hover:border-primary/50">
+      <div class="flex flex-col sm:flex-row sm:items-start space-y-3 sm:space-y-0 sm:space-x-4">
+        <div class="relative flex-shrink-0">
+              <img
+                src="${avatarUrl}"
+                alt="${username}"
+                class="w-12 h-12 rounded-full border-2 border-[#45475a] transition-all duration-300 group-hover:border-[#89b4fa] group-hover:shadow-lg group-hover:shadow-[#89b4fa]/30"
+              />
+              <div class="absolute -top-1 -right-1 w-4 h-4 bg-[#a6e3a1] rounded-full border-2 border-[#1e1e2e] shadow-sm animate-pulse"></div>
+            </div>
+            
+            <div class="flex-1 min-w-0">
+              <!-- Enhanced Message Header -->
+              <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                <div class="flex items-center space-x-3 min-w-0">
+                  <span class="font-bold text-[#f9e2af] text-lg truncate">${username}</span>
+                  <div class="flex items-center space-x-2 text-sm text-[#9399b2]">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span>${new Date(message.createdAt).toLocaleDateString()}</span>
+                  </div>
                 </div>
-                <div class="flex space-x-1">
+                
+                <!-- Enhanced Action Buttons -->
+                <div class="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                   ${isOwner ? `
-                    <button class="action-btn edit-message-btn" data-message-id="${message.id}" title="Edit">
+                    <button class="action-btn edit-message-btn bg-[#313244] hover:bg-[#45475a] text-[#89b4fa] px-3 py-2 rounded-lg border border-[#45475a] hover:border-[#89b4fa] transition-all duration-200 flex items-center space-x-1 text-sm hover:shadow-lg hover:shadow-[#89b4fa]/20" data-message-id="${message.id}" title="Edit Message">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                       </svg>
+                      <span class="hidden sm:inline">Edit</span>
                     </button>
-                    <button class="action-btn delete-message-btn" data-message-id="${message.id}" title="Delete">
+                    <button class="action-btn delete-message-btn bg-[#313244] hover:bg-[#f38ba8] text-[#f38ba8] hover:text-white px-3 py-2 rounded-lg border border-[#45475a] hover:border-[#f38ba8] transition-all duration-200 flex items-center space-x-1 text-sm hover:shadow-lg hover:shadow-[#f38ba8]/20" data-message-id="${message.id}" title="Delete Message">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                       </svg>
+                      <span class="hidden sm:inline">Delete</span>
                     </button>
                   ` : ''}
                   ${this.user ? `
-                    <button class="action-btn reply-btn" data-message-id="${message.id}" title="Reply">
+                    <button class="action-btn reply-btn bg-[#313244] hover:bg-[#45475a] text-[#cba6f7] px-3 py-2 rounded-lg border border-[#45475a] hover:border-[#cba6f7] transition-all duration-200 flex items-center space-x-1 text-sm hover:shadow-lg hover:shadow-[#cba6f7]/20" data-message-id="${message.id}" title="Reply to Message">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
                       </svg>
+                      <span class="hidden sm:inline">Reply</span>
                     </button>
                   ` : ''}
                 </div>
               </div>
 
-              <!-- Message Content -->
-              <div class="message-content" data-message-id="${message.id}">
-                <p class="text-[var(--color-text)] whitespace-pre-wrap">${this.escapeHtml(message.message)}</p>
-              </div>
+          <!-- Message Content -->
+          <div class="message-content mb-4" data-message-id="${message.id}">
+            <div class="bg-surface/30 rounded-lg p-4 border border-border/50 hover:border-primary/30 transition-colors duration-300">
+              <p class="text-text whitespace-pre-wrap leading-relaxed text-sm sm:text-base">${this.escapeHtml(message.message)}</p>
+            </div>
+          </div>
 
-              <!-- Edit Message Form (Hidden) -->
-              <div class="edit-message-form hidden" data-message-id="${message.id}">
+          <!-- Edit Message Form (Hidden) -->
+          <div class="edit-message-form hidden mb-4" data-message-id="${message.id}">
+            <div class="space-y-3">
+              <textarea
+                class="w-full px-4 py-3 bg-surface/50 border border-border/50 rounded-lg text-text placeholder-secondary/70 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 resize-none"
+                rows="4"
+                maxlength="500"
+                placeholder="Edit your message..."
+              >${message.message}</textarea>
+              <div class="flex flex-col sm:flex-row gap-2">
+                <button class="btn-primary update-message-btn flex-1 sm:flex-none" data-message-id="${message.id}">
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  Update Message
+                </button>
+                <button class="btn-secondary cancel-edit-message-btn flex-1 sm:flex-none" data-message-id="${message.id}">
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Replies Section -->
+          ${this.renderReplies(message.replies || [], message.id)}
+
+          <!-- Reply Form (Hidden) -->
+          <div class="reply-form hidden mt-4" data-message-id="${message.id}">
+            <div class="pl-4 sm:pl-6 border-l-2 border-accent/50 bg-surface/20 rounded-r-lg p-4">
+              <div class="space-y-3">
                 <textarea
-                  class="w-full px-3 py-2 glass rounded-lg text-[var(--color-text)] placeholder-[var(--color-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] mb-2"
-                  rows="4"
+                  class="w-full px-4 py-3 bg-surface/50 border border-border/50 rounded-lg text-text placeholder-secondary/70 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent/50 transition-all duration-300 resize-none"
+                  rows="3"
                   maxlength="500"
-                >${message.message}</textarea>
-                <div class="flex space-x-2">
-                  <button class="btn-primary update-message-btn" data-message-id="${message.id}">
-                    Update
+                  placeholder="Write your reply..."
+                ></textarea>
+                <div class="flex flex-col sm:flex-row gap-2">
+                  <button class="btn-primary submit-reply-btn flex-1 sm:flex-none" data-message-id="${message.id}">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                    </svg>
+                    Submit Reply
                   </button>
-                  <button class="btn-secondary cancel-edit-message-btn" data-message-id="${message.id}">
+                  <button class="btn-secondary cancel-reply-btn flex-1 sm:flex-none" data-message-id="${message.id}">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
                     Cancel
                   </button>
-                </div>
-              </div>
-
-              <!-- Replies Section -->
-              ${this.renderReplies(message.replies || [], message.id)}
-
-              <!-- Reply Form (Hidden) -->
-              <div class="reply-form hidden mt-4" data-message-id="${message.id}">
-                <div class="pl-6 border-l-2 border-[var(--color-border)]">
-                  <textarea
-                    class="w-full px-3 py-2 glass rounded-lg text-[var(--color-text)] placeholder-[var(--color-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] mb-2"
-                    rows="3"
-                    maxlength="500"
-                    placeholder="Write your reply..."
-                  ></textarea>
-                  <div class="flex space-x-2">
-                    <button class="btn-primary submit-reply-btn" data-message-id="${message.id}">
-                      Submit Reply
-                    </button>
-                    <button class="btn-secondary cancel-reply-btn" data-message-id="${message.id}">
-                      Cancel
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      `;
-    }
+      </div>
+    </div>
+  `;
+}
 
-    renderReplies(replies: Reply[], messageId: string): string {
-      if (!replies || replies.length === 0) return '';
+renderReplies(replies: Reply[], messageId: string): string {
+  if (!replies || replies.length === 0) return '';
 
-      return `
-        <div class="mt-4 pl-6 border-l-2 border-[var(--color-border)] space-y-3">
-          ${replies.map(reply => this.renderReply(reply, messageId)).join('')}
+  const visibleReplies = replies.slice(0, 1); // Show only first reply by default
+  const hiddenReplies = replies.slice(1);
+  const hasMoreReplies = hiddenReplies.length > 0;
+
+  return `
+    <div class="mt-4 pl-4 sm:pl-6 border-l-2 border-primary/30 space-y-3">
+      <div class="replies-visible" data-message-id="${messageId}">
+        ${visibleReplies.map(reply => this.renderReply(reply, messageId)).join('')}
+      </div>
+      
+      ${hasMoreReplies ? `
+        <div class="replies-hidden hidden" data-message-id="${messageId}">
+          ${hiddenReplies.map(reply => this.renderReply(reply, messageId)).join('')}
         </div>
-      `;
-    }
+        
+        <button class="show-more-replies-btn text-sm text-primary hover:text-accent transition-colors duration-200 flex items-center space-x-2 px-3 py-2 bg-surface/30 rounded-lg border border-border/30 hover:border-primary/50 hover:bg-surface/50" data-message-id="${messageId}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+          <span>Show ${hiddenReplies.length} more ${hiddenReplies.length === 1 ? 'reply' : 'replies'}</span>
+        </button>
+        
+        <button class="show-less-replies-btn hidden text-sm text-secondary hover:text-primary transition-colors duration-200 flex items-center space-x-2 px-3 py-2 bg-surface/30 rounded-lg border border-border/30 hover:border-primary/50 hover:bg-surface/50" data-message-id="${messageId}">
+          <svg class="w-4 h-4 transform rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+          <span>Show less</span>
+        </button>
+      ` : ''}
+    </div>
+  `;
+}
 
-    renderReply(reply: Reply, messageId: string): string {
-      const username = reply.author?.username || "Unknown User";
-      const avatarUrl = reply.author?.avatarUrl || "/default-avatar.png";
-      const isOwner = this.user?.username === username;
+renderReply(reply: Reply, messageId: string): string {
+  const username = reply.author?.username || "Unknown User";
+  const avatarUrl = reply.author?.avatarUrl || "/default-avatar.png";
+  const isOwner = this.user?.username === username;
 
-      return `
-        <div class="flex items-start space-x-3 bg-[var(--color-background-light)] p-3 rounded-lg shadow-inner">
+  return `
+    <div class="reply-item bg-surface/40 p-3 sm:p-4 rounded-lg border border-border/30 hover:border-primary/30 transition-all duration-300 hover:bg-surface/60">
+      <div class="flex flex-col sm:flex-row sm:items-start space-y-2 sm:space-y-0 sm:space-x-3">
+        <div class="flex items-center sm:items-start space-x-3 sm:space-x-0 sm:flex-col sm:items-center">
           <img
             src="${avatarUrl}"
             alt="${username}"
-            class="w-7 h-7 rounded-full flex-shrink-0 border border-[var(--color-border)]"
+            class="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-primary/30 hover:border-primary/60 transition-colors duration-300"
           />
-          <div class="flex-1">
-            <!-- Reply Header -->
-            <div class="flex items-center justify-between mb-1">
-              <div class="flex items-center space-x-2">
-                <span class="font-bold text-sm text-[var(--color-primary)]">${username}</span>
-                <span class="text-xs text-[var(--color-secondary)]">
-                  ${new Date(reply.createdAt).toLocaleDateString()}
-                </span>
+          <div class="sm:hidden flex-1">
+            <div class="flex items-center justify-between">
+              <span class="font-semibold text-sm text-secondary">${username}</span>
+              <span class="text-xs text-secondary/70">
+                ${new Date(reply.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="flex-1 min-w-0">
+          <!-- Desktop Reply Header -->
+          <div class="hidden sm:flex items-center justify-between mb-2">
+            <div class="flex items-center space-x-2">
+              <span class="font-semibold text-sm text-secondary hover:text-primary transition-colors duration-200">${username}</span>
+              <span class="text-xs text-secondary/70 bg-surface/50 px-2 py-1 rounded-full">
+                ${new Date(reply.createdAt).toLocaleDateString()}
+              </span>
+            </div>
+            ${isOwner ? `
+              <div class="flex items-center space-x-1">
+                <button class="action-btn-sm edit-reply-btn group" data-reply-id="${reply.id}" data-message-id="${messageId}" title="Edit">
+                  <svg class="w-3 h-3 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                  </svg>
+                </button>
+                <button class="action-btn-sm delete-reply-btn group hover:bg-red-500/20 hover:border-red-500/50" data-reply-id="${reply.id}" data-message-id="${messageId}" title="Delete">
+                  <svg class="w-3 h-3 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                </button>
               </div>
-              ${isOwner ? `
-                <div class="flex space-x-1">
-                  <button class="action-btn-sm edit-reply-btn" data-reply-id="${reply.id}" data-message-id="${messageId}" title="Edit">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                    </svg>
-                  </button>
-                  <button class="action-btn-sm delete-reply-btn" data-reply-id="${reply.id}" data-message-id="${messageId}" title="Delete">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                  </button>
-                </div>
-              ` : ''}
-            </div>
+            ` : ''}
+          </div>
 
-            <!-- Reply Content -->
-            <div class="reply-content" data-reply-id="${reply.id}">
-              <p class="text-sm text-[var(--color-text)] whitespace-pre-wrap">${this.escapeHtml(reply.content)}</p>
+          <!-- Mobile Reply Actions -->
+          ${isOwner ? `
+            <div class="sm:hidden flex justify-end space-x-1 mb-2">
+              <button class="action-btn-sm edit-reply-btn" data-reply-id="${reply.id}" data-message-id="${messageId}" title="Edit">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+              </button>
+              <button class="action-btn-sm delete-reply-btn hover:bg-red-500/20" data-reply-id="${reply.id}" data-message-id="${messageId}" title="Delete">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
             </div>
+          ` : ''}
 
-            <!-- Edit Reply Form (Hidden) -->
-            <div class="edit-reply-form hidden" data-reply-id="${reply.id}">
+          <!-- Reply Content -->
+          <div class="reply-content" data-reply-id="${reply.id}">
+            <div class="bg-background/30 rounded-lg p-3 border border-border/20">
+              <p class="text-sm text-text whitespace-pre-wrap leading-relaxed">${this.escapeHtml(reply.content)}</p>
+            </div>
+          </div>
+
+          <!-- Edit Reply Form (Hidden) -->
+          <div class="edit-reply-form hidden mt-2" data-reply-id="${reply.id}">
+            <div class="space-y-2">
               <textarea
-                class="w-full px-2 py-1 glass rounded text-sm text-[var(--color-text)] placeholder-[var(--color-secondary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] mb-2"
+                class="w-full px-3 py-2 bg-surface/50 border border-border/50 rounded-lg text-sm text-text placeholder-secondary/70 focus:outline-none focus:ring-1 focus:ring-primary/50 focus:border-primary/50 transition-all duration-300 resize-none"
                 rows="3"
                 maxlength="500"
+                placeholder="Edit your reply..."
               >${reply.content}</textarea>
-              <div class="flex space-x-2">
-                <button class="btn-primary-sm update-reply-btn" data-reply-id="${reply.id}" data-message-id="${messageId}">
+              <div class="flex flex-col sm:flex-row gap-2">
+                <button class="btn-primary-sm update-reply-btn flex-1 sm:flex-none" data-reply-id="${reply.id}" data-message-id="${messageId}">
+                  <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
                   Update
                 </button>
-                <button class="btn-secondary-sm cancel-edit-reply-btn" data-reply-id="${reply.id}">
+                <button class="btn-secondary-sm cancel-edit-reply-btn flex-1 sm:flex-none" data-reply-id="${reply.id}">
+                  <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                  </svg>
                   Cancel
                 </button>
               </div>
             </div>
           </div>
         </div>
-      `;
-    }
+      </div>
+    </div>
+  `;
+}
 
-    escapeHtml(text: string): string {
-      const div = document.createElement("div");
-      div.textContent = text;
-      return div.innerHTML;
-    }
+escapeHtml(text: string): string {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
   }
+}
 
-  let guestbookManager: GuestbookManager;
+let guestbookManager: GuestbookManager;
 
-  document.addEventListener('DOMContentLoaded', () => {
-    guestbookManager = new GuestbookManager();
+document.addEventListener('DOMContentLoaded', () => {
+  guestbookManager = new GuestbookManager();
 
-    // Event delegation for dynamic content
-    document.addEventListener('click', async (e) => {
-      const target = e.target as HTMLElement;
-      
-      // Message actions
-      if (target.closest('.edit-message-btn')) {
-        const btn = target.closest('.edit-message-btn') as HTMLElement;
-        toggleEditMessage(btn.dataset.messageId!);
-      }
-      
-      if (target.closest('.delete-message-btn')) {
-        const btn = target.closest('.delete-message-btn') as HTMLElement;
-        await deleteMessage(btn.dataset.messageId!);
-      }
-      
-      if (target.closest('.update-message-btn')) {
-        const btn = target.closest('.update-message-btn') as HTMLElement;
-        await updateMessage(btn.dataset.messageId!);
-      }
-      
-      if (target.closest('.cancel-edit-message-btn')) {
-        const btn = target.closest('.cancel-edit-message-btn') as HTMLElement;
-        toggleEditMessage(btn.dataset.messageId!, false);
-      }
-      
-      if (target.closest('.reply-btn')) {
-        const btn = target.closest('.reply-btn') as HTMLElement;
-        toggleReplyForm(btn.dataset.messageId!);
-      }
-      
-      if (target.closest('.submit-reply-btn')) {
-        const btn = target.closest('.submit-reply-btn') as HTMLElement;
-        await submitReply(btn.dataset.messageId!);
-      }
-      
-      if (target.closest('.cancel-reply-btn')) {
-        const btn = target.closest('.cancel-reply-btn') as HTMLElement;
-        toggleReplyForm(btn.dataset.messageId!, false);
-      }
+  // Event delegation for dynamic content
+  document.addEventListener('click', async (e) => {
+    const target = e.target as HTMLElement;
+    
+    // Message actions
+    if (target.closest('.edit-message-btn')) {
+      const btn = target.closest('.edit-message-btn') as HTMLElement;
+      toggleEditMessage(btn.dataset.messageId!);
+    }
+    
+    if (target.closest('.delete-message-btn')) {
+      const btn = target.closest('.delete-message-btn') as HTMLElement;
+      await deleteMessage(btn.dataset.messageId!);
+    }
+    
+    if (target.closest('.update-message-btn')) {
+      const btn = target.closest('.update-message-btn') as HTMLElement;
+      await updateMessage(btn.dataset.messageId!);
+    }
+    
+    if (target.closest('.cancel-edit-message-btn')) {
+      const btn = target.closest('.cancel-edit-message-btn') as HTMLElement;
+      toggleEditMessage(btn.dataset.messageId!, false);
+    }
+    
+    if (target.closest('.reply-btn')) {
+      const btn = target.closest('.reply-btn') as HTMLElement;
+      toggleReplyForm(btn.dataset.messageId!);
+    }
+    
+    if (target.closest('.submit-reply-btn')) {
+      const btn = target.closest('.submit-reply-btn') as HTMLElement;
+      await submitReply(btn.dataset.messageId!);
+    }
+    
+    if (target.closest('.cancel-reply-btn')) {
+      const btn = target.closest('.cancel-reply-btn') as HTMLElement;
+      toggleReplyForm(btn.dataset.messageId!, false);
+    }
 
-      // Reply actions
-      if (target.closest('.edit-reply-btn')) {
-        const btn = target.closest('.edit-reply-btn') as HTMLElement;
-        toggleEditReply(btn.dataset.replyId!);
-      }
-      
-      if (target.closest('.delete-reply-btn')) {
-        const btn = target.closest('.delete-reply-btn') as HTMLElement;
-        await deleteReply(btn.dataset.replyId!, btn.dataset.messageId!);
-      }
-      
-      if (target.closest('.update-reply-btn')) {
-        const btn = target.closest('.update-reply-btn') as HTMLElement;
-        await updateReply(btn.dataset.replyId!, btn.dataset.messageId!);
-      }
-      
-      if (target.closest('.cancel-edit-reply-btn')) {
-        const btn = target.closest('.cancel-edit-reply-btn') as HTMLElement;
-        toggleEditReply(btn.dataset.replyId!, false);
-      }
-    });
+    // Reply actions
+    if (target.closest('.edit-reply-btn')) {
+      const btn = target.closest('.edit-reply-btn') as HTMLElement;
+      toggleEditReply(btn.dataset.replyId!);
+    }
+    
+    if (target.closest('.delete-reply-btn')) {
+      const btn = target.closest('.delete-reply-btn') as HTMLElement;
+      await deleteReply(btn.dataset.replyId!, btn.dataset.messageId!);
+    }
+    
+    if (target.closest('.update-reply-btn')) {
+      const btn = target.closest('.update-reply-btn') as HTMLElement;
+      await updateReply(btn.dataset.replyId!, btn.dataset.messageId!);
+    }
+    
+    if (target.closest('.cancel-edit-reply-btn')) {
+      const btn = target.closest('.cancel-edit-reply-btn') as HTMLElement;
+      toggleEditReply(btn.dataset.replyId!, false);
+    }
+
+    // Show more/less replies
+    if (target.closest('.show-more-replies-btn')) {
+      const btn = target.closest('.show-more-replies-btn') as HTMLElement;
+      const messageId = btn.dataset.messageId!;
+      toggleShowMoreReplies(messageId, true);
+    }
+    
+    if (target.closest('.show-less-replies-btn')) {
+      const btn = target.closest('.show-less-replies-btn') as HTMLElement;
+      const messageId = btn.dataset.messageId!;
+      toggleShowMoreReplies(messageId, false);
+    }
   });
+});
+
+// Helper function for show more/less replies
+function toggleShowMoreReplies(messageId: string, show: boolean) {
+  const hiddenReplies = document.querySelector(`.replies-hidden[data-message-id="${messageId}"]`);
+  const showMoreBtn = document.querySelector(`.show-more-replies-btn[data-message-id="${messageId}"]`);
+  const showLessBtn = document.querySelector(`.show-less-replies-btn[data-message-id="${messageId}"]`);
+  
+  if (show) {
+    hiddenReplies?.classList.remove('hidden');
+    showMoreBtn?.classList.add('hidden');
+    showLessBtn?.classList.remove('hidden');
+  } else {
+    hiddenReplies?.classList.add('hidden');
+    showMoreBtn?.classList.remove('hidden');
+    showLessBtn?.classList.add('hidden');
+  }
+}
 
   // Helper functions
   function toggleEditMessage(messageId: string, show: boolean = true) {
@@ -678,207 +805,3 @@ const isLogin = Astro.cookies.get("user_session")?.value;
     }
   }
 </script>
-
-<style>
-  .action-btn, .action-btn-sm {
-    @apply p-1 text-[var(--color-secondary)] hover:text-[var(--color-primary)] hover:bg-[var(--color-background-light)] rounded-md transition-colors;
-  }
-
-  .action-btn-sm {
-    @apply p-0.5;
-  }
-
-  .btn-primary, .btn-primary-sm {
-    @apply px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-accent)] hover:text-black transition-all font-medium;
-  }
-
-  .btn-primary-sm {
-    @apply px-3 py-1 text-sm;
-  }
-
-  .btn-secondary, .btn-secondary-sm {
-    @apply px-4 py-2 bg-transparent border border-[var(--color-border)] text-[var(--color-text)] rounded-lg hover:bg-[var(--color-background-light)] transition-all;
-  }
-
-  .btn-secondary-sm {
-    @apply px-3 py-1 text-sm;
-  }
-
-  .terminal-card {
-    @apply bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg p-6 backdrop-blur-sm;
-  }
-
-  .glass {
-    @apply bg-[var(--color-background)] bg-opacity-50 border border-[var(--color-border)] backdrop-blur-sm;
-  }
-
-  /* Loading animation */
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  .animate-spin {
-    animation: spin 1s linear infinite;
-  }
-
-  /* Custom scrollbar for textareas */
-  textarea::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  textarea::-webkit-scrollbar-track {
-    background: var(--color-background);
-  }
-
-  textarea::-webkit-scrollbar-thumb {
-    background: var(--color-border);
-    border-radius: 3px;
-  }
-
-  textarea::-webkit-scrollbar-thumb:hover {
-    background: var(--color-secondary);
-  }
-
-  /* Focus states */
-  .action-btn:focus,
-  .action-btn-sm:focus,
-  .btn-primary:focus,
-  .btn-primary-sm:focus,
-  .btn-secondary:focus,
-  .btn-secondary-sm:focus {
-    @apply outline-none ring-2 ring-[var(--color-primary)] ring-opacity-50;
-  }
-
-  /* Hover effects for message cards */
-  .terminal-card:hover {
-    @apply border-[var(--color-primary)] border-opacity-30 shadow-lg;
-    transition: all 0.2s ease-in-out;
-  }
-
-  /* Reply nesting visual indicator */
-  .reply-form .border-l-2,
-  .mt-4.pl-6.border-l-2 {
-    border-left-color: var(--color-accent);
-    border-opacity: 0.3;
-  }
-
-  /* Message content styling */
-  .message-content p,
-  .reply-content p {
-    line-height: 1.6;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-  }
-
-  /* Avatar styling */
-  img[alt*="avatar"],
-  img[alt*="User"] {
-    object-fit: cover;
-    background-color: var(--color-background-light);
-  }
-
-  /* Empty state styling */
-  .text-center.py-8 {
-    @apply min-h-[200px] flex flex-col items-center justify-center;
-  }
-
-  /* Responsive adjustments */
-  @media (max-width: 640px) {
-    .terminal-card {
-      @apply p-4;
-    }
-    
-    .flex.items-start.space-x-3 {
-      @apply space-x-2;
-    }
-    
-    .w-10.h-10 {
-      @apply w-8 h-8;
-    }
-    
-    .text-4xl {
-      @apply text-3xl;
-    }
-    
-    .text-xl {
-      @apply text-lg;
-    }
-  }
-
-  /* Dark mode enhancements */
-  @media (prefers-color-scheme: dark) {
-    .glass {
-      @apply bg-opacity-30;
-    }
-    
-    .terminal-card {
-      @apply shadow-md;
-    }
-  }
-
-  /* Animation for new messages */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .terminal-card {
-    animation: fadeInUp 0.3s ease-out;
-  }
-
-  /* Button disabled states */
-  .btn-primary:disabled,
-  .btn-primary-sm:disabled,
-  .btn-secondary:disabled,
-  .btn-secondary-sm:disabled {
-    @apply opacity-50 cursor-not-allowed;
-  }
-
-  .btn-primary:disabled:hover,
-  .btn-primary-sm:disabled:hover {
-    @apply bg-[var(--color-primary)] text-white;
-  }
-
-  /* Form validation states */
-  textarea:invalid {
-    @apply border-red-500 focus:ring-red-500;
-  }
-
-  textarea:valid {
-    @apply border-green-500 focus:ring-green-500;
-  }
-
-  /* Character counter styling */
-  #char-count {
-    font-variant-numeric: tabular-nums;
-  }
-
-  /* Loading state improvements */
-  .animate-spin {
-    border-color: var(--color-primary);
-    border-top-color: transparent;
-  }
-
-  /* GitHub button specific styling */
-  #github-login-btn svg {
-    fill: currentColor;
-    flex-shrink: 0;
-  }
-
-  /* Smooth transitions for show/hide */
-  .hidden {
-    display: none;
-  }
-
-  .terminal-card > * {
-    transition: all 0.2s ease-in-out;
-  }
-</style>
