@@ -524,7 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const btn = target.closest('.show-more-btn') as HTMLElement;
       const messageId = btn.dataset.messageId!;
       const hiddenReplies = document.querySelector(`.terminal-replies[data-message-id="${messageId}"] .hidden-replies`);
-      const showMore = document.querySelector(`.terminal-replies[data-message-id="${messageId}"] .show-more-replies`);
+      const showMore : any = document.querySelector(`.terminal-replies[data-message-id="${messageId}"] .show-more-replies`);
       
       if (hiddenReplies && showMore) {
         hiddenReplies.classList.remove('hidden');

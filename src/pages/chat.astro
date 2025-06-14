@@ -1,21 +1,11 @@
 ---
+import AiChat from 'src/components/AiChat';
 import Layout from '../layouts/Layout.astro';
-import MessageInput from '../components/Chat/MessageInput.astro';
-import MessageList from '../components/Chat/MessageList.astro';
+
 ---
 
 <Layout title="Community Chat - Portfolio">
   <div class="max-w-4xl mx-auto px-4 py-12">
-    <div class="text-center mb-8">
-      <h1 class="text-4xl font-bold mb-4 text-[var(--color-primary)]">Community Chat</h1>
-      <p class="text-xl text-[var(--color-secondary)]">
-        Share your thoughts, ask questions, and connect with others!
-      </p>
-    </div>
-
-    <div class="chat-container">
-      <MessageInput client:load />
-      <MessageList client:load />
-    </div>
+    <AiChat/>
   </div>
 </Layout>
