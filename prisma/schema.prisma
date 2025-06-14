@@ -18,9 +18,10 @@ model User {
   
   guestbookEntries GuestbookEntry[]
   messages         Message[]
-  replies          Reply[]
+  replies          Reply[] @relation(name: "ReplyAuthor")
+  userReplies      Reply[] @relation(name: "ReplyUser")
   likes            Like[]
-  
+
   @@map("users")
 }
 
@@ -57,9 +58,11 @@ model Reply {
   updatedAt DateTime @updatedAt
   authorId  String
   messageId String
-  
-  author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  userId    String
+
+  author  User    @relation(fields: [authorId], references: [id], onDelete: Cascade, name: "ReplyAuthor")
   message Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, name: "ReplyUser")
   
   @@map("replies")
 }

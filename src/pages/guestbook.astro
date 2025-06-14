@@ -1,10 +1,10 @@
 ---
-
+ 
 import Layout from '../layouts/Layout.astro';
-
+ 
 const isLogin = Astro.cookies.get("user_session")?.value;
 ---
-
+ 
 <Layout title="Guestbook - Portfolio">
   <div class="max-w-4xl mx-auto px-4 py-12">
     <div class="text-center mb-12">
@@ -13,7 +13,7 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         Leave a message and let me know you were here!
       </p>
     </div>
-
+ 
     {/* Auth section */}
     <div id="auth-section" class="terminal-card mb-8">
       <div id="login-prompt" class="text-center">
@@ -28,7 +28,7 @@ const isLogin = Astro.cookies.get("user_session")?.value;
           Sign in with GitHub
         </button>
       </div>
-
+ 
       <div id="user-info" class="hidden">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-3">
@@ -46,7 +46,7 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         </div>
       </div>
     </div>
-
+ 
     {/* Message form */}
     <div id="message-form" class="terminal-card mb-8 hidden">
       <form id="guestbook-form">
@@ -75,7 +75,7 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         </button>
       </form>
     </div>
-
+ 
     {/* Messages */}
     <div class="space-y-4">
       <h2 class="text-2xl font-semibold text-[var(--color-accent)] mb-6">Messages</h2>
@@ -89,7 +89,7 @@ const isLogin = Astro.cookies.get("user_session")?.value;
     </div>
   </div>
 </Layout>
-
+ 
 <script>
   interface GuestbookEntry {
     id: string;
@@ -100,8 +100,20 @@ const isLogin = Astro.cookies.get("user_session")?.value;
       username: string;
       avatarUrl: string | null;
     };
+    replies?: Reply[];
   }
 
+  interface Reply {
+    id: string;
+    content: string;
+    createdAt: string;
+    author: {
+      id: string;
+      username: string;
+      avatarUrl: string | null;
+    };
+  }
+ 
   class GuestbookManager {
     user: {
       id: string;
@@ -109,17 +121,18 @@ const isLogin = Astro.cookies.get("user_session")?.value;
       avatarUrl: string | null;
     } | null = null;
     editingMessageId: string | null = null;
-
+    messages: GuestbookEntry[] = [];
+ 
     constructor() {
       this.init();
     }
-
+ 
     async init() {
       await this.checkAuthStatus();
       this.bindEvents();
       await this.loadMessages();
     }
-
+ 
     async checkAuthStatus() {
       try {
         const response = await fetch('/api/auth/status');
@@ -134,13 +147,13 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         this.showLoginPrompt();
       }
     }
-
+ 
     showLoginPrompt() {
       document.getElementById('login-prompt')?.classList.remove('hidden');
       document.getElementById('user-info')?.classList.add('hidden');
       document.getElementById('message-form')?.classList.add('hidden');
     }
-
+ 
     showUserInfo() {
       const loginPrompt = document.getElementById('login-prompt');
       loginPrompt?.classList.add('hidden');
@@ -148,7 +161,7 @@ const isLogin = Astro.cookies.get("user_session")?.value;
       userInfoEl?.classList.remove('hidden');
       const messageForm = document.getElementById('message-form');
       messageForm?.classList.remove('hidden');
-
+ 
       const userAvatar = document.getElementById('user-avatar') as HTMLImageElement;
       if (userAvatar && this.user) {
         userAvatar.src = this.user.avatarUrl || '/default-avatar.png';
@@ -158,13 +171,13 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         usernameElement.textContent = this.user.username;
       }
     }
-
+ 
     bindEvents() {
       // GitHub login
       document.getElementById('github-login-btn')?.addEventListener('click', (e: Event) => {
         window.location.href = '/api/auth/github';
       });
-
+ 
       // Sign out
       document.getElementById('signout-btn')?.addEventListener('click', async () => {
         try {
@@ -176,7 +189,7 @@ const isLogin = Astro.cookies.get("user_session")?.value;
           console.error('Error signing out:', error);
         }
       });
-
+ 
       // Character counter
       const messageTextarea = document.getElementById('message') as HTMLTextAreaElement;
       const charCount = document.getElementById('char-count');
@@ -185,28 +198,28 @@ const isLogin = Astro.cookies.get("user_session")?.value;
           charCount.textContent = messageTextarea.value.length.toString();
         }
       });
-
+ 
       // Form submission
       document.getElementById('guestbook-form')?.addEventListener('submit', async (e: Event) => {
         e.preventDefault();
         await this.submitMessage(e);
       });
     }
-
+ 
     async submitMessage(e: Event) {
       const form = e.target as HTMLFormElement;
       const formData = new FormData(form);
       const message = formData.get('message')?.toString();
-
+ 
       if (!message || !message.trim()) return;
-
+ 
       try {
         const response = await fetch('/api/guestbook', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ message: message.trim() })
         });
-
+ 
         if (response.ok) {
           form.reset();
           const charCount = document.getElementById('char-count');
@@ -223,12 +236,12 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         alert('Failed to post message');
       }
     }
-
+ 
     async loadMessages() {
       try {
         const response = await fetch('/api/guestbook');
-        const messages: GuestbookEntry[] = await response.json();
-        this.renderMessages(messages);
+        this.messages = await response.json();
+        this.renderMessages(this.messages);
       } catch (error) {
         console.error('Error loading messages:', error);
         const container = document.getElementById('messages-container');
@@ -241,12 +254,12 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         }
       }
     }
-
+ 
     renderMessages(messages: GuestbookEntry[]) {
       const container = document.getElementById('messages-container');
-
+ 
       if (!container) return;
-
+ 
       if (messages.length === 0) {
         container.innerHTML = `
           <div class="text-center py-8">
@@ -256,11 +269,42 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         `;
         return;
       }
-
+ 
       container.innerHTML = messages
         .map((message) => {
           let avatarUrl = message.user?.avatarUrl;
           let username = message.user ? message.user.username : "Unknown User";
+          
+          const repliesHtml = message.replies && message.replies.length > 0 
+            ? `
+              <div class="mt-4 pl-6 border-l-2 border-[var(--color-border)]">
+                <div class="space-y-3">
+                  ${message.replies.map(reply => `
+                    <div class="flex items-start space-x-3">
+                      <img
+                        src="${reply.author.avatarUrl || "/default-avatar.png"}"
+                        alt="${reply.author.username}"
+                        class="w-8 h-8 rounded-full flex-shrink-0"
+                      />
+                      <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-1">
+                          <span class="font-semibold text-sm text-[var(--color-accent)]">
+                            ${reply.author.username}
+                          </span>
+                          <span class="text-xs text-[var(--color-secondary)]">
+                            ${new Date(reply.createdAt).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <p class="text-sm text-[var(--color-text)] whitespace-pre-wrap">
+                          ${this.escapeHtml(reply.content)}
+                        </p>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            ` 
+            : '';
           
           return `
           <div class="terminal-card">
@@ -276,11 +320,11 @@ const isLogin = Astro.cookies.get("user_session")?.value;
                     <span class="font-semibold text-[var(--color-accent)]">
                       ${message.user ? message.user.username : "Unknown User"}
                     </span>
-                    <span class="text-sm text-[var(--color-secondary)]">
+                    <span class="text-sm text-[var(--color-secondary)] ml-2">
                       ${new Date(message.createdAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <div>
+                  <div class="flex space-x-2">
                     ${guestbookManager.user?.username === username ?  `
                       <button
                         class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors delete-btn"
@@ -294,6 +338,8 @@ const isLogin = Astro.cookies.get("user_session")?.value;
                       >
                         Edit
                       </button>
+                    ` : ""}
+                    ${guestbookManager.user ? `
                       <button
                         class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors reply-btn"
                         data-message-id="${message.id}"
@@ -312,35 +358,56 @@ const isLogin = Astro.cookies.get("user_session")?.value;
                   rows="4"
                   maxlength="500"
                 >${message.message}</textarea>
-                <button
-                  class="px-6 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-accent)] hover:text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed hidden update-btn"
-                  data-message-id="${message.id}"
-                >
-                  Update Message
-                </button>
+                <div class="hidden edit-actions" data-message-id="${message.id}">
+                  <button
+                    class="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-accent)] hover:text-black transition-all mr-2 update-btn"
+                    data-message-id="${message.id}"
+                  >
+                    Update Message
+                  </button>
+                  <button
+                    class="px-4 py-2 glass rounded hover:bg-[var(--color-border)] transition-colors cancel-edit-btn"
+                    data-message-id="${message.id}"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                
+                ${repliesHtml}
+                
+                <div class="reply-section hidden mt-4" data-message-id="${message.id}">
+                  <div class="pl-6">
+                    <textarea
+                      class="w-full px-3 py-2 glass rounded-lg text-[var(--color-text)] placeholder-[var(--color-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] reply-textarea"
+                      data-message-id="${message.id}"
+                      rows="3"
+                      maxlength="500"
+                      placeholder="Write your reply..."
+                    ></textarea>
+                    <div class="flex justify-end space-x-2 mt-2">
+                      <button
+                        class="px-4 py-2 glass rounded hover:bg-[var(--color-border)] transition-colors cancel-reply-btn"
+                        data-message-id="${message.id}"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        class="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-accent)] hover:text-black transition-all reply-submit-btn"
+                        data-message-id="${message.id}"
+                      >
+                        Submit Reply
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="reply-section hidden" data-message-id="${message.id}">
-              <textarea
-                class="w-full px-3 py-2 glass rounded-lg text-[var(--color-text)] placeholder-[var(--color-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] reply-textarea"
-                data-message-id="${message.id}"
-                rows="4"
-                maxlength="500"
-                placeholder="Write your reply..."
-              ></textarea>
-              <button
-                class="px-6 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-accent)] hover:text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed reply-submit-btn"
-                data-message-id="${message.id}"
-              >
-                Submit Reply
-              </button>
             </div>
           </div>
         `;
         })
         .join("");
     }
-
+ 
     getUserAvatar(message: GuestbookEntry): string {
       let avatarUrl = message.user?.avatarUrl;
       let username = message.user ? message.user.username ?? "Unknown User" : "Unknown User";
@@ -352,77 +419,116 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         />
       `;
     }
-
+ 
     escapeHtml(text: string) {
       const div = document.createElement("div");
       div.textContent = text;
       return div.innerHTML;
     }
   }
-
+ 
   let guestbookManager: GuestbookManager;
-
+ 
   document.addEventListener('DOMContentLoaded', () => {
     guestbookManager = new GuestbookManager();
-
+ 
     document.addEventListener('click', async (e) => {
       const target = e.target as HTMLElement;
+      
       if (target && target.classList.contains('delete-btn')) {
         const messageId = target.dataset.messageId;
-        if (messageId) {
+        if (messageId && confirm('Are you sure you want to delete this message?')) {
           await deleteMessage(messageId);
         }
       }
-
+ 
       if (target && target.classList.contains('edit-btn')) {
         const messageId = target.dataset.messageId;
         if (messageId) {
           const messageText = document.querySelector(`.message-text[data-message-id="${messageId}"]`);
           const editTextarea = document.querySelector(`.edit-textarea[data-message-id="${messageId}"]`);
-          const updateButton = document.querySelector(`.update-btn[data-message-id="${messageId}"]`);
-
-          if (messageText && editTextarea && updateButton) {
+          const editActions = document.querySelector(`.edit-actions[data-message-id="${messageId}"]`);
+ 
+          if (messageText && editTextarea && editActions) {
             messageText.classList.add('hidden');
             editTextarea.classList.remove('hidden');
-            updateButton.classList.remove('hidden');
+            editActions.classList.remove('hidden');
           }
         }
       }
 
+      if (target && target.classList.contains('cancel-edit-btn')) {
+        const messageId = target.dataset.messageId;
+        if (messageId) {
+          const messageText = document.querySelector(`.message-text[data-message-id="${messageId}"]`);
+          const editTextarea = document.querySelector(`.edit-textarea[data-message-id="${messageId}"]`) as HTMLTextAreaElement;
+          const editActions = document.querySelector(`.edit-actions[data-message-id="${messageId}"]`);
+ 
+          if (messageText && editTextarea && editActions) {
+            messageText.classList.remove('hidden');
+            editTextarea.classList.add('hidden');
+            editActions.classList.add('hidden');
+            // Reset textarea value
+            const originalMessage = messageText.textContent || '';
+            editTextarea.value = originalMessage;
+          }
+        }
+      }
+ 
       if (target && target.classList.contains('update-btn')) {
         const messageId = target.dataset.messageId;
         if (messageId) {
           const editTextarea = document.querySelector(`.edit-textarea[data-message-id="${messageId}"]`) as HTMLTextAreaElement;
           if (editTextarea) {
-            const newMessage = editTextarea.value;
-            await updateMessage(messageId, newMessage);
+            const newMessage = editTextarea.value.trim();
+            if (newMessage) {
+              await updateMessage(messageId, newMessage);
+            }
           }
         }
       }
-
+ 
       if (target && target.classList.contains('reply-btn')) {
         const messageId = target.dataset.messageId;
         if (messageId) {
           const replySection = document.querySelector(`.reply-section[data-message-id="${messageId}"]`);
           if (replySection) {
             replySection.classList.toggle('hidden');
+            if (!replySection.classList.contains('hidden')) {
+              const textarea = replySection.querySelector('.reply-textarea') as HTMLTextAreaElement;
+              textarea?.focus();
+            }
           }
         }
       }
 
+      if (target && target.classList.contains('cancel-reply-btn')) {
+        const messageId = target.dataset.messageId;
+        if (messageId) {
+          const replySection = document.querySelector(`.reply-section[data-message-id="${messageId}"]`);
+          const replyTextarea = document.querySelector(`.reply-textarea[data-message-id="${messageId}"]`) as HTMLTextAreaElement;
+          if (replySection && replyTextarea) {
+            replySection.classList.add('hidden');
+            replyTextarea.value = '';
+          }
+        }
+      }
+ 
       if (target && target.classList.contains('reply-submit-btn')) {
         const messageId = target.dataset.messageId;
         if (messageId) {
           const replyTextarea = document.querySelector(`.reply-textarea[data-message-id="${messageId}"]`) as HTMLTextAreaElement;
           if (replyTextarea) {
-            const replyContent = replyTextarea.value;
-            await submitReply(messageId, replyContent);
+            const replyContent = replyTextarea.value.trim();
+            if (replyContent) {
+              await submitReply(messageId, replyContent);
+            }
           }
         }
       }
     });
   });
-
+ 
   async function deleteMessage(messageId: string) {
     try {
       const response = await fetch('/api/guestbook', {
@@ -432,9 +538,8 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         },
         body: JSON.stringify({ id: messageId })
       });
-
+ 
       if (response.ok) {
-        // Refresh messages after successful deletion
         await guestbookManager.loadMessages();
       } else {
         const error = await response.json();
@@ -445,7 +550,7 @@ const isLogin = Astro.cookies.get("user_session")?.value;
       alert('Failed to delete message');
     }
   }
-
+ 
   async function updateMessage(messageId: string, newMessage: string) {
     try {
       const response = await fetch('/api/guestbook', {
@@ -455,9 +560,8 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         },
         body: JSON.stringify({ id: messageId, message: newMessage })
       });
-
+ 
       if (response.ok) {
-        // Refresh messages after successful update
         await guestbookManager.loadMessages();
       } else {
         const error = await response.json();
@@ -468,7 +572,7 @@ const isLogin = Astro.cookies.get("user_session")?.value;
       alert('Failed to update message');
     }
   }
-
+ 
   async function submitReply(messageId: string, content: string) {
     try {
       const response = await fetch('/api/replies', {
@@ -476,21 +580,25 @@ const isLogin = Astro.cookies.get("user_session")?.value;
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ messageId: messageId, content: content })
+        body: JSON.stringify({ 
+          messageId: messageId, 
+          content: content 
+        })
       });
-
+ 
       if (response.ok) {
         // Clear the textarea and hide the reply section
         const replyTextarea = document.querySelector(`.reply-textarea[data-message-id="${messageId}"]`) as HTMLTextAreaElement;
+        const replySection = document.querySelector(`.reply-section[data-message-id="${messageId}"]`);
+        
         if (replyTextarea) {
           replyTextarea.value = "";
-          const replySection = document.querySelector(`.reply-section[data-message-id="${messageId}"]`);
-          if (replySection) {
-            replySection.classList.add('hidden');
-          }
         }
-
-        // Refresh messages after successful reply
+        if (replySection) {
+          replySection.classList.add('hidden');
+        }
+ 
+        // Refresh messages to show the new reply
         await guestbookManager.loadMessages();
       } else {
         const error = await response.json();
