@@ -64,28 +64,26 @@ try {
       </div>
 
       {/* Replies Section */}
-      {message.replies.length > 0 && (
-        <div class="replies ml-8 mt-3 border-l-2 border-gray-200 dark:border-gray-700 pl-4 space-y-2">
-          {message.replies.map((reply: any) => (
-            <div class="reply-card bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
-              <div class="flex items-center mb-1">
-                <img
-                  src={reply.author.avatarUrl || "/default-avatar.png"}
-                  alt={reply.author.username}
-                  class="w-6 h-6 rounded-full mr-2"
-                />
-                <span class="font-semibold text-gray-800 dark:text-gray-200 text-sm">
-                  {reply.author.username}
-                </span>
-                <span class="text-gray-500 dark:text-gray-400 text-xs ml-auto">
-                  {new Date(reply.createdAt).toLocaleString()}
-                </span>
-              </div>
-              <p class="text-gray-600 dark:text-gray-300 text-sm">{reply.content}</p>
+      <div class="replies ml-8 mt-3 border-l-2 border-gray-200 dark:border-gray-700 pl-4 space-y-2">
+        {message.replies.map((reply: any) => (
+          <div class="reply-card bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
+            <div class="flex items-center mb-1">
+              <img
+                src={reply.author.avatarUrl || "/default-avatar.png"}
+                alt={reply.author.username}
+                class="w-6 h-6 rounded-full mr-2"
+              />
+              <span class="font-semibold text-gray-800 dark:text-gray-200 text-sm">
+                {reply.author.username}
+              </span>
+              <span class="text-gray-500 dark:text-gray-400 text-xs ml-auto">
+                {new Date(reply.createdAt).toLocaleString()}
+              </span>
             </div>
-          ))}
-        </div>
-      )}
+            <p class="text-gray-600 dark:text-gray-300 text-sm">{reply.content}</p>
+          </div>
+        ))}
+      </div>
 
       {isLoggedIn && (
         <div class="mt-3">

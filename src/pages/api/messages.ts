@@ -47,17 +47,13 @@ export const GET: APIRoute = async ({ request }) => {
 
     return new Response(JSON.stringify(messages), {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error("Error fetching messages:", error);
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   }
 };
@@ -68,9 +64,7 @@ export const POST: APIRoute = async ({ request }) => {
   if (!session || !session.user) {
     return new Response(JSON.stringify({ message: "Unauthorized" }), {
       status: 401,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   }
 
@@ -80,32 +74,46 @@ export const POST: APIRoute = async ({ request }) => {
     if (!content || typeof content !== "string" || content.trim() === "") {
       return new Response(JSON.stringify({ message: "Content is required" }), {
         status: 400,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
     }
 
     const newMessage = await prisma.message.create({
       data: {
         content: content.trim(),
-        authorId: session.user.id,
+        authorId: session.user.id as string,
+      },
+      include: {
+        author: {
+          select: {
+            id: true,
+            username: true,
+            avatarUrl: true,
+          },
+        },
+        replies: {
+          include: {
+            author: {
+              select: {
+                id: true,
+                username: true,
+                avatarUrl: true,
+              },
+            },
+          },
+        },
       },
     });
 
     return new Response(JSON.stringify(newMessage), {
       status: 201,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error("Error creating message:", error);
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   }
 };
@@ -116,9 +124,7 @@ export const PUT: APIRoute = async ({ request }) => {
   if (!session || !session.user) {
     return new Response(JSON.stringify({ message: "Unauthorized" }), {
       status: 401,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   }
 
@@ -130,9 +136,7 @@ export const PUT: APIRoute = async ({ request }) => {
         JSON.stringify({ message: "Message ID is required" }),
         {
           status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
     }
@@ -140,9 +144,7 @@ export const PUT: APIRoute = async ({ request }) => {
     if (!content || typeof content !== "string" || content.trim() === "") {
       return new Response(JSON.stringify({ message: "Content is required" }), {
         status: 400,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
     }
 
@@ -153,9 +155,7 @@ export const PUT: APIRoute = async ({ request }) => {
     if (!existingMessage) {
       return new Response(JSON.stringify({ message: "Message not found" }), {
         status: 404,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
     }
 
@@ -166,9 +166,7 @@ export const PUT: APIRoute = async ({ request }) => {
         }),
         {
           status: 403,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
     }
@@ -180,17 +178,13 @@ export const PUT: APIRoute = async ({ request }) => {
 
     return new Response(JSON.stringify(updatedMessage), {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     console.error("Error updating message:", error);
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   }
 };
@@ -201,9 +195,7 @@ export const DELETE: APIRoute = async ({ request }) => {
   if (!session || !session.user) {
     return new Response(JSON.stringify({ message: "Unauthorized" }), {
       status: 401,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   }
 
@@ -215,9 +207,7 @@ export const DELETE: APIRoute = async ({ request }) => {
         JSON.stringify({ message: "Message ID is required" }),
         {
           status: 400,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
     }
@@ -229,9 +219,7 @@ export const DELETE: APIRoute = async ({ request }) => {
     if (!existingMessage) {
       return new Response(JSON.stringify({ message: "Message not found" }), {
         status: 404,
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
     }
 
@@ -242,9 +230,7 @@ export const DELETE: APIRoute = async ({ request }) => {
         }),
         {
           status: 403,
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
         }
       );
     }
@@ -260,9 +246,7 @@ export const DELETE: APIRoute = async ({ request }) => {
     console.error("Error deleting message:", error);
     return new Response(JSON.stringify({ message: "Internal Server Error" }), {
       status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     });
   }
 };
