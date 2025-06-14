@@ -5,6 +5,7 @@ const prisma = new PrismaClient();
 
 export const GET: APIRoute = async () => {
   try {
+    // Fetch guestbook entries
     const entries = await prisma.guestbookEntry.findMany({
       include: {
         user: {

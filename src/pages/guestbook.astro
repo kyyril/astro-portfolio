@@ -287,11 +287,29 @@ import Layout from '../layouts/Layout.astro';
                     >
                       Delete
                     </button>
+                    <button 
+                      class="px-2 py-1 text-sm glass rounded hover:bg-[var(--color-border)] transition-colors edit-btn"
+                      data-message-id="${message.id}"
+                    >
+                      Edit
+                    </button>
                   </div>
                 </div>
-                <p class="text-[var(--color-text)] whitespace-pre-wrap">
+                <p class="text-[var(--color-text)] whitespace-pre-wrap message-text" data-message-id="${message.id}">
                   ${this.escapeHtml(message.message)}
                 </p>
+                <textarea
+                  class="w-full px-3 py-2 glass rounded-lg text-[var(--color-text)] placeholder-[var(--color-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] hidden edit-textarea"
+                  data-message-id="${message.id}"
+                  rows="4"
+                  maxlength="500"
+                >${message.message}</textarea>
+                <button
+                  class="px-6 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-[var(--color-accent)] hover:text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed hidden update-btn"
+                  data-message-id="${message.id}"
+                >
+                  Update Message
+                </button>
               </div>
             </div>
           </div>
@@ -332,6 +350,32 @@ import Layout from '../layouts/Layout.astro';
           await deleteMessage(messageId);
         }
       }
+
+      if (target && target.classList.contains('edit-btn')) {
+        const messageId = target.dataset.messageId;
+        if (messageId) {
+          const messageText = document.querySelector(`.message-text[data-message-id="${messageId}"]`);
+          const editTextarea = document.querySelector(`.edit-textarea[data-message-id="${messageId}"]`);
+          const updateButton = document.querySelector(`.update-btn[data-message-id="${messageId}"]`);
+
+          if (messageText && editTextarea && updateButton) {
+            messageText.classList.add('hidden');
+            editTextarea.classList.remove('hidden');
+            updateButton.classList.remove('hidden');
+          }
+        }
+      }
+
+      if (target && target.classList.contains('update-btn')) {
+        const messageId = target.dataset.messageId;
+        if (messageId) {
+          const editTextarea = document.querySelector(`.edit-textarea[data-message-id="${messageId}"]`) as HTMLTextAreaElement;
+          if (editTextarea) {
+            const newMessage = editTextarea.value;
+            await updateMessage(messageId, newMessage);
+          }
+        }
+      }
     });
   });
 
@@ -355,6 +399,29 @@ import Layout from '../layouts/Layout.astro';
     } catch (error) {
       console.error('Error deleting message:', error);
       alert('Failed to delete message');
+    }
+  }
+
+  async function updateMessage(messageId: string, newMessage: string) {
+    try {
+      const response = await fetch('/api/guestbook', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: messageId, message: newMessage })
+      });
+
+      if (response.ok) {
+        // Refresh messages after successful update
+        await guestbookManager.loadMessages();
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Failed to update message');
+      }
+    } catch (error) {
+      console.error('Error updating message:', error);
+      alert('Failed to update message');
     }
   }
 </script>
