@@ -1,5 +1,8 @@
 ---
+
 import Layout from '../layouts/Layout.astro';
+
+const isLogin = Astro.cookies.get("user_session")?.value;
 ---
 
 <Layout title="Guestbook - Portfolio">

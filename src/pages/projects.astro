@@ -126,7 +126,7 @@ import { projects } from '../data/portfolio';
       // Add active class to clicked button
       btn.classList.add('active');
 
-      const filter = btn.getAttribute('data-filter');
+      const filter: any = btn.getAttribute('data-filter');
 
       projectCards.forEach(card => {
         if (filter === 'all' || card.classList.contains(filter)) {
