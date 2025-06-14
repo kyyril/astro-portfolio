@@ -6,12 +6,12 @@ export const themes: Record<string, ThemeConfig> = {
     displayName: "Adwaita Dark",
     colors: {
       primary: "#3584e4",
-      secondary: "#99c1f1",
-      accent: "#f6d32d",
-      background: "#242424",
-      surface: "#303030",
-      text: "#ffffff",
-      border: "#404040",
+      secondary: "#6c71c4",
+      accent: "#f5c211",
+      background: "#121212", // darker
+      surface: "#202020",
+      text: "#ffffff", // brighter
+      border: "#3a3a3a",
     },
   },
   adwaitaLight: {
@@ -19,12 +19,25 @@ export const themes: Record<string, ThemeConfig> = {
     displayName: "Adwaita Light",
     colors: {
       primary: "#3584e4",
-      secondary: "#99c1f1",
-      accent: "#f6d32d",
-      background: "#ffffff",
-      surface: "#f6f6f6",
-      text: "#000000",
-      border: "#e0e0e0",
+      secondary: "#6c71c4",
+      accent: "#f5c211",
+      background: "#f5f5f5", // slightly darker
+      surface: "#eaeaea",
+      text: "#1e1e1e", // darker for contrast
+      border: "#c0c0c0",
+    },
+  },
+  dracula: {
+    name: "dracula",
+    displayName: "Dracula",
+    colors: {
+      primary: "#bd93f9",
+      secondary: "#ff79c6",
+      accent: "#50fa7b",
+      background: "#16171f", // darker
+      surface: "#222430",
+      text: "#ffffff",
+      border: "#5a5f89",
     },
   },
   arc: {
@@ -32,25 +45,12 @@ export const themes: Record<string, ThemeConfig> = {
     displayName: "Arc Dark",
     colors: {
       primary: "#5294e2",
-      secondary: "#7c818c",
+      secondary: "#cccccc",
       accent: "#5294e2",
-      background: "#2f343f",
-      surface: "#383c4a",
-      text: "#d3dae3",
-      border: "#414652",
-    },
-  },
-  arcLight: {
-    name: "arcLight",
-    displayName: "Arc Light",
-    colors: {
-      primary: "#5294e2",
-      secondary: "#7c818c",
-      accent: "#5294e2",
-      background: "#f8f8f8",
-      surface: "#ffffff",
-      text: "#4a4a4a",
-      border: "#dcdcdc",
+      background: "#1e222b", // darker
+      surface: "#2a2f3a",
+      text: "#e4e9ee",
+      border: "#3c404b",
     },
   },
   catppuccin: {
@@ -58,25 +58,51 @@ export const themes: Record<string, ThemeConfig> = {
     displayName: "Catppuccin Mocha",
     colors: {
       primary: "#89b4fa",
-      secondary: "#cba6f7",
+      secondary: "#f5c2e7",
       accent: "#f9e2af",
-      background: "#1e1e2e",
-      surface: "#313244",
-      text: "#cdd6f4",
-      border: "#45475a",
+      background: "#13131f", // darker
+      surface: "#2a2a3a",
+      text: "#e3eafc",
+      border: "#3e4052",
     },
   },
   tokyo: {
     name: "tokyo",
     displayName: "Tokyo Night Darker",
     colors: {
-      primary: "#6a93e7",
-      secondary: "#a080e0",
-      accent: "#d09a58",
-      background: "#10111a",
-      surface: "#151825",
-      text: "#b0bada",
-      border: "#202430",
+      primary: "#7aa2f7",
+      secondary: "#bb9af7",
+      accent: "#e0af68",
+      background: "#0a0a13", // darker
+      surface: "#16161e",
+      text: "#d0dcff", // brighter
+      border: "#2a2e3a",
+    },
+  },
+  unitedUbuntu: {
+    name: "unitedUbuntu",
+    displayName: "United Ubuntu",
+    colors: {
+      primary: "#e95420",
+      secondary: "#7faf2f",
+      accent: "#ffcc00",
+      background: "#11000a", // darker
+      surface: "#230014",
+      text: "#fdf7f6",
+      border: "#4c0f0f",
+    },
+  },
+  solarizedDark: {
+    name: "solarizedDark",
+    displayName: "Solarized Dark",
+    colors: {
+      primary: "#268bd2",
+      secondary: "#2aa198",
+      accent: "#b58900",
+      background: "#001821", // darker
+      surface: "#042b35",
+      text: "#9fb3b7", // brighter
+      border: "#4d6a72",
     },
   },
 };

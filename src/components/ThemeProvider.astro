@@ -77,11 +77,16 @@ import { themes, defaultTheme } from '../config/themes';
 
   .terminal-card {
     background: rgba(var(--color-surface-rgb), 0.8);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(5px);
     border-radius: 8px;
     padding: 1.5rem;
     border: none;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.265);
+  }
+
+  .darker-card {
+    background-color: rgba(0, 0, 0, 0.155);
+    backdrop-filter: blur(15px);
   }
 
   /* Custom scrollbar */
