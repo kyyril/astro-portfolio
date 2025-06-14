@@ -32,8 +32,8 @@ export const themes: Record<string, ThemeConfig> = {
     displayName: "Dracula",
     colors: {
       primary: "#bd93f9",
-      secondary: "#ff79c6",
-      accent: "#50fa7b",
+      secondary: "#ff79d1",
+      accent: "#50faab",
       background: "#16171f", // darker
       surface: "#222430",
       text: "#ffffff",
