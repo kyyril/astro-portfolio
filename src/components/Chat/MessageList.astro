@@ -84,25 +84,24 @@ try {
           </div>
         ))}
       </div>
-
       {isLoggedIn && (
-        <div class="mt-3">
-          <input
-            type="text"
-            placeholder="Reply to this message..."
-            class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
-            data-message-id={message.id}
-            data-action="reply-input"
-          />
-          <button
-            class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm"
-            data-message-id={message.id}
-            data-action="send-reply"
-          >
-            Send Reply
-          </button>
-        </div>
-      )}
+          <div class="mt-3">
+            <input
+              type="text"
+              placeholder="Reply to this message..."
+              class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white text-sm"
+              data-message-id={message.id}
+              data-action="reply-input"
+            />
+            <button
+              class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-sm"
+              data-message-id={message.id}
+              data-action="send-reply"
+            >
+              Send Reply
+            </button>
+          </div>
+        )}
 
       {/* Edit/Delete Buttons */}
       {isLoggedIn && session?.user && message.author.id === session.user.id && (
@@ -221,7 +220,7 @@ try {
               }
             } catch (error) {
               console.error("Error sending reply:", error);
-              alert("An error occurred while liking the message.");
+              alert("An error occurred while sending the reply.");
             }
           }
         }
