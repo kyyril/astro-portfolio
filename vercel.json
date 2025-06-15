@@ -1,0 +1,8 @@
+{
+  "routes": [{ "src": "/(.*)", "dest": "/_worker.js" }],
+  "headers": {
+    "/**": {
+      "Access-Control-Allow-Origin": "*"
+    }
+  }
+}
