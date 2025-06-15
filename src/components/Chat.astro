@@ -49,7 +49,7 @@
       <header class="flex items-center p-4 border-b border-border">
         <button id="avatar-btn" class="flex-shrink-0">
           <img 
-            src="/assets/katou.gif" 
+            src="https://i.pinimg.com/736x/f7/19/5c/f7195c01f50c2d9c95b4a9fafe92fa88.jpg" 
             alt="Katou" 
             class="w-12 h-12 rounded-full border-2 border-primary hover:opacity-80 transition-opacity cursor-pointer"
           />
@@ -108,7 +108,7 @@
 <!-- Avatar Modal -->
 <div id="avatar-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
   <div class="glass p-4 rounded-xl max-w-md">
-    <img src="/assets/katou.gif" alt="Katou" class="w-full rounded-lg" />
+    <img src="https://i.pinimg.com/736x/f7/19/5c/f7195c01f50c2d9c95b4a9fafe92fa88.jpg" alt="Katou" class="w-full rounded-lg" />
     <button id="close-modal" class="mt-4 w-full bg-secondary hover:bg-slate-600 text-white py-2 rounded-lg transition-colors">
       Close
     </button>
@@ -138,7 +138,7 @@
   import type { Message, ChatHistory, GeminiMessage } from '../types/chat';
 
   class ChatApp {
-    private geminiService: GeminiService;
+    private geminiService!: GeminiService;
     private userId: string = '';
     private messages: Message[] = [];
     private aiHistory: GeminiMessage[] = [];
@@ -206,7 +206,7 @@
 
       // Message input
       const messageInput = document.getElementById('message-input') as HTMLInputElement;
-      const sendBtn = document.getElementById('send-btn');
+      const sendBtn = document.getElementById('send-btn') as HTMLButtonElement;
       
       messageInput?.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && !this.isLoading) {
@@ -286,22 +286,106 @@
         this.messages.push(aiMessage);
         this.renderMessages();
 
-        // Stream response
-        let responseText = '';
-        const stream = this.geminiService.streamGenerateContent(this.aiHistory);
+        console.log("Sending message to Gemini API...");
         
-        for await (const chunk of stream) {
-          responseText += chunk;
-          // Update the last message
-          this.messages[this.messages.length - 1].text = responseText;
+        try {
+          // Use the non-streaming approach first to handle the array response
+          const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${import.meta.env.PUBLIC_GEMINI_API_KEY}`;
+          
+          const requestBody = {
+            contents: this.aiHistory.map((msg) => ({
+              role: msg.role === "model" ? "model" : "user",
+              parts: msg.parts,
+            })),
+            generationConfig: {
+              temperature: 1,
+              topK: 40,
+              topP: 0.95,
+              maxOutputTokens: 8192,
+            },
+          };
+          
+          console.log("Sending request to Gemini API");
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestBody),
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          
+          const responseText = await response.text();
+          console.log("Received response from Gemini API:", responseText);
+          
+          let fullText = "";
+          
+          // Check if the response is an array
+          if (responseText.trim().startsWith("[")) {
+            const dataArray = JSON.parse(responseText);
+            
+            // Combine all text parts from the array
+            for (const data of dataArray) {
+              if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                fullText += data.candidates[0].content.parts[0].text;
+              }
+            }
+            
+            console.log("Combined full text:", fullText);
+          } else {
+            // Handle single response object
+            try {
+              const data = JSON.parse(responseText);
+              if (data.candidates && data.candidates[0]?.content?.parts[0]?.text) {
+                fullText = data.candidates[0].content.parts[0].text;
+              }
+            } catch (e) {
+              console.error("Error parsing JSON response:", e);
+              fullText = "Sorry, I encountered an error processing the response.";
+            }
+          }
+          
+          // Update the last message with the full text
+          this.messages[this.messages.length - 1].text = fullText;
           this.renderMessages();
+          
+          // Add to AI history
+          this.aiHistory.push({
+            role: 'model',
+            parts: [{ text: fullText }]
+          });
+          
+        } catch (apiError) {
+          console.error("API Error:", apiError);
+          
+          // Fall back to streaming approach
+          let responseText = '';
+          try {
+            const stream = this.geminiService.streamGenerateContent(this.aiHistory);
+            
+            for await (const chunk of stream) {
+              console.log("Received chunk:", chunk);
+              responseText += chunk;
+              // Update the last message
+              this.messages[this.messages.length - 1].text = responseText;
+              this.renderMessages();
+            }
+            
+            // Add to AI history
+            this.aiHistory.push({
+              role: 'model',
+              parts: [{ text: responseText }]
+            });
+            
+          } catch (streamError) {
+            console.error("Stream error:", streamError);
+            this.messages[this.messages.length - 1].text = "Sorry, I encountered an error. Please try again.";
+            this.renderMessages();
+          }
         }
-
-        // Add to AI history
-        this.aiHistory.push({
-          role: 'model',
-          parts: [{ text: responseText }]
-        });
 
         // Save chat
         this.saveCurrentChat();
@@ -321,7 +405,7 @@
 
     private setLoading(loading: boolean) {
       this.isLoading = loading;
-      const sendBtn = document.getElementById('send-btn');
+      const sendBtn = document.getElementById('send-btn') as HTMLButtonElement;
       const messageInput = document.getElementById('message-input') as HTMLInputElement;
       const sendIcon = document.getElementById('send-icon');
       const loadingIcon = document.getElementById('loading-icon');
@@ -506,7 +590,7 @@
 
     private updateUI() {
       const messageInput = document.getElementById('message-input') as HTMLInputElement;
-      const sendBtn = document.getElementById('send-btn');
+      const sendBtn = document.getElementById('send-btn') as HTMLButtonElement;
       
       if (messageInput && sendBtn) {
         messageInput.disabled = false;
