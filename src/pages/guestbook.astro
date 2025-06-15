@@ -113,124 +113,124 @@ import  '../assets/guestbook.css'
     };
   }
 
-  class GuestbookManager {
-    user: {
-      id: string;
-      username: string;
-      avatarUrl: string | null;
-    } | null = null;
-    messages: GuestbookEntry[] = [];
+ class GuestbookManager {
+  user: {
+    id: string;
+    username: string;
+    avatarUrl: string | null;
+  } | null = null;
+  messages: GuestbookEntry[] = [];
 
-    constructor() {
-      this.init();
-    }
+  constructor() {
+    this.init();
+  }
 
-    async init() {
-      await this.checkAuthStatus();
-      this.bindEvents();
-      await this.loadMessages();
-    }
+  async init() {
+    await this.checkAuthStatus();
+    this.bindEvents();
+    await this.loadMessages();
+  }
 
-    async checkAuthStatus() {
-      try {
-        const response = await fetch('/api/auth/status');
-        if (response.ok) {
-          this.user = await response.json();
-          this.showUserInfo();
-        } else {
-          this.showLoginPrompt();
-        }
-      } catch (error) {
-        console.error('Error checking auth status:', error);
+  async checkAuthStatus() {
+    try {
+      const response = await fetch('/api/auth/status');
+      if (response.ok) {
+        this.user = await response.json();
+        this.showUserInfo();
+      } else {
         this.showLoginPrompt();
       }
+    } catch (error) {
+      console.error('Error checking auth status:', error);
+      this.showLoginPrompt();
     }
+  }
 
-    showLoginPrompt() {
-      document.getElementById('login-prompt')?.classList.remove('hidden');
-      document.getElementById('user-info')?.classList.add('hidden');
-      document.getElementById('message-form')?.classList.add('hidden');
+  showLoginPrompt() {
+    document.getElementById('login-prompt')?.classList.remove('hidden');
+    document.getElementById('user-info')?.classList.add('hidden');
+    document.getElementById('message-form')?.classList.add('hidden');
+  }
+
+  showUserInfo() {
+    document.getElementById('login-prompt')?.classList.add('hidden');
+    document.getElementById('user-info')?.classList.remove('hidden');
+    document.getElementById('message-form')?.classList.remove('hidden');
+
+    const userAvatar = document.getElementById('user-avatar') as HTMLImageElement;
+    if (userAvatar && this.user) {
+      userAvatar.src = this.user.avatarUrl || '/default-avatar.png';
     }
-
-    showUserInfo() {
-      document.getElementById('login-prompt')?.classList.add('hidden');
-      document.getElementById('user-info')?.classList.remove('hidden');
-      document.getElementById('message-form')?.classList.remove('hidden');
-
-      const userAvatar = document.getElementById('user-avatar') as HTMLImageElement;
-      if (userAvatar && this.user) {
-        userAvatar.src = this.user.avatarUrl || '/default-avatar.png';
-      }
-      const usernameElement = document.getElementById('username');
-      if (usernameElement && this.user) {
-        usernameElement.textContent = this.user.username;
-      }
+    const usernameElement = document.getElementById('username');
+    if (usernameElement && this.user) {
+      usernameElement.textContent = this.user.username;
     }
+  }
 
-    bindEvents() {
-      // GitHub login
-      document.getElementById('github-login-btn')?.addEventListener('click', () => {
-        window.location.href = '/api/auth/github';
-      });
+  bindEvents() {
+    // GitHub login
+    document.getElementById('github-login-btn')?.addEventListener('click', () => {
+      window.location.href = '/api/auth/github';
+    });
 
-      // Sign out
-      document.getElementById('signout-btn')?.addEventListener('click', async () => {
-        try {
-          await fetch('/api/auth/signout', { method: 'POST' });
-          this.user = null;
-          this.showLoginPrompt();
-          await this.loadMessages();
-        } catch (error) {
-          console.error('Error signing out:', error);
-        }
-      });
-
-      // Character counter
-      const messageTextarea = document.getElementById('message') as HTMLTextAreaElement;
-      const charCount = document.getElementById('char-count');
-      messageTextarea?.addEventListener('input', () => {
-        if (charCount) {
-          charCount.textContent = messageTextarea.value.length.toString();
-        }
-      });
-
-      // Form submission
-      document.getElementById('guestbook-form')?.addEventListener('submit', async (e: Event) => {
-        e.preventDefault();
-        await this.submitMessage(e);
-      });
-    }
-
-    async submitMessage(e: Event) {
-      const form = e.target as HTMLFormElement;
-      const formData = new FormData(form);
-      const message = formData.get('message')?.toString();
-
-      if (!message || !message.trim()) return;
-
+    // Sign out
+    document.getElementById('signout-btn')?.addEventListener('click', async () => {
       try {
-        const response = await fetch('/api/guestbook', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: message.trim() })
-        });
-
-        if (response.ok) {
-          form.reset();
-          const charCount = document.getElementById('char-count');
-          if (charCount) charCount.textContent = '0';
-          await this.loadMessages();
-        } else {
-          const error = await response.json();
-          alert(error.message || 'Failed to post message');
-        }
+        await fetch('/api/auth/signout', { method: 'POST' });
+        this.user = null;
+        this.showLoginPrompt();
+        await this.loadMessages();
       } catch (error) {
-        console.error('Error posting message:', error);
-        alert('Failed to post message');
+        console.error('Error signing out:', error);
       }
-    }
+    });
 
-     async loadMessages() {
+    // Character counter
+    const messageTextarea = document.getElementById('message') as HTMLTextAreaElement;
+    const charCount = document.getElementById('char-count');
+    messageTextarea?.addEventListener('input', () => {
+      if (charCount) {
+        charCount.textContent = messageTextarea.value.length.toString();
+      }
+    });
+
+    // Form submission
+    document.getElementById('guestbook-form')?.addEventListener('submit', async (e: Event) => {
+      e.preventDefault();
+      await this.submitMessage(e);
+    });
+  }
+
+  async submitMessage(e: Event) {
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const message = formData.get('message')?.toString();
+
+    if (!message || !message.trim()) return;
+
+    try {
+      const response = await fetch('/api/guestbook', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: message.trim() })
+      });
+
+      if (response.ok) {
+        form.reset();
+        const charCount = document.getElementById('char-count');
+        if (charCount) charCount.textContent = '0';
+        await this.loadMessages();
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Failed to post message');
+      }
+    } catch (error) {
+      console.error('Error posting message:', error);
+      alert('Failed to post message');
+    }
+  }
+
+  async loadMessages() {
     try {
       const response = await fetch('/api/guestbook');
       this.messages = await response.json();
@@ -240,9 +240,13 @@ import  '../assets/guestbook.css'
       const container = document.getElementById('messages-container');
       if (container) {
         container.innerHTML = `
-          <div class="terminal-error">
-            <span class="terminal-prompt">error@guestbook:~$</span>
-            <span class="terminal-text">Failed to load messages. Connection timeout.</span>
+          <div class="message-item error-state">
+            <div class="message-header">
+              <div class="prompt-line">
+                <span class="prompt-symbol">$</span>
+                <span class="error-text">error@guestbook ~ connection timeout</span>
+              </div>
+            </div>
           </div>
         `;
       }
@@ -255,9 +259,13 @@ import  '../assets/guestbook.css'
 
     if (messages.length === 0) {
       container.innerHTML = `
-        <div class="terminal-empty">
-          <span class="terminal-prompt">guest@guestbook:~$</span>
-          <span class="terminal-text">No messages found. Be the first to write!</span>
+        <div class="message-item empty-state">
+          <div class="message-header">
+            <div class="prompt-line">
+              <span class="prompt-symbol">$</span>
+              <span class="empty-text">no messages found. be the first to write!</span>
+            </div>
+          </div>
         </div>
       `;
       return;
@@ -273,30 +281,35 @@ import  '../assets/guestbook.css'
     const timeAgo = this.formatTimeAgo(new Date(message.createdAt));
     
     return `
-      <div class="terminal-message" data-message-id="${message.id}">
-        <!-- Message Header -->
-        <div class="terminal-header">
-          <div class="terminal-user">
-            <img src="${avatarUrl}" alt="${username}" class="terminal-avatar" />
-            <span class="terminal-prompt">${username}@guestbook:~$</span>
-            <span class="terminal-time"># ${timeAgo}</span>
+      <div class="message-item" data-message-id="${message.id}">
+        <div class="message-header">
+          <div class="user-info">
+            <img src="${avatarUrl}" alt="${username}" class="user-avatar" loading="lazy" />
+            <div class="user-details">
+              <div class="prompt-line">
+                <span class="prompt-symbol">$</span>
+                <span class="username">${username}@guestbook</span>
+                <span class="path">~/messages</span>
+              </div>
+              <div class="timestamp"># ${timeAgo}</div>
+            </div>
           </div>
-          <div class="terminal-actions">
+          <div class="message-actions">
             ${this.user ? `
-              <button class="terminal-btn reply-btn" data-message-id="${message.id}" title="Reply">
-                <svg viewBox="0 0 16 16" fill="currentColor">
+              <button class="action-btn reply-btn" data-message-id="${message.id}" title="Reply" aria-label="Reply to message">
+                <svg class="action-icon" viewBox="0 0 16 16" fill="currentColor">
                   <path d="M8.5 0L11 2.5L8.5 5V3H2V1H8.5V0ZM14 8V14H2V8H0V16H16V6H14V8Z"/>
                 </svg>
               </button>
             ` : ''}
             ${isOwner ? `
-              <button class="terminal-btn edit-message-btn" data-message-id="${message.id}" title="Edit">
-                <svg viewBox="0 0 16 16" fill="currentColor">
+              <button class="action-btn edit-btn" data-message-id="${message.id}" title="Edit" aria-label="Edit message">
+                <svg class="action-icon" viewBox="0 0 16 16" fill="currentColor">
                   <path d="M11.013 1.427a1.75 1.75 0 0 1 2.474 0l1.086 1.086a1.75 1.75 0 0 1 0 2.474l-8.61 8.61c-.21.21-.47.364-.756.445l-3.251.93a.75.75 0 0 1-.927-.928l.929-3.25c.081-.286.235-.547.445-.758l8.61-8.61Zm.176 4.823L9.75 4.81l-6.286 6.287a.253.253 0 0 0-.064.108l-.558 1.953 1.953-.558a.253.253 0 0 0 .108-.064Zm1.238-3.763a.25.25 0 0 0-.354 0L10.811 3.75l1.439 1.44 1.263-1.263a.25.25 0 0 0 0-.354Z"/>
                 </svg>
               </button>
-              <button class="terminal-btn terminal-btn-danger delete-message-btn" data-message-id="${message.id}" title="Delete">
-                <svg viewBox="0 0 16 16" fill="currentColor">
+              <button class="action-btn delete-btn" data-message-id="${message.id}" title="Delete" aria-label="Delete message">
+                <svg class="action-icon" viewBox="0 0 16 16" fill="currentColor">
                   <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
                   <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
                 </svg>
@@ -305,48 +318,34 @@ import  '../assets/guestbook.css'
           </div>
         </div>
 
-        <!-- Message Content -->
         <div class="message-content" data-message-id="${message.id}">
-          <div class="terminal-content">
-            <span class="terminal-cursor">></span>
-            <span class="terminal-text">${this.escapeHtml(message.message)}</span>
+          <div class="content-display">
+            <span class="content-cursor">></span>
+            <span class="message-text">${this.escapeHtml(message.message)}</span>
           </div>
         </div>
 
-        <!-- Edit Form (Hidden) -->
-        <div class="edit-message-form hidden" data-message-id="${message.id}">
-          <div class="terminal-input-group">
-            <span class="terminal-cursor">></span>
-            <textarea class="terminal-input" rows="3" maxlength="500">${message.message}</textarea>
+        <div class="edit-form hidden" data-message-id="${message.id}">
+          <div class="input-group">
+            <span class="input-cursor">></span>
+            <textarea class="edit-textarea" rows="3" maxlength="500" placeholder="Edit your message...">${message.message}</textarea>
           </div>
-          <div class="terminal-btn-group">
-            <button class="terminal-btn terminal-btn-success update-message-btn" data-message-id="${message.id}">
-              save
-            </button>
-            <button class="terminal-btn cancel-edit-message-btn" data-message-id="${message.id}">
-              cancel
-            </button>
+          <div class="form-actions">
+            <button class="form-btn save-btn" data-message-id="${message.id}">save</button>
+            <button class="form-btn cancel-btn" data-message-id="${message.id}">cancel</button>
           </div>
         </div>
 
-        <!-- Replies Section -->
         ${this.renderReplies(message.replies || [], message.id)}
 
-        <!-- Reply Form (Hidden) -->
         <div class="reply-form hidden" data-message-id="${message.id}">
-          <div class="terminal-reply-form">
-            <div class="terminal-input-group">
-              <span class="terminal-cursor reply-cursor">└─></span>
-              <textarea class="terminal-input" rows="2" maxlength="500" placeholder="Type your reply..."></textarea>
-            </div>
-            <div class="terminal-btn-group">
-              <button class="terminal-btn terminal-btn-success submit-reply-btn" data-message-id="${message.id}">
-                send
-              </button>
-              <button class="terminal-btn cancel-reply-btn" data-message-id="${message.id}">
-                cancel
-              </button>
-            </div>
+          <div class="input-group">
+            <span class="reply-cursor">└─></span>
+            <textarea class="reply-textarea" rows="2" maxlength="500" placeholder="Type your reply..."></textarea>
+          </div>
+          <div class="form-actions">
+            <button class="form-btn send-btn" data-message-id="${message.id}">send</button>
+            <button class="form-btn cancel-btn" data-message-id="${message.id}">cancel</button>
           </div>
         </div>
       </div>
@@ -356,16 +355,17 @@ import  '../assets/guestbook.css'
   renderReplies(replies: Reply[], messageId: string): string {
     if (!replies || replies.length === 0) return '';
 
-    const visibleReplies = replies.slice(0, 1); // Show only first reply by default
-    const hiddenReplies = replies.slice(1);
+    const visibleReplies = replies.slice(0, 2);
+    const hiddenReplies = replies.slice(2);
 
     return `
-      <div class="terminal-replies" data-message-id="${messageId}">
+      <div class="replies-container" data-message-id="${messageId}">
         ${visibleReplies.map(reply => this.renderReply(reply, messageId)).join('')}
         ${hiddenReplies.length > 0 ? `
-          <div class="show-more-replies">
-            <button class="terminal-link show-more-btn" data-message-id="${messageId}">
-              ├─ show ${hiddenReplies.length} more replies
+          <div class="show-more-container">
+            <button class="show-more-btn" data-message-id="${messageId}">
+              <span class="tree-icon">├─</span>
+              <span class="show-more-text">show ${hiddenReplies.length} more replies</span>
             </button>
           </div>
           <div class="hidden-replies hidden">
@@ -383,22 +383,25 @@ import  '../assets/guestbook.css'
     const timeAgo = this.formatTimeAgo(new Date(reply.createdAt));
 
     return `
-      <div class="terminal-reply" data-reply-id="${reply.id}">
-        <div class="terminal-reply-header">
-          <div class="terminal-reply-user">
-            <img src="${avatarUrl}" alt="${username}" class="terminal-reply-avatar" />
-            <span class="terminal-reply-prompt">├─ ${username}:</span>
-            <span class="terminal-time"># ${timeAgo}</span>
+      <div class="reply-item" data-reply-id="${reply.id}">
+        <div class="reply-header">
+          <div class="reply-user-info">
+            <span class="tree-connector">├─</span>
+            <img src="${avatarUrl}" alt="${username}" class="reply-avatar" loading="lazy" />
+            <div class="reply-details">
+              <span class="reply-username">${username}</span>
+              <span class="reply-timestamp"># ${timeAgo}</span>
+            </div>
           </div>
           ${isOwner ? `
-            <div class="terminal-actions">
-              <button class="terminal-btn-sm edit-reply-btn" data-reply-id="${reply.id}" data-message-id="${messageId}" title="Edit">
-                <svg viewBox="0 0 12 12" fill="currentColor">
+            <div class="reply-actions">
+              <button class="action-btn-sm edit-reply-btn" data-reply-id="${reply.id}" data-message-id="${messageId}" title="Edit" aria-label="Edit reply">
+                <svg class="action-icon-sm" viewBox="0 0 12 12" fill="currentColor">
                   <path d="M8.5 1L10 2.5L8.5 4V3H3V1H8.5V0Z"/>
                 </svg>
               </button>
-              <button class="terminal-btn-sm terminal-btn-danger delete-reply-btn" data-reply-id="${reply.id}" data-message-id="${messageId}" title="Delete">
-                <svg viewBox="0 0 12 12" fill="currentColor">
+              <button class="action-btn-sm delete-reply-btn" data-reply-id="${reply.id}" data-message-id="${messageId}" title="Delete" aria-label="Delete reply">
+                <svg class="action-icon-sm" viewBox="0 0 12 12" fill="currentColor">
                   <path d="M4 4V2H8V4H10V3H12V5H10V10H2V5H0V3H2V4H4ZM4 6V8H6V6H4ZM6 6V8H8V6H6Z"/>
                 </svg>
               </button>
@@ -406,26 +409,21 @@ import  '../assets/guestbook.css'
           ` : ''}
         </div>
 
-        <!-- Reply Content -->
         <div class="reply-content" data-reply-id="${reply.id}">
-          <div class="terminal-reply-content">
-            <span class="terminal-text">${this.escapeHtml(reply.content)}</span>
+          <div class="reply-text-container">
+            <span class="reply-indent">│  </span>
+            <span class="reply-text">${this.escapeHtml(reply.content)}</span>
           </div>
         </div>
 
-        <!-- Edit Reply Form (Hidden) -->
         <div class="edit-reply-form hidden" data-reply-id="${reply.id}">
-          <div class="terminal-input-group">
-            <span class="terminal-cursor reply-cursor">├─></span>
-            <textarea class="terminal-input terminal-input-sm" rows="2" maxlength="500">${reply.content}</textarea>
+          <div class="input-group">
+            <span class="reply-cursor">├─></span>
+            <textarea class="edit-reply-textarea" rows="2" maxlength="500" placeholder="Edit your reply...">${reply.content}</textarea>
           </div>
-          <div class="terminal-btn-group">
-            <button class="terminal-btn-sm terminal-btn-success update-reply-btn" data-reply-id="${reply.id}" data-message-id="${messageId}">
-              save
-            </button>
-            <button class="terminal-btn-sm cancel-edit-reply-btn" data-reply-id="${reply.id}">
-              cancel
-            </button>
+          <div class="form-actions">
+            <button class="form-btn-sm save-reply-btn" data-reply-id="${reply.id}" data-message-id="${messageId}">save</button>
+            <button class="form-btn-sm cancel-reply-btn" data-reply-id="${reply.id}">cancel</button>
           </div>
         </div>
       </div>
@@ -452,55 +450,54 @@ import  '../assets/guestbook.css'
   }
 
   showToast(message: string, type: 'success' | 'error') {
-    // Create toast notification with terminal styling
     const toast = document.createElement('div');
-    toast.className = `terminal-toast terminal-toast-${type}`;
+    toast.className = `toast toast-${type}`;
     
     const icon = type === 'success' ? '✓' : '✗';
     const prefix = type === 'success' ? 'success' : 'error';
     
     toast.innerHTML = `
-      <span class="terminal-prompt">${prefix}@guestbook:~$</span>
-      <span class="terminal-text">${icon} ${message}</span>
+      <div class="toast-content">
+        <span class="toast-prompt">${prefix}@guestbook:~$</span>
+        <span class="toast-message">${icon} ${message}</span>
+      </div>
     `;
     
     document.body.appendChild(toast);
     
-    // Auto remove after 3 seconds
     setTimeout(() => {
       toast.classList.add('fade-out');
       setTimeout(() => toast.remove(), 300);
     }, 3000);
   }
 
-  // Confirmation dialog with terminal styling
   showConfirmDialog(message: string, onConfirm: () => void) {
     const overlay = document.createElement('div');
-    overlay.className = 'terminal-overlay';
+    overlay.className = 'modal-overlay';
     
     overlay.innerHTML = `
-      <div class="terminal-dialog">
-        <div class="terminal-dialog-header">
-          <span class="terminal-prompt">confirm@guestbook:~$</span>
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <span class="modal-prompt">confirm@guestbook:~$</span>
         </div>
-        <div class="terminal-dialog-content">
-          <p class="terminal-text">${message}</p>
+        <div class="modal-content">
+          <p class="modal-message">${message}</p>
         </div>
-        <div class="terminal-dialog-actions">
-          <button class="terminal-btn terminal-btn-danger confirm-yes">yes</button>
-          <button class="terminal-btn confirm-no">no</button>
+        <div class="modal-actions">
+          <button class="modal-btn danger-btn">yes</button>
+          <button class="modal-btn cancel-modal-btn">no</button>
         </div>
       </div>
     `;
     
     document.body.appendChild(overlay);
     
-    overlay.querySelector('.confirm-yes')?.addEventListener('click', () => {
+    overlay.querySelector('.danger-btn')?.addEventListener('click', () => {
       onConfirm();
       overlay.remove();
     });
     
-    overlay.querySelector('.confirm-no')?.addEventListener('click', () => {
+    overlay.querySelector('.cancel-modal-btn')?.addEventListener('click', () => {
       overlay.remove();
     });
     
@@ -515,45 +512,44 @@ let guestbookManager: GuestbookManager;
 document.addEventListener('DOMContentLoaded', () => {
   guestbookManager = new GuestbookManager();
 
-  // Event delegation
   document.addEventListener('click', async (e) => {
     const target = e.target as HTMLElement;
     
-    // Show more replies
     if (target.closest('.show-more-btn')) {
       const btn = target.closest('.show-more-btn') as HTMLElement;
       const messageId = btn.dataset.messageId!;
-      const hiddenReplies = document.querySelector(`.terminal-replies[data-message-id="${messageId}"] .hidden-replies`);
-      const showMore : any = document.querySelector(`.terminal-replies[data-message-id="${messageId}"] .show-more-replies`);
+      const hiddenReplies = document.querySelector(`.replies-container[data-message-id="${messageId}"] .hidden-replies`);
+      const showMore = document.querySelector(`.replies-container[data-message-id="${messageId}"] .show-more-container`);
       
       if (hiddenReplies && showMore) {
         hiddenReplies.classList.remove('hidden');
-        showMore.style.display = 'none';
+        (showMore as HTMLElement).style.display = 'none';
       }
     }
     
-    // Message actions
-    if (target.closest('.edit-message-btn')) {
-      const btn = target.closest('.edit-message-btn') as HTMLElement;
+    if (target.closest('.edit-btn')) {
+      const btn = target.closest('.edit-btn') as HTMLElement;
       toggleEditMessage(btn.dataset.messageId!);
     }
     
-    if (target.closest('.delete-message-btn')) {
-      const btn = target.closest('.delete-message-btn') as HTMLElement;
+    if (target.closest('.delete-btn')) {
+      const btn = target.closest('.delete-btn') as HTMLElement;
       guestbookManager.showConfirmDialog(
         'Are you sure you want to delete this message?',
         () => deleteMessage(btn.dataset.messageId!)
       );
     }
     
-    if (target.closest('.update-message-btn')) {
-      const btn = target.closest('.update-message-btn') as HTMLElement;
+    if (target.closest('.save-btn')) {
+      const btn = target.closest('.save-btn') as HTMLElement;
       await updateMessage(btn.dataset.messageId!);
     }
     
-    if (target.closest('.cancel-edit-message-btn')) {
-      const btn = target.closest('.cancel-edit-message-btn') as HTMLElement;
-      toggleEditMessage(btn.dataset.messageId!, false);
+    if (target.closest('.cancel-btn')) {
+      const btn = target.closest('.cancel-btn') as HTMLElement;
+      const messageId = btn.dataset.messageId!;
+      toggleEditMessage(messageId, false);
+      toggleReplyForm(messageId, false);
     }
     
     if (target.closest('.reply-btn')) {
@@ -561,17 +557,11 @@ document.addEventListener('DOMContentLoaded', () => {
       toggleReplyForm(btn.dataset.messageId!);
     }
     
-    if (target.closest('.submit-reply-btn')) {
-      const btn = target.closest('.submit-reply-btn') as HTMLElement;
+    if (target.closest('.send-btn')) {
+      const btn = target.closest('.send-btn') as HTMLElement;
       await submitReply(btn.dataset.messageId!);
     }
-    
-    if (target.closest('.cancel-reply-btn')) {
-      const btn = target.closest('.cancel-reply-btn') as HTMLElement;
-      toggleReplyForm(btn.dataset.messageId!, false);
-    }
 
-    // Reply actions
     if (target.closest('.edit-reply-btn')) {
       const btn = target.closest('.edit-reply-btn') as HTMLElement;
       toggleEditReply(btn.dataset.replyId!);
@@ -585,13 +575,13 @@ document.addEventListener('DOMContentLoaded', () => {
       );
     }
     
-    if (target.closest('.update-reply-btn')) {
-      const btn = target.closest('.update-reply-btn') as HTMLElement;
+    if (target.closest('.save-reply-btn')) {
+      const btn = target.closest('.save-reply-btn') as HTMLElement;
       await updateReply(btn.dataset.replyId!, btn.dataset.messageId!);
     }
     
-    if (target.closest('.cancel-edit-reply-btn')) {
-      const btn = target.closest('.cancel-edit-reply-btn') as HTMLElement;
+    if (target.closest('.cancel-reply-btn')) {
+      const btn = target.closest('.cancel-reply-btn') as HTMLElement;
       toggleEditReply(btn.dataset.replyId!, false);
     }
   });
@@ -600,7 +590,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Helper functions
 function toggleEditMessage(messageId: string, show: boolean = true) {
   const content = document.querySelector(`.message-content[data-message-id="${messageId}"]`);
-  const form = document.querySelector(`.edit-message-form[data-message-id="${messageId}"]`);
+  const form = document.querySelector(`.edit-form[data-message-id="${messageId}"]`);
   
   if (content && form) {
     if (show) {
@@ -622,7 +612,8 @@ function toggleReplyForm(messageId: string, show: boolean = true) {
       (form.querySelector('textarea') as HTMLTextAreaElement)?.focus();
     } else {
       form.classList.add('hidden');
-      (form.querySelector('textarea') as HTMLTextAreaElement).value = '';
+      const textarea = form.querySelector('textarea') as HTMLTextAreaElement;
+      if (textarea) textarea.value = '';
     }
   }
 }
@@ -664,7 +655,7 @@ async function deleteMessage(messageId: string) {
 }
 
 async function updateMessage(messageId: string) {
-  const form = document.querySelector(`.edit-message-form[data-message-id="${messageId}"]`);
+  const form = document.querySelector(`.edit-form[data-message-id="${messageId}"]`);
   const textarea = form?.querySelector('textarea') as HTMLTextAreaElement;
   const newMessage = textarea?.value.trim();
 

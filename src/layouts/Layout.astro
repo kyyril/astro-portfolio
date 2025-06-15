@@ -1,5 +1,5 @@
 ---
-// import Navigation from '../components/Navigation.astro';
+import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import StarField from '../components/StarField.astro';
 import ThemeProvider from '../components/ThemeProvider.astro';
@@ -35,12 +35,10 @@ const { title, description = "Modern portfolio built with Astro.js" } = Astro.pr
   <body>
     <ThemeProvider />
     <StarField />
-    <!-- <Navigation /> -->
-    
-    <main class="pt-20 min-h-screen">
+    <Navigation />
+    <main class="min-h-screen">
       <slot />
     </main>
-    
     <Footer />
   </body>
 </html>
