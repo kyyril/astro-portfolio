@@ -1,4 +1,9 @@
-/* Terminal Guestbook Styles */
+:root {
+  --color-green: #a6e3a1; /* Hijau */
+  --segment-height: 2em; /* Tinggi standar untuk setiap segmen panah */
+  --arrow-width: 0.8em; /* Lebar ujung panah */
+  --arrow-roundness: 0.2em; /* Kelembutan ujung panah */
+}
 
 /* Base Terminal Styling */
 .terminal-message {
@@ -45,10 +50,55 @@
 }
 
 .terminal-prompt {
-  color: var(--color-accent);
+  color: #1e1e2e; /* Warna teks gelap agar kontras dengan gradient cerah */
   font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  /* Padding yang lebih tipis di sekitar teks */
+  padding: 0em 0.6em 0em 0.6em;
+  margin-right: 1em; /* Sedikit lebih kecil untuk segitiga yang kurang runcing */
+
+  /* Gradient Background untuk balok utama - Dibuat lebih halus/soft */
+  background: linear-gradient(
+    to right,
+    var(--color-primary) 0%,
+    /* Biru, mulai dari 0% */ #a6e3a1 25%,
+    /* Ungu dengan sedikit transparansi untuk kehalusan, di 50% */
+      rgba(249, 226, 175, 0.9) 75%,
+    /* Kuning dengan sedikit transparansi, di 75% */ var(--color-accent) 100%
+      /* Kuning Akhir, di 100% */
+  );
+
+  /* Menambahkan efek bayangan lembut untuk ilusi blur pada tepi */
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); /* Bayangan lembut */
+}
+
+.terminal-prompt::before {
+  content: ">"; /* Mengganti dengan > atau ~ tergantung keinginan */
+  margin-right: 0.4em; /* Spasi antara awalan dan teks username, sedikit lebih kecil */
+  color: #fdfdfd; /* Warna untuk awalan */
+}
+
+/* Membuat segitiga yang tidak terlalu runcing */
+.terminal-prompt::after {
+  content: "";
+  position: absolute;
+  right: -0.9em; /* Sesuaikan posisi agar menempel di ujung kanan balok, sedikit lebih kecil */
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  /* Perubahan pada border untuk membuat kurang runcing */
+  border-top: 0.75em solid transparent; /* Tinggi segitiga lebih kecil */
+  border-bottom: 0.75em solid transparent; /* Tinggi segitiga lebih kecil */
+  border-left: 1em solid; /* Lebar segitiga sedikit lebih kecil */
+
+  /* Warna segitiga dari ujung gradient balok utama */
+  border-left-color: var(--color-accent);
 }
 
 .terminal-time {

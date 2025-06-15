@@ -4,6 +4,7 @@ import tailwind from "@astrojs/tailwind";
 import mdx from "@astrojs/mdx";
 import node from "@astrojs/node";
 import auth from "auth-astro";
+import cloudflare from "@astrojs/cloudflare";
 
 export default defineConfig({
   integrations: [
@@ -15,8 +16,8 @@ export default defineConfig({
     auth(),
   ],
   output: "server",
-  adapter: node({
-    mode: "standalone",
+  adapter: cloudflare({
+    mode: "directory",
   }),
   collections: {
     blog: {
