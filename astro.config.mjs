@@ -18,6 +18,7 @@ export default defineConfig({
   output: "server",
   adapter: cloudflare({
     mode: "directory",
+    imageService: "compile",
   }),
   collections: {
     blog: {
@@ -26,7 +27,10 @@ export default defineConfig({
   },
   vite: {
     optimizeDeps: {
-      include: ["react", "react-dom"],
+      include: ["react", "react-dom", "@prisma/client"],
+    },
+    ssr: {
+      external: ["@prisma/client"],
     },
   },
 });
