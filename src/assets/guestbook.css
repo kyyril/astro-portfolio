@@ -9,20 +9,6 @@
   --color-error: #f38ba8;
 }
 
-* {
-  box-sizing: border-box;
-}
-
-body {
-  background-color: var(--color-background);
-  color: var(--color-text);
-  font-family: "JetBrains Mono", monospace;
-  margin: 0;
-  padding: 0;
-  min-height: 100vh;
-  line-height: 1.5;
-}
-
 /* Container */
 .guestbook-container {
   max-width: 800px;
@@ -33,14 +19,6 @@ body {
 /* Header Section */
 .auth-section {
   margin-bottom: 2rem;
-}
-
-.terminal-card {
-  background: rgba(var(--color-surface-rgb), 0.6);
-  backdrop-filter: blur(10px);
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
 }
 
 .auth-header {
