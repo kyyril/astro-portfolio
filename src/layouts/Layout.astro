@@ -34,7 +34,7 @@ const { title, description = "Modern portfolio built with Astro.js" } = Astro.pr
   </head>
   <body>
     <ThemeProvider />
-    <StarField />
+    <StarField client:load/>
     <Navigation />
     <main class="min-h-screen">
       <slot />
