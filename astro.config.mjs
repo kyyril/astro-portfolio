@@ -10,16 +10,19 @@ export default defineConfig({
   integrations: [
     react(),
     tailwind({
-      applyBaseStyles: false,
+      applyBaseStyles: true,
     }),
     mdx(),
     auth(),
   ],
   output: "server",
-  adapter: cloudflare({
-    mode: "directory",
-    imageService: "compile",
-  }),
+  adapter:
+    process.env.NODE_ENV === "development"
+      ? node({ mode: "standalone" })
+      : cloudflare({
+          mode: "directory",
+          imageService: "compile",
+        }),
   collections: {
     blog: {
       type: "content",
