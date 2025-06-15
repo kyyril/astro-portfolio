@@ -15,8 +15,9 @@ import { themes, defaultTheme } from '../config/themes';
 
   function applyTheme(theme) {
     const root = document.documentElement;
-    Object.entries(theme.colors).forEach(([key, value]) => {
+Object.entries(theme.colors).forEach(([key, value]) => {
       root.style.setProperty(`--color-${key}`, value);
+      console.log(`Setting CSS variable --color-${key}: ${value}`);
     });
   }
 
@@ -38,6 +39,16 @@ import { themes, defaultTheme } from '../config/themes';
   }
 
   // Export for global use
-  window.switchTheme = switchTheme;
+function debounce(func, delay) {
+    let timeout;
+    return function(...args) {
+      const context = this;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), delay);
+    };
+  }
+
+  const debouncedSwitchTheme = debounce(switchTheme, 150); // Adjust delay as needed
+  window.switchTheme = debouncedSwitchTheme;
   window.themes = themes;
 </script>

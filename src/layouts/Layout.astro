@@ -1,7 +1,6 @@
 ---
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
-import StarField from '../components/StarField.astro';
 import ThemeProvider from '../components/ThemeProvider.astro';
 
 interface Props {
@@ -33,8 +32,8 @@ const { title, description = "Modern portfolio built with Astro.js" } = Astro.pr
    <link rel="stylesheet" href="/global.css">
   </head>
   <body>
-    <ThemeProvider />
-    <StarField client:load/>
+    <!-- <StarField /> -->
+ <ThemeProvider />
     <Navigation />
     <main class="min-h-screen">
       <slot />
