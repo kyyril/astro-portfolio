@@ -24,15 +24,30 @@ const { title, description = "Modern portfolio built with Astro.js" } = Astro.pr
     <!-- Preload JetBrains Mono font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" as="font" type="font/woff2" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
     
     <!-- Performance optimizations -->
     <link rel="dns-prefetch" href="//images.pexels.com">
     <meta name="theme-color" content="#1e1e2e">
-   <link rel="stylesheet" href="/global.css">
+   <style>
+      body {
+        color: #cdd6f4; /* var(--color-text) */
+      }
+      .text-lg {
+        font-size: 1.125rem;
+        line-height: 1.75rem;
+      }
+      .leading-relaxed {
+        line-height: 1.625;
+      }
+      .max-w-2xl {
+        max-width: 42rem;
+      }
+    </style>
+    <link rel="stylesheet" href="/global.css" media="print" onload="this.media='all'; this.onload=null;">
   </head>
   <body>
-    <!-- <StarField /> -->
  <ThemeProvider />
     <Navigation />
     <main class="min-h-screen">
