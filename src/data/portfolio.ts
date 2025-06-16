@@ -375,7 +375,7 @@ export const education: Education[] = [
     description:
       "Relevant Coursework: Data structures, algorithms, software engineering, databases, and UI/UX design.",
     startDate: "2022",
-    endDate: "Present",
+    endDate: "",
   },
 ];
 
@@ -388,7 +388,7 @@ export const experiences: Experience[] = [
     location: "Lampung, Indonesia",
     working: "remote",
     startDate: "April 2025",
-    endDate: "Present",
+    endDate: "",
     description:
       "Junior Frontend Developer at CodeAtHome — added new features, fixed bugs, and followed clean code practices with help from regular code reviews. One of the features I added was payment integration using Xendit with the backend.",
     technologies: [

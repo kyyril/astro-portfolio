@@ -3,7 +3,7 @@ import { themes } from '../config/themes';
 ---
 
 <div class="relative">
-  <button id="theme-toggle" class="p-2 rounded-lg glass hover:bg-[var(--color-surface)] transition-colors">
+  <button id="theme-toggle" class="p-2 rounded-lg hover:bg-[var(--color-surface)] transition-colors">
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
             d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5H9M21 9H9M21 13H9M21 17H9M21 21H9">
@@ -11,7 +11,7 @@ import { themes } from '../config/themes';
     </svg>
   </button>
   
-  <div id="theme-dropdown" class="absolute right-0 mt-2 w-48 glass rounded-lg shadow-lg hidden">
+  <div id="theme-dropdown" class="absolute right-0 mt-2 w-48 rounded-lg shadow-lg hidden">
     <div class="py-2">
       {Object.entries(themes).map(([key, theme]) => (
         <button 

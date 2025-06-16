@@ -14,11 +14,11 @@ import { projects } from '../data/portfolio';
 
     <!-- Filter buttons -->
     <div class="flex flex-wrap justify-center gap-2 mb-8">
-      <button class="filter-btn active px-4 py-2 rounded-lg glass" data-filter="all">All</button>
-      <button class="filter-btn px-4 py-2 rounded-lg glass" data-filter="web">Web</button>
-      <button class="filter-btn px-4 py-2 rounded-lg glass" data-filter="mobile">Mobile</button>
-      <button class="filter-btn px-4 py-2 rounded-lg glass" data-filter="desktop">Desktop</button>
-      <button class="filter-btn px-4 py-2 rounded-lg glass" data-filter="library">Library</button>
+      <button class="filter-btn active px-4 py-2 rounded-lg " data-filter="all">All</button>
+      <button class="filter-btn px-4 py-2 rounded-lg " data-filter="web">Web</button>
+      <button class="filter-btn px-4 py-2 rounded-lg " data-filter="mobile">Mobile</button>
+      <button class="filter-btn px-4 py-2 rounded-lg " data-filter="desktop">Desktop</button>
+      <button class="filter-btn px-4 py-2 rounded-lg " data-filter="library">Library</button>
     </div>
 
     <!-- Projects grid -->
@@ -50,17 +50,17 @@ import { projects } from '../data/portfolio';
             
             <div class="flex flex-wrap gap-1">
               {project.technologies.slice(0, 3).map(tech => (
-                <span class="px-2 py-1 text-xs glass rounded">{tech}</span>
+                <span class="px-2 py-1 text-xs  rounded">{tech}</span>
               ))}
               {project.technologies.length > 3 && (
-                <span class="px-2 py-1 text-xs glass rounded">+{project.technologies.length - 3}</span>
+                <span class="px-2 py-1 text-xs  rounded">+{project.technologies.length - 3}</span>
               )}
             </div>
             
             <div class="flex space-x-2 pt-2">
               <a 
                 href={`/projects/${project.id}`}
-                class="flex-1 text-center py-2 px-4 glass rounded hover:bg-[var(--color-primary)] hover:text-white transition-all"
+                class="flex-1 text-center py-2 px-4  rounded hover:bg-[var(--color-primary)] hover:text-white transition-all"
               >
                 Details
               </a>
@@ -69,7 +69,7 @@ import { projects } from '../data/portfolio';
                   href={project.live_url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  class="px-4 py-2 glass rounded hover:bg-[var(--color-accent)] hover:text-black transition-all"
+                  class="px-4 py-2  rounded hover:bg-[var(--color-accent)] hover:text-black transition-all"
                 >
                   Live
                 </a>
@@ -79,7 +79,7 @@ import { projects } from '../data/portfolio';
                   href={project.code_repo_url} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  class="px-4 py-2 glass rounded hover:bg-[var(--color-secondary)] hover:text-black transition-all"
+                  class="px-4 py-2  rounded hover:bg-[var(--color-secondary)] hover:text-black transition-all"
                 >
                   Code
                 </a>

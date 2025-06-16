@@ -26,14 +26,6 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Frosted glass effect */
-.glass {
-  background: rgba(var(--color-surface-rgb), 0.1);
-  backdrop-filter: blur(20px);
-  border: none;
-  border-radius: 12px;
-}
-
 .terminal-card {
   background: rgba(var(--color-surface-rgb), 0.8);
   backdrop-filter: blur(5px);

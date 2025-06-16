@@ -1,80 +1,59 @@
 ---
 import { contactInfo } from "../../data/portfolio";
 import Terminal from "../Terminal.astro";
-
-const roles = [
-  "Full Stack Developer",
-  "Web Designer",
-  "UI/UX Enthusiast",
-  "Problem Solver",
-];
-
-let typedText = "";
-let currentRoleIndex = 0;
-let currentText = "";
-let isDeleting = false;
-const typingSpeed = 150;
-const delayBetweenRoles = 2000;
-
-const handleTyping = () => {
-  const fullText = roles[currentRoleIndex];
-  if (isDeleting) {
-    currentText = fullText.substring(0, currentText.length - 1);
-  } else {
-    currentText = fullText.substring(0, currentText.length + 1);
-  }
-
-  typedText = currentText;
-
-  let currentTypingSpeed = typingSpeed;
-  if (isDeleting) {
-    currentTypingSpeed /= 2;
-  }
-
-  if (!isDeleting && currentText === fullText) {
-    currentTypingSpeed = delayBetweenRoles;
-    isDeleting = true;
-  } else if (isDeleting && currentText === "") {
-    isDeleting = false;
-    currentRoleIndex = (currentRoleIndex + 1) % roles.length;
-  }
-
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(handleTyping());
-    }, currentTypingSpeed);
-  });
-};
-
-// Start the typing animation
-(async () => {
-  await handleTyping();
-})();
 ---
 
-<section class="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8">
-  <div class="max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-    <!-- Profile Content -->
-    <div class="space-y-8">
-      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold text-balance mb-6 text-shadow-lg">
-        <span class="bg-gradient-to-r from-primary-400 via-accent-purple to-accent-pink bg-clip-text text-transparent animate-pulse">
-          Khairil Rahman
-        </span>
-      </h1>
-      <div class="space-y-4">
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          Khairil
-        </h1>
-        <div class="text-xl sm:text-2xl text-[var(--color-text)] font-mono h-8">
-          {typedText}
-          <span class="animate-pulse">|</span>
+<section class="min-h-screen flex items-center justify-center py-8">
+  <div class="container mx-auto px-4 grid grid-cols-1 max-w-3xl gap-8">
+      <Terminal title="~/profile" variant="glass">
+        <div class="space-y-4" style={{ color: "var(--color-accent)" }}>
+          <div>
+            <span style={{ color: "var(--color-primary)" }}>$</span> cat
+            about.me
+          </div>
+          <div
+            class="pl-4 space-y-2"
+            style={{ color: "var(--color-text)" }}
+          >
+            <div>
+              <span style={{ lor: "var(--color-secondary)" }}>name:</span>
+              "Khairil"
+            </div>
+            <div>
+              <span style={{ color: "var(--color-secondary)" }}>role:</span>
+              "Software Developer"
+            </div>
+            <div>
+              <span style={{ color: "var(--color-secondary)" }}>
+                experience:
+              </span>
+              "3+ years"
+            </div>
+            <div>
+              <span style={{ color: "var(--color-secondary)" }}>
+                location:
+              </span>
+              "Remote"
+            </div>
+            <div>
+              <span style={{ color: "var(--color-secondary)" }}>
+                languages:
+              </span>
+              ["TypeScript", "Python", "Rust"]
+            </div>
+            <div>
+              <span style={{ color: "var(--color-secondary)" }}>
+                focus:
+              </span>
+              "Performance & UX"
+            </div>
+          </div>
+          <div class="mt-4">
+            <span style={{ color: "var(--color-primary)" }}>$</span>
+            <span class="animate-pulse  text-2xl">_</span>
+          </div>
         </div>
-        <p class="text-lg text-[var(--color-text)] leading-relaxed max-w-2xl">
-          Crafting digital experiences with modern technologies. Passionate
-          about clean code, performance optimization, and beautiful user
-          interfaces.
-        </p>
-      </div>
+      </Terminal>
 
       <!-- Contact Links -->
       <div class="flex flex-wrap gap-4">
@@ -142,111 +121,8 @@ const handleTyping = () => {
           <span>Available for hire</span>
         </div>
       </div>
-    </div>
-
-    <!-- Terminal Profile -->
-    <div class="lg:ml-8">
-      <Terminal title="~/profile" variant="glass">
-        <div class="space-y-4" style={{ color: "var(--color-accent)" }}>
-          <div>
-            <span style={{ color: "var(--color-primary)" }}>$</span> cat
-            about.me
-          </div>
-          <div
-            class="pl-4 space-y-2"
-            style={{ color: "var(--color-text)" }}
-          >
-            <div>
-              <span style={{ lor: "var(--color-secondary)" }}>name:</span>
-              "Khairil"
-            </div>
-            <div>
-              <span style={{ color: "var(--color-secondary)" }}>role:</span>
-              "Full Stack Developer"
-            </div>
-            <div>
-              <span style={{ color: "var(--color-secondary)" }}>
-                experience:
-              </span>
-              "3+ years"
-            </div>
-            <div>
-              <span style={{ color: "var(--color-secondary)" }}>
-                location:
-              </span>
-              "Remote"
-            </div>
-            <div>
-              <span style={{ color: "var(--color-secondary)" }}>
-                languages:
-              </span>
-              ["TypeScript", "Python", "Rust"]
-            </div>
-            <div>
-              <span style={{ color: "var(--color-secondary)" }}>
-                focus:
-              </span>
-              "Performance & UX"
-            </div>
-          </div>
-          <div class="mt-4">
-            <span style={{ color: "var(--color-primary)" }}>$</span>
-            <span class="animate-pulse  text-2xl">_</span>
-          </div>
-        </div>
-      </Terminal>
-    </div>
   </div>
 </section>
 
-<script>
-  // This script runs in the browser
-  const roles = [
-    "Full Stack Developer",
-    "Web Designer",
-    "UI/UX Enthusiast",
-    "Problem Solver",
-  ];
 
-  let typedText = "";
-  let currentRoleIndex = 0;
-  let currentText = "";
-  let isDeleting = false;
-  const typingSpeed = 150;
-  const delayBetweenRoles = 2000;
 
-  const typingElement = document.querySelector(".text-xl.sm\\:text-2xl.text-\\[var\\(--color-text\\)\\].font-mono.h-8");
-  const cursorElement = document.querySelector(".animate-pulse");
-
-  const handleTyping = () => {
-    const fullText = roles[currentRoleIndex];
-    if (isDeleting) {
-      currentText = fullText.substring(0, currentText.length - 1);
-    } else {
-      currentText = fullText.substring(0, currentText.length + 1);
-    }
-
-    typedText = currentText;
-
-    if (typingElement) {
-      typingElement.textContent = typedText;
-    }
-
-    let currentTypingSpeed = typingSpeed;
-    if (isDeleting) {
-      currentTypingSpeed /= 2;
-    }
-
-    if (!isDeleting && currentText === fullText) {
-      currentTypingSpeed = delayBetweenRoles;
-      isDeleting = true;
-    } else if (isDeleting && currentText === "") {
-      isDeleting = false;
-      currentRoleIndex = (currentRoleIndex + 1) % roles.length;
-    }
-
-    setTimeout(handleTyping, currentTypingSpeed);
-  };
-
-  handleTyping();
-</script>

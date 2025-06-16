@@ -107,4 +107,4 @@ export const themes: Record<string, ThemeConfig> = {
   },
 };
 
-export const defaultTheme = "tokyo";
+export const defaultTheme = "dracula";

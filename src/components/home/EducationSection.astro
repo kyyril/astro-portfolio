@@ -13,7 +13,7 @@ import { education } from '../../data/portfolio';
             <p class="text-[var(--color-secondary)]">{edu.institution}</p>
           </div>
           <div class="text-sm text-[var(--color-secondary)] mt-2 md:mt-0">
-            {new Date(edu.startDate).toLocaleDateString()} - {new Date(edu.endDate).toLocaleDateString()}
+{new Date(edu.startDate).toLocaleDateString()} - {edu.endDate ? new Date(edu.endDate).toLocaleDateString() : 'Present'}
           </div>
         </div>
         <p class="text-[var(--color-text)]">{edu.description}</p>

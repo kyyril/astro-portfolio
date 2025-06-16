@@ -19,7 +19,7 @@ A high-performance portfolio website built with Astro.js, featuring modern themi
 - **Arch Linux Aesthetic** with terminal-inspired cards
 - **JetBrains Mono** font throughout
 - **Animated Starfield Background** with falling stars
-- **Frosted Glass Effects** and blur backgrounds
+- **Frosted Effects** and blur backgrounds
 - **Smooth Animations** and micro-interactions
 - **No Borders/Outlines** for clean, modern look
 
@@ -242,7 +242,7 @@ Update content in `src/data/portfolio.ts`:
 ### Styling Components
 
 - Use CSS custom properties for theme colors: `var(--color-primary)`
-- Apply glass effects with `.glass` class
+- Apply effects with `.` class
 - Use terminal-style cards with `.terminal-card` class
 
 ## 🔧 API Endpoints
