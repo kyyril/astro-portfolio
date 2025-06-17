@@ -2,7 +2,8 @@
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import ThemeProvider from '../components/ThemeProvider.astro';
-import GSAPAnimations from '../components/GSAPAnimations.astro';
+import DisableConflictingScrolls from '../components/DisableConflictingScrolls.astro';
+import ScrollOptimizer from '../components/ScrollOptimizer.astro';
 
 interface Props {
   title: string;
@@ -81,7 +82,8 @@ const canonicalURL = Astro.site
   </head>
   <body>
     <ThemeProvider />
-    <GSAPAnimations />
+    <DisableConflictingScrolls />
+    <ScrollOptimizer />
     <main>
       <slot />
     </main>

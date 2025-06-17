@@ -45,6 +45,12 @@ html {
   scroll-behavior: auto; /* Let custom smooth scroll handle this */
   overflow-x: hidden;
   overflow-y: auto;
+
+  /* DISABLE ALL BOUNCE EFFECTS GLOBALLY */
+  overscroll-behavior: none !important;
+  overscroll-behavior-x: none !important;
+  overscroll-behavior-y: none !important;
+  -webkit-overflow-scrolling: auto !important;
 }
 
 body {
@@ -58,6 +64,12 @@ body {
   transition: background-color var(--transition-normal),
     color var(--transition-normal);
   overflow-x: hidden;
+
+  /* DISABLE ALL BOUNCE EFFECTS GLOBALLY */
+  overscroll-behavior: none !important;
+  overscroll-behavior-x: none !important;
+  overscroll-behavior-y: none !important;
+  -webkit-overflow-scrolling: auto !important;
 }
 
 /* 120fps Smooth Scroll Optimizations */

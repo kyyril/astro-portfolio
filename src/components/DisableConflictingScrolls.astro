@@ -1,0 +1,68 @@
+---
+// Disable Conflicting Scroll Systems - Ensures only unified scroll runs
+---
+
+<script>
+  // Disable all conflicting scroll systems
+  function disableConflictingScrolls() {
+    // Disable GSAP ScrollTrigger if it exists
+    if (typeof window !== 'undefined' && (window as any).ScrollTrigger) {
+      (window as any).ScrollTrigger.disable();
+      console.log('🚫 Disabled GSAP ScrollTrigger to prevent conflicts');
+    }
+
+    // Disable any existing smooth scroll instances
+    if ((window as any).smoothScroll) {
+      delete (window as any).smoothScroll;
+      console.log('🚫 Removed conflicting smoothScroll instance');
+    }
+
+    // Remove conflicting scroll classes
+    const conflictingClasses = [
+      'smooth-scroll-loading',
+      'smooth-scroll-loaded', 
+      'smooth-scroll-120fps',
+      'scroll-ultra-optimized'
+    ];
+
+    conflictingClasses.forEach(className => {
+      document.body.classList.remove(className);
+    });
+
+    // Reset any conflicting scroll styles
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+    document.documentElement.style.scrollBehavior = 'auto';
+
+    // Remove any existing scroll containers that might conflict
+    const existingContainers = document.querySelectorAll(
+      '#smooth-scroll-wrapper, #smooth-scroll-container, #smooth-scroll-content'
+    );
+    
+    existingContainers.forEach(container => {
+      if (container.parentNode) {
+        // Move children out of container before removing
+        while (container.firstChild) {
+          container.parentNode.insertBefore(container.firstChild, container);
+        }
+        container.remove();
+      }
+    });
+
+    // Cancel any existing animation frames that might be running
+    for (let i = 0; i < 1000; i++) {
+      cancelAnimationFrame(i);
+    }
+
+    console.log('✅ Conflicting scroll systems disabled - Unified scroll ready');
+  }
+
+  // Run immediately when script loads
+  disableConflictingScrolls();
+
+  // Also run on DOM ready to catch any late-loading conflicts
+  document.addEventListener('DOMContentLoaded', disableConflictingScrolls);
+
+  // Run on page transitions
+  document.addEventListener('astro:page-load', disableConflictingScrolls);
+</script>

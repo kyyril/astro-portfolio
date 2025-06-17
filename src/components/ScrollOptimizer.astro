@@ -1,67 +1,213 @@
 ---
-// Scroll Performance Optimizer - Fixes freezing and delay issues
+// Unified Ultra-Smooth Scroll System - Single source of truth for all scrolling
 ---
 
 <script>
-  // Scroll optimization variables
+  // Unified scroll system variables
+  let scrollTarget = 0;
+  let scrollCurrent = 0;
+  let scrollVelocity = 0;
   let isScrolling = false;
-  let scrollTimeout: number;
   let rafId: number;
+  let scrollTimeout: number;
   let lastScrollTop = 0;
   let scrollDirection = 'down';
 
   // Performance monitoring
   let frameCount = 0;
   let lastTime = performance.now();
-  let fps = 60;
+  let fps = 120;
 
-  // Initialize scroll optimization
-  function initScrollOptimizer() {
-    // Optimize scroll behavior
-    optimizeScrollBehavior();
-    
-    // Setup passive scroll listeners
-    setupPassiveScrollListeners();
-    
+  // Anti-oscillation scroll configuration - prevents bouncing
+  const scrollConfig = {
+    ease: 0.15,           // Higher ease to prevent overshooting
+    friction: 0.8,        // Lower friction for quicker settling
+    threshold: 1.0,       // Larger threshold to stop bouncing earlier
+    wheelMultiplier: 0.8, // Smooth wheel sensitivity
+    touchMultiplier: 1.0, // Natural touch sensitivity
+    maxVelocity: 25,      // Lower max velocity to prevent overshoot
+    keyboardStep: 100,    // Smooth keyboard scrolling
+    dampingFactor: 0.9    // Additional damping to kill oscillation
+  };
+
+  // Initialize unified scroll system
+  function initUnifiedScroll() {
+    // Setup scroll container
+    setupScrollContainer();
+
+    // Setup all event listeners
+    setupScrollListeners();
+
+    // Start smooth scroll loop
+    startSmoothScrollLoop();
+
     // Monitor performance
     monitorScrollPerformance();
-    
-    // Optimize for different devices
+
+    // Device optimizations
     optimizeForDevice();
   }
 
-  function optimizeScrollBehavior() {
-    // 120fps smooth scroll optimization
-    document.documentElement.style.scrollBehavior = 'auto';
-
-    // Prepare for custom smooth scroll
+  function setupScrollContainer() {
+    // Optimize document for smooth scrolling - NO BOUNCE
+    document.documentElement.style.scrollBehavior = 'auto'; // We handle smoothness
     document.body.style.overflowX = 'hidden';
-    document.body.style.overscrollBehavior = 'none';
+    document.body.style.overscrollBehavior = 'none'; // Disable bounce
+    document.body.style.overscrollBehaviorY = 'none'; // Disable vertical bounce
     document.body.style.touchAction = 'pan-y';
 
-    // Ultra-smooth scroll optimizations
+    // Disable iOS bounce completely
+    document.documentElement.style.overscrollBehavior = 'none';
+    document.documentElement.style.overscrollBehaviorY = 'none';
+
+    // Additional iOS bounce prevention
+    (document.body.style as any).webkitOverflowScrolling = 'auto'; // Disable iOS momentum
+    (document.documentElement.style as any).webkitOverflowScrolling = 'auto';
+
+    // Hardware acceleration
     document.body.style.transform = 'translateZ(0)';
     document.body.style.backfaceVisibility = 'hidden';
     document.body.style.perspective = '1000px';
+    document.body.style.willChange = 'scroll-position';
 
     // Add smooth scroll class
-    document.body.classList.add('smooth-scroll-120fps');
+    document.body.classList.add('unified-smooth-scroll');
 
-    // iOS optimizations
-    (document.body.style as any).webkitOverflowScrolling = 'touch';
-    document.body.style.overscrollBehaviorY = 'contain';
-
-    // Optimize all elements for smooth scrolling
-    document.querySelectorAll('*').forEach(el => {
-      (el as HTMLElement).style.transformStyle = 'flat';
-    });
+    // Initialize scroll position
+    scrollCurrent = scrollTarget = window.pageYOffset;
   }
 
-  function setupPassiveScrollListeners() {
+  function setupScrollListeners() {
+    // Wheel event for ultra-smooth desktop scrolling
+    window.addEventListener('wheel', handleWheel, { passive: false });
+
+    // Touch events for mobile
+    setupTouchScrolling();
+
+    // Keyboard navigation
+    window.addEventListener('keydown', handleKeyboard, { passive: true });
+
+    // Handle scroll state changes
+    setupScrollStateHandlers();
+  }
+
+  function handleWheel(e: WheelEvent) {
+    e.preventDefault();
+
+    // Normalize wheel delta across browsers and devices
+    let delta = e.deltaY;
+
+    // Handle different wheel modes
+    if (e.deltaMode === 1) { // Line mode
+      delta *= 16;
+    } else if (e.deltaMode === 2) { // Page mode
+      delta *= window.innerHeight;
+    }
+
+    // Apply ultra-smooth sensitivity
+    delta *= scrollConfig.wheelMultiplier;
+
+    // Update target scroll position
+    scrollTarget += delta;
+    clampScrollTarget();
+  }
+
+  function setupTouchScrolling() {
+    let touchStartY = 0;
+    let touchStartTime = 0;
+    let lastTouchY = 0;
+
+    window.addEventListener('touchstart', (e) => {
+      touchStartY = lastTouchY = e.touches[0].clientY;
+      touchStartTime = Date.now();
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      const touchY = e.touches[0].clientY;
+      const deltaY = (lastTouchY - touchY) * scrollConfig.touchMultiplier;
+
+      scrollTarget += deltaY;
+      lastTouchY = touchY;
+
+      clampScrollTarget();
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => {
+      // Add momentum scrolling for natural feel
+      const touchDuration = Date.now() - touchStartTime;
+      if (touchDuration < 300) {
+        const momentum = (touchStartY - lastTouchY) * 2;
+        scrollTarget += momentum;
+        clampScrollTarget();
+      }
+    }, { passive: true });
+  }
+
+  function handleKeyboard(e: KeyboardEvent) {
+    let delta = 0;
+
+    switch (e.key) {
+      case 'ArrowDown':
+      case 'PageDown':
+        delta = scrollConfig.keyboardStep;
+        break;
+      case 'ArrowUp':
+      case 'PageUp':
+        delta = -scrollConfig.keyboardStep;
+        break;
+      case 'Home':
+        scrollTarget = 0;
+        return;
+      case 'End':
+        scrollTarget = getMaxScroll();
+        return;
+      default:
+        return;
+    }
+
+    e.preventDefault();
+    scrollTarget += delta;
+    clampScrollTarget();
+  }
+
+  function setupScrollStateHandlers() {
+    // Monitor scroll state for UI updates
     let ticking = false;
-    
-    // Optimized scroll handler
-    function handleScroll() {
+
+    function updateScrollState() {
+      const currentScrollTop = scrollCurrent;
+
+      // Update scroll direction
+      if (currentScrollTop > lastScrollTop) {
+        scrollDirection = 'down';
+      } else if (currentScrollTop < lastScrollTop) {
+        scrollDirection = 'up';
+      }
+
+      // Update body attributes
+      document.body.setAttribute('data-scroll-direction', scrollDirection);
+      document.body.setAttribute('data-scroll-position', Math.round(currentScrollTop).toString());
+
+      lastScrollTop = currentScrollTop;
+
+      // Handle scroll start/end states
+      if (Math.abs(scrollVelocity) > 0.1) {
+        if (!isScrolling) {
+          isScrolling = true;
+          document.body.classList.add('is-scrolling');
+        }
+
+        // Reset scroll end timeout
+        clearTimeout(scrollTimeout);
+        scrollTimeout = window.setTimeout(() => {
+          isScrolling = false;
+          document.body.classList.remove('is-scrolling');
+        }, 100);
+      }
+    }
+
+    // Use RAF for smooth state updates
+    function rafUpdateScrollState() {
       if (!ticking) {
         requestAnimationFrame(() => {
           updateScrollState();
@@ -71,49 +217,78 @@
       }
     }
 
-    // Add passive scroll listener for better performance
-    window.addEventListener('scroll', handleScroll, { 
-      passive: true,
-      capture: false 
-    });
-
-    // Handle scroll start/end
-    window.addEventListener('scroll', () => {
-      // Clear existing timeout
-      clearTimeout(scrollTimeout);
-      
-      // Set scrolling state
-      if (!isScrolling) {
-        isScrolling = true;
-        document.body.classList.add('is-scrolling');
-        
-        // Disable hover effects during scroll for performance
-        document.body.style.pointerEvents = 'none';
-      }
-      
-      // Set timeout for scroll end
-      scrollTimeout = window.setTimeout(() => {
-        isScrolling = false;
-        document.body.classList.remove('is-scrolling');
-        document.body.style.pointerEvents = 'auto';
-      }, 150);
-    }, { passive: true });
+    // Call update on every frame during scrolling
+    setInterval(rafUpdateScrollState, 16); // ~60fps for state updates
   }
 
-  function updateScrollState() {
-    const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    // Update scroll direction
-    if (currentScrollTop > lastScrollTop) {
-      scrollDirection = 'down';
-    } else if (currentScrollTop < lastScrollTop) {
-      scrollDirection = 'up';
+  function clampScrollTarget() {
+    const maxScroll = getMaxScroll();
+    // Strict clamping - NO BOUNCE beyond boundaries
+    scrollTarget = Math.max(0, Math.min(maxScroll, scrollTarget));
+
+    // Also clamp current position to prevent any overshoot
+    scrollCurrent = Math.max(0, Math.min(maxScroll, scrollCurrent));
+  }
+
+  function getMaxScroll() {
+    return Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+  }
+
+  function startSmoothScrollLoop() {
+    function smoothScrollTick() {
+      const delta = scrollTarget - scrollCurrent;
+
+      if (Math.abs(delta) > scrollConfig.threshold) {
+        // Anti-oscillation easing calculation
+        scrollVelocity += delta * scrollConfig.ease;
+        scrollVelocity *= scrollConfig.friction;
+
+        // Apply additional damping to prevent oscillation
+        scrollVelocity *= scrollConfig.dampingFactor;
+
+        // Clamp velocity for controlled movement
+        scrollVelocity = Math.max(-scrollConfig.maxVelocity,
+                                 Math.min(scrollConfig.maxVelocity, scrollVelocity));
+
+        // Kill very small velocities to prevent micro-oscillations
+        if (Math.abs(scrollVelocity) < 0.01) {
+          scrollVelocity = 0;
+          scrollCurrent = scrollTarget;
+        } else {
+          // Update current position
+          scrollCurrent += scrollVelocity;
+        }
+
+        // STRICT BOUNDARY ENFORCEMENT - NO BOUNCE
+        const maxScroll = getMaxScroll();
+        scrollCurrent = Math.max(0, Math.min(maxScroll, scrollCurrent));
+
+        // Apply the scroll
+        window.scrollTo(0, scrollCurrent);
+
+        isScrolling = true;
+      } else {
+        // Snap to target when close enough - IMMEDIATE STOP
+        scrollCurrent = scrollTarget;
+        scrollVelocity = 0;
+
+        // Final boundary check
+        const maxScroll = getMaxScroll();
+        scrollCurrent = Math.max(0, Math.min(maxScroll, scrollCurrent));
+        window.scrollTo(0, scrollCurrent);
+
+        if (isScrolling) {
+          isScrolling = false;
+          document.body.classList.remove('is-scrolling');
+        }
+      }
+
+      // Continue the loop
+      rafId = requestAnimationFrame(smoothScrollTick);
     }
-    
-    // Update body class for scroll direction
-    document.body.setAttribute('data-scroll-direction', scrollDirection);
-    
-    lastScrollTop = currentScrollTop;
+
+    // Start the smooth scroll loop
+    smoothScrollTick();
   }
 
   function monitorScrollPerformance() {
@@ -121,36 +296,27 @@
       frameCount++;
       const currentTime = performance.now();
 
-      if (currentTime - lastTime >= 200) { // Check every 200ms for ultra-fast response
-        fps = Math.round((frameCount * 5000) / (currentTime - lastTime));
+      if (currentTime - lastTime >= 500) { // Check every 500ms
+        fps = Math.round((frameCount * 2000) / (currentTime - lastTime));
         frameCount = 0;
         lastTime = currentTime;
 
-        // Ultra-aggressive performance scaling for 60fps
-        if (fps < 45) {
-          // Emergency performance mode
-          document.documentElement.style.scrollBehavior = 'auto';
-          document.body.classList.add('emergency-scroll-performance');
-
-          // Disable all scroll animations temporarily
-          document.body.style.pointerEvents = 'none';
-          setTimeout(() => {
-            document.body.style.pointerEvents = 'auto';
-          }, 100);
-
-        } else if (fps < 55) {
-          // Low performance mode
-          document.documentElement.style.scrollBehavior = 'auto';
+        // Performance monitoring only - no dynamic config changes to prevent oscillation
+        if (fps < 60) {
           document.body.classList.add('low-scroll-performance');
-          document.body.classList.remove('emergency-scroll-performance');
+        } else {
+          document.body.classList.remove('low-scroll-performance');
+        }
 
-        } else if (fps >= 58) {
-          // Ultra performance mode - keep scroll optimized
-          document.body.classList.remove('low-scroll-performance', 'emergency-scroll-performance');
+        // Update performance display if exists
+        const fpsDisplay = document.getElementById('scroll-fps');
+        if (fpsDisplay) {
+          fpsDisplay.textContent = `${fps} fps`;
+          fpsDisplay.style.color = fps >= 90 ? '#10b981' : fps >= 60 ? '#f59e0b' : '#ef4444';
         }
       }
 
-      rafId = requestAnimationFrame(measureFPS);
+      requestAnimationFrame(measureFPS);
     }
 
     measureFPS();
@@ -186,36 +352,60 @@
   }
 
   // Cleanup function
-  function cleanupScrollOptimizer() {
+  function cleanupUnifiedScroll() {
     if (rafId) {
       cancelAnimationFrame(rafId);
     }
     if (scrollTimeout) {
       clearTimeout(scrollTimeout);
     }
-    
-    // Remove optimization classes
-    document.body.classList.remove('scroll-optimized', 'is-scrolling', 'low-performance', 'mobile-device', 'reduced-motion', 'low-end-device');
-    
-    // Reset scroll behavior
+
+    // Remove all scroll classes
+    document.body.classList.remove(
+      'unified-smooth-scroll',
+      'is-scrolling',
+      'low-scroll-performance',
+      'mobile-device',
+      'reduced-motion',
+      'low-end-device'
+    );
+
+    // Reset styles
     document.documentElement.style.scrollBehavior = '';
     document.body.style.pointerEvents = '';
+    document.body.style.willChange = '';
   }
 
+  // Expose scroll API for external use
+  (window as any).unifiedScroll = {
+    scrollTo: (target: number) => {
+      scrollTarget = target;
+      clampScrollTarget();
+    },
+    scrollBy: (delta: number) => {
+      scrollTarget += delta;
+      clampScrollTarget();
+    },
+    getCurrentScroll: () => scrollCurrent,
+    getTargetScroll: () => scrollTarget,
+    isScrolling: () => isScrolling,
+    getFPS: () => fps
+  };
+
   // Initialize on DOM ready
-  document.addEventListener('DOMContentLoaded', initScrollOptimizer);
-  
+  document.addEventListener('DOMContentLoaded', initUnifiedScroll);
+
   // Re-initialize on page transitions
-  document.addEventListener('astro:page-load', initScrollOptimizer);
-  
+  document.addEventListener('astro:page-load', initUnifiedScroll);
+
   // Cleanup on page unload
-  document.addEventListener('astro:before-preparation', cleanupScrollOptimizer);
-  window.addEventListener('beforeunload', cleanupScrollOptimizer);
+  document.addEventListener('astro:before-preparation', cleanupUnifiedScroll);
+  window.addEventListener('beforeunload', cleanupUnifiedScroll);
 </script>
 
 <style>
-  /* Ultra scroll optimization styles */
-  .scroll-ultra-optimized {
+  /* Unified Ultra-Smooth Scroll System Styles - NO BOUNCE */
+  .unified-smooth-scroll {
     /* Maximum hardware acceleration */
     transform: translate3d(0, 0, 0);
     will-change: scroll-position;
@@ -223,17 +413,31 @@
     perspective: 1000px;
     transform-style: preserve-3d;
 
-    /* Ultra-optimized scrolling */
-    scroll-behavior: auto; /* Let GSAP handle smoothness */
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: none;
+    /* Optimized scrolling behavior - DISABLE ALL BOUNCE */
+    scroll-behavior: auto; /* We handle the smoothness */
+    -webkit-overflow-scrolling: auto; /* Disable iOS momentum/bounce */
+    overscroll-behavior: none; /* Disable bounce on all browsers */
+    overscroll-behavior-x: none;
+    overscroll-behavior-y: none;
     touch-action: pan-y;
 
     /* Prevent scroll jank */
     contain: layout style paint;
   }
 
-  /* Disable hover effects during scrolling for performance */
+  /* Global bounce prevention */
+  html, body {
+    overscroll-behavior: none !important;
+    overscroll-behavior-x: none !important;
+    overscroll-behavior-y: none !important;
+    -webkit-overflow-scrolling: auto !important;
+  }
+
+  /* Disable interactions during scrolling for ultra-smooth performance */
+  .is-scrolling {
+    pointer-events: none;
+  }
+
   .is-scrolling * {
     pointer-events: none !important;
   }
@@ -242,36 +446,24 @@
     transition: none !important;
   }
 
-  /* Emergency scroll performance optimizations */
-  .emergency-scroll-performance {
-    scroll-behavior: auto !important;
-  }
-
-  .emergency-scroll-performance * {
-    will-change: auto !important;
-    transform: none !important;
-    animation: none !important;
-    transition: none !important;
-  }
-
-  /* Low scroll performance optimizations */
+  /* Low performance mode optimizations */
   .low-scroll-performance {
     scroll-behavior: auto !important;
   }
 
   .low-scroll-performance * {
     will-change: auto !important;
-    animation-duration: 0.1s !important;
-    transition-duration: 0.1s !important;
+    animation-duration: 0.05s !important;
+    transition-duration: 0.05s !important;
   }
 
-  /* Mobile optimizations */
+  /* Mobile device optimizations */
   .mobile-device {
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
   }
 
-  /* Reduced motion optimizations */
+  /* Reduced motion accessibility */
   .reduced-motion {
     scroll-behavior: auto !important;
   }
@@ -294,14 +486,44 @@
     backdrop-filter: none !important;
   }
 
-  /* Scroll direction utilities */
+  /* Scroll direction utilities for UI elements */
   [data-scroll-direction="down"] .hide-on-scroll-down {
     transform: translateY(-100%);
-    transition: transform 0.3s ease;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   [data-scroll-direction="up"] .show-on-scroll-up {
     transform: translateY(0);
-    transition: transform 0.3s ease;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Performance indicator styles */
+  #scroll-fps {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    z-index: 9999;
+    pointer-events: none;
+  }
+
+  /* Smooth scroll progress indicator */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    transform-origin: left;
+    z-index: 9998;
+    pointer-events: none;
   }
 </style>
+
+
