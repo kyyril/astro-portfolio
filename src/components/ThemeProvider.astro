@@ -15,10 +15,33 @@ import { themes, defaultTheme } from '../config/themes';
 
   function applyTheme(theme) {
     const root = document.documentElement;
-Object.entries(theme.colors).forEach(([key, value]) => {
+    Object.entries(theme.colors).forEach(([key, value]) => {
       root.style.setProperty(`--color-${key}`, value);
-      console.log(`Setting CSS variable --color-${key}: ${value}`);
     });
+
+    // Update theme-color meta tag
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute('content', theme.colors.background);
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      meta.content = theme.colors.background;
+      document.head.appendChild(meta);
+    }
+
+    // Update RGB variables for background animations
+    const hexToRgb = (hex) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ?
+        `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` :
+        null;
+    };
+
+    root.style.setProperty('--color-primary-rgb', hexToRgb(theme.colors.primary));
+    root.style.setProperty('--color-secondary-rgb', hexToRgb(theme.colors.secondary));
+    root.style.setProperty('--color-accent-rgb', hexToRgb(theme.colors.accent));
+    root.style.setProperty('--color-surface-rgb', hexToRgb(theme.colors.surface));
   }
 
   function switchTheme(themeName) {
@@ -39,7 +62,11 @@ Object.entries(theme.colors).forEach(([key, value]) => {
   }
 
   // Export for global use
-function debounce(func, delay) {
+  window.themes = themes;
+  window.defaultTheme = defaultTheme;
+  window.applyTheme = applyTheme;
+
+  function debounce(func, delay) {
     let timeout;
     return function(...args) {
       const context = this;
@@ -48,7 +75,6 @@ function debounce(func, delay) {
     };
   }
 
-  const debouncedSwitchTheme = debounce(switchTheme, 150); // Adjust delay as needed
+  const debouncedSwitchTheme = debounce(switchTheme, 150);
   window.switchTheme = debouncedSwitchTheme;
-  window.themes = themes;
 </script>

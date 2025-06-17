@@ -2,8 +2,8 @@
 // No server-side logic needed for this component
 ---
 
-<div id="chat-app" class="max-w-7xl w-full h-screen px-4 md:px-8 mx-auto">
-  <div class="flex flex-col md:flex-row gap-4 h-full py-4">
+<div id="chat-app" class="max-w-7xl w-full min-h-screen px-4 md:px-8 mx-auto">
+  <div class="flex flex-col md:flex-row gap-4 min-h-screen py-4">
     
     <!-- Mobile Menu Button -->
     <button id="mobile-menu-btn" class="md:hidden fixed top-4 left-4 z-50  p-2 rounded-lg">
@@ -13,8 +13,8 @@
     </button>
 
     <!-- Chat History Sidebar -->
-    <div id="chat-sidebar" class="fixed md:relative inset-y-0 top-0 left-0 z-40 w-64  md:-hover transition-transform transform -translate-x-full md:translate-x-0 md:flex md:flex-col h-full">
-      <div class="flex flex-col h-full">
+    <div id="chat-sidebar" class="fixed md:relative inset-y-0 top-0 left-0 z-40 w-64  md:-hover transition-transform transform -translate-x-full md:translate-x-0 md:flex md:flex-col min-h-screen">
+      <div class="flex flex-col min-h-screen">
         <div class="p-4 border-b border-border">
           <h2 class="text-lg font-semibold text-text">Chat History</h2>
           <p class="text-xs text-secondary mt-1">
@@ -43,7 +43,7 @@
     <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden hidden"></div>
 
     <!-- Main Chat Area -->
-    <div class="flex-1  flex flex-col h-full md:ml-0 ml-0">
+    <div class="flex-1  flex flex-col min-h-screen md:ml-0 ml-0">
       
       <!-- Chat Header -->
       <header class="flex items-center p-4 border-b border-border">

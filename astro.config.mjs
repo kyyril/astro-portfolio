@@ -7,12 +7,22 @@ import auth from "auth-astro";
 import cloudflare from "@astrojs/cloudflare";
 
 export default defineConfig({
+  site: "https://kyyril.pages.dev", // Ganti dengan domain Anda
   integrations: [
-    react(),
+    react({
+      experimentalReactChildren: true,
+    }),
     tailwind({
       applyBaseStyles: true,
+      config: {
+        content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
+      },
     }),
-    mdx(),
+    mdx({
+      optimize: true,
+      remarkPlugins: [],
+      rehypePlugins: [],
+    }),
     auth(),
   ],
   output: "server",
@@ -22,18 +32,59 @@ export default defineConfig({
       : cloudflare({
           mode: "directory",
           imageService: "compile",
+          platformProxy: {
+            enabled: true,
+          },
         }),
   collections: {
     blog: {
       type: "content",
     },
   },
+  image: {
+    service: {
+      entrypoint: "astro/assets/services/sharp",
+      config: {
+        limitInputPixels: 268402689,
+      },
+    },
+    domains: ["images.pexels.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "**.pexels.com",
+      },
+    ],
+  },
+  prefetch: {
+    prefetchAll: true,
+    defaultStrategy: "viewport",
+  },
+
+  build: {
+    inlineStylesheets: "auto",
+    split: true,
+  },
   vite: {
     optimizeDeps: {
       include: ["react", "react-dom", "@prisma/client"],
+      exclude: ["@astrojs/cloudflare"],
     },
     ssr: {
       external: ["@prisma/client"],
+    },
+    build: {
+      cssCodeSplit: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ["react", "react-dom"],
+          },
+        },
+      },
+    },
+    css: {
+      devSourcemap: true,
     },
   },
 });

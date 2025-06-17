@@ -13,22 +13,22 @@ const {
 
 const baseClasses =
   variant === "glass"
-    ? "bg-black/20 backdrop-blur-xl border border-white/10"
-    : "bg-gray-900/95 border border-gray-700/50";
+    ? "terminal-glass"
+    : "terminal-default";
 ---
 
 <div
-  class={`rounded-lg overflow-hidden shadow-2xl ${baseClasses} ${className}`}
+  class={`terminal-window ${baseClasses} ${className}`}
 >
   {/* Terminal Header */}
-  <div class="flex items-center justify-between px-4 py-3 bg-black/30 border-b border-white/10">
-    <div class="flex items-center gap-2">
-      <div class="flex gap-1.5">
-        <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
-        <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
-        <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+  <div class="terminal-header">
+    <div class="terminal-header-content">
+      <div class="terminal-controls">
+        <div class="terminal-control terminal-control-close"></div>
+        <div class="terminal-control terminal-control-minimize"></div>
+        <div class="terminal-control terminal-control-maximize"></div>
       </div>
-      <span class="text-white/60 text-sm font-mono ml-2">{title}</span>
+      <span class="terminal-title">{title}</span>
     </div>
 
     <div class="flex items-center gap-1">
