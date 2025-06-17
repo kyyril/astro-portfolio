@@ -1,0 +1,307 @@
+---
+// Scroll Performance Optimizer - Fixes freezing and delay issues
+---
+
+<script>
+  // Scroll optimization variables
+  let isScrolling = false;
+  let scrollTimeout: number;
+  let rafId: number;
+  let lastScrollTop = 0;
+  let scrollDirection = 'down';
+
+  // Performance monitoring
+  let frameCount = 0;
+  let lastTime = performance.now();
+  let fps = 60;
+
+  // Initialize scroll optimization
+  function initScrollOptimizer() {
+    // Optimize scroll behavior
+    optimizeScrollBehavior();
+    
+    // Setup passive scroll listeners
+    setupPassiveScrollListeners();
+    
+    // Monitor performance
+    monitorScrollPerformance();
+    
+    // Optimize for different devices
+    optimizeForDevice();
+  }
+
+  function optimizeScrollBehavior() {
+    // 120fps smooth scroll optimization
+    document.documentElement.style.scrollBehavior = 'auto';
+
+    // Prepare for custom smooth scroll
+    document.body.style.overflowX = 'hidden';
+    document.body.style.overscrollBehavior = 'none';
+    document.body.style.touchAction = 'pan-y';
+
+    // Ultra-smooth scroll optimizations
+    document.body.style.transform = 'translateZ(0)';
+    document.body.style.backfaceVisibility = 'hidden';
+    document.body.style.perspective = '1000px';
+
+    // Add smooth scroll class
+    document.body.classList.add('smooth-scroll-120fps');
+
+    // iOS optimizations
+    (document.body.style as any).webkitOverflowScrolling = 'touch';
+    document.body.style.overscrollBehaviorY = 'contain';
+
+    // Optimize all elements for smooth scrolling
+    document.querySelectorAll('*').forEach(el => {
+      (el as HTMLElement).style.transformStyle = 'flat';
+    });
+  }
+
+  function setupPassiveScrollListeners() {
+    let ticking = false;
+    
+    // Optimized scroll handler
+    function handleScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          updateScrollState();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    // Add passive scroll listener for better performance
+    window.addEventListener('scroll', handleScroll, { 
+      passive: true,
+      capture: false 
+    });
+
+    // Handle scroll start/end
+    window.addEventListener('scroll', () => {
+      // Clear existing timeout
+      clearTimeout(scrollTimeout);
+      
+      // Set scrolling state
+      if (!isScrolling) {
+        isScrolling = true;
+        document.body.classList.add('is-scrolling');
+        
+        // Disable hover effects during scroll for performance
+        document.body.style.pointerEvents = 'none';
+      }
+      
+      // Set timeout for scroll end
+      scrollTimeout = window.setTimeout(() => {
+        isScrolling = false;
+        document.body.classList.remove('is-scrolling');
+        document.body.style.pointerEvents = 'auto';
+      }, 150);
+    }, { passive: true });
+  }
+
+  function updateScrollState() {
+    const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    
+    // Update scroll direction
+    if (currentScrollTop > lastScrollTop) {
+      scrollDirection = 'down';
+    } else if (currentScrollTop < lastScrollTop) {
+      scrollDirection = 'up';
+    }
+    
+    // Update body class for scroll direction
+    document.body.setAttribute('data-scroll-direction', scrollDirection);
+    
+    lastScrollTop = currentScrollTop;
+  }
+
+  function monitorScrollPerformance() {
+    function measureFPS() {
+      frameCount++;
+      const currentTime = performance.now();
+
+      if (currentTime - lastTime >= 200) { // Check every 200ms for ultra-fast response
+        fps = Math.round((frameCount * 5000) / (currentTime - lastTime));
+        frameCount = 0;
+        lastTime = currentTime;
+
+        // Ultra-aggressive performance scaling for 60fps
+        if (fps < 45) {
+          // Emergency performance mode
+          document.documentElement.style.scrollBehavior = 'auto';
+          document.body.classList.add('emergency-scroll-performance');
+
+          // Disable all scroll animations temporarily
+          document.body.style.pointerEvents = 'none';
+          setTimeout(() => {
+            document.body.style.pointerEvents = 'auto';
+          }, 100);
+
+        } else if (fps < 55) {
+          // Low performance mode
+          document.documentElement.style.scrollBehavior = 'auto';
+          document.body.classList.add('low-scroll-performance');
+          document.body.classList.remove('emergency-scroll-performance');
+
+        } else if (fps >= 58) {
+          // Ultra performance mode - keep scroll optimized
+          document.body.classList.remove('low-scroll-performance', 'emergency-scroll-performance');
+        }
+      }
+
+      rafId = requestAnimationFrame(measureFPS);
+    }
+
+    measureFPS();
+  }
+
+  function optimizeForDevice() {
+    // Check for mobile devices
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+    if (isMobile) {
+      document.body.classList.add('mobile-device');
+      
+      // Optimize for mobile scrolling
+      (document.body.style as any).webkitOverflowScrolling = 'touch';
+      document.body.style.overscrollBehaviorY = 'contain';
+      
+      // Reduce scroll smoothness on mobile for better performance
+      document.documentElement.style.scrollBehavior = 'auto';
+    }
+    
+    // Check for reduced motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.style.scrollBehavior = 'auto';
+      document.body.classList.add('reduced-motion');
+    }
+    
+    // Optimize for low-end devices
+    const isLowEnd = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2;
+    if (isLowEnd) {
+      document.body.classList.add('low-end-device');
+      document.documentElement.style.scrollBehavior = 'auto';
+    }
+  }
+
+  // Cleanup function
+  function cleanupScrollOptimizer() {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+    }
+    if (scrollTimeout) {
+      clearTimeout(scrollTimeout);
+    }
+    
+    // Remove optimization classes
+    document.body.classList.remove('scroll-optimized', 'is-scrolling', 'low-performance', 'mobile-device', 'reduced-motion', 'low-end-device');
+    
+    // Reset scroll behavior
+    document.documentElement.style.scrollBehavior = '';
+    document.body.style.pointerEvents = '';
+  }
+
+  // Initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', initScrollOptimizer);
+  
+  // Re-initialize on page transitions
+  document.addEventListener('astro:page-load', initScrollOptimizer);
+  
+  // Cleanup on page unload
+  document.addEventListener('astro:before-preparation', cleanupScrollOptimizer);
+  window.addEventListener('beforeunload', cleanupScrollOptimizer);
+</script>
+
+<style>
+  /* Ultra scroll optimization styles */
+  .scroll-ultra-optimized {
+    /* Maximum hardware acceleration */
+    transform: translate3d(0, 0, 0);
+    will-change: scroll-position;
+    backface-visibility: hidden;
+    perspective: 1000px;
+    transform-style: preserve-3d;
+
+    /* Ultra-optimized scrolling */
+    scroll-behavior: auto; /* Let GSAP handle smoothness */
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+    touch-action: pan-y;
+
+    /* Prevent scroll jank */
+    contain: layout style paint;
+  }
+
+  /* Disable hover effects during scrolling for performance */
+  .is-scrolling * {
+    pointer-events: none !important;
+  }
+
+  .is-scrolling *:hover {
+    transition: none !important;
+  }
+
+  /* Emergency scroll performance optimizations */
+  .emergency-scroll-performance {
+    scroll-behavior: auto !important;
+  }
+
+  .emergency-scroll-performance * {
+    will-change: auto !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Low scroll performance optimizations */
+  .low-scroll-performance {
+    scroll-behavior: auto !important;
+  }
+
+  .low-scroll-performance * {
+    will-change: auto !important;
+    animation-duration: 0.1s !important;
+    transition-duration: 0.1s !important;
+  }
+
+  /* Mobile optimizations */
+  .mobile-device {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+
+  /* Reduced motion optimizations */
+  .reduced-motion {
+    scroll-behavior: auto !important;
+  }
+
+  .reduced-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Low-end device optimizations */
+  .low-end-device {
+    scroll-behavior: auto !important;
+  }
+
+  .low-end-device * {
+    will-change: auto !important;
+    transform: none !important;
+    filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Scroll direction utilities */
+  [data-scroll-direction="down"] .hide-on-scroll-down {
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+  }
+
+  [data-scroll-direction="up"] .show-on-scroll-up {
+    transform: translateY(0);
+    transition: transform 0.3s ease;
+  }
+</style>

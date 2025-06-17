@@ -67,11 +67,20 @@ export default defineConfig({
   },
   vite: {
     optimizeDeps: {
-      include: ["react", "react-dom", "@prisma/client"],
+      include: [
+        "react",
+        "react-dom",
+        "@prisma/client",
+        "gsap",
+        "gsap/ScrollTrigger",
+        "gsap/TextPlugin",
+        "gsap/ScrollToPlugin",
+      ],
       exclude: ["@astrojs/cloudflare"],
     },
     ssr: {
       external: ["@prisma/client"],
+      noExternal: ["gsap"],
     },
     build: {
       cssCodeSplit: true,
@@ -79,6 +88,7 @@ export default defineConfig({
         output: {
           manualChunks: {
             vendor: ["react", "react-dom"],
+            gsap: ["gsap"],
           },
         },
       },

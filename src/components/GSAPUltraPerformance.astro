@@ -1,0 +1,309 @@
+---
+// Ultra Performance GSAP System - 60fps Optimized with Advanced Techniques
+---
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { FlipPlugin } from 'gsap/Flip';
+
+  // Register plugins
+  gsap.registerPlugin(ScrollTrigger, FlipPlugin);
+
+  // Performance monitoring variables
+  let fps = 60;
+  let frameCount = 0;
+  let lastTime = performance.now();
+  let performanceMode = 'ultra';
+  let rafId: number;
+  
+  // Memory management
+  let tweenPool: gsap.core.Tween[] = [];
+  let activeAnimations = new WeakMap();
+  let intersectionObserver: IntersectionObserver;
+  
+  // Throttle and debounce utilities
+  function throttle(func: Function, limit: number) {
+    let inThrottle: boolean;
+    return function(this: any, ...args: any[]) {
+      if (!inThrottle) {
+        func.apply(this, args);
+        inThrottle = true;
+        setTimeout(() => inThrottle = false, limit);
+      }
+    }
+  }
+
+  function debounce(func: Function, wait: number) {
+    let timeout: number;
+    return function(this: any, ...args: any[]) {
+      clearTimeout(timeout);
+      timeout = window.setTimeout(() => func.apply(this, args), wait);
+    };
+  }
+
+  // Initialize ultra performance system
+  function initUltraPerformance() {
+    setupUltraConfig();
+    setupIntersectionObserver();
+    setupAdvancedAnimations();
+    setupPerformanceMonitoring();
+    setupMemoryManagement();
+    setupEventOptimization();
+  }
+
+  function setupElegantConfig() {
+    // Elegant GSAP configuration - natural and smooth
+    gsap.config({
+      nullTargetWarn: false
+    });
+
+    // Smooth and responsive ScrollTrigger settings
+    ScrollTrigger.config({
+      limitCallbacks: true,
+      syncInterval: 16, // Standard 60fps timing
+      autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+      ignoreMobileResize: true
+    });
+
+    // Subtle optimization without aggressive 3D forcing
+    gsap.set("body", {
+      transformStyle: "flat" // Keep it natural
+    });
+  }
+
+  function setupIntersectionObserver() {
+    // Use Intersection Observer for better performance than ScrollTrigger for simple cases
+    const observerOptions = {
+      root: null,
+      rootMargin: '50px 0px', // Smaller margin for faster response
+      threshold: [0, 0.1, 0.5, 1.0]
+    };
+
+    intersectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        const element = entry.target as HTMLElement;
+        
+        if (entry.isIntersecting) {
+          // Element is visible - animate in
+          if (!activeAnimations.has(element)) {
+            animateElementIn(element, entry.intersectionRatio);
+          }
+        } else {
+          // Element is not visible - clean up if needed
+          cleanupElement(element);
+        }
+      });
+    }, observerOptions);
+
+    // Observe all animatable elements
+    document.querySelectorAll('.ultra-animate').forEach(el => {
+      intersectionObserver.observe(el);
+    });
+  }
+
+  function animateElementIn(element: HTMLElement, ratio: number) {
+    // Kill any existing animations
+    gsap.killTweensOf(element);
+    
+    // Ultra-fast animation with minimal properties
+    const tween = gsap.fromTo(element, 
+      {
+        opacity: 0,
+        y: 15, // Minimal movement for speed
+        scale: 0.99, // Subtle scale
+        rotationX: 0.01 // Force 3D layer
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        rotationX: 0,
+        duration: 0.2, // Ultra-fast duration
+        ease: "power1.out", // Fast easing
+        force3D: true,
+        immediateRender: false,
+        lazy: false,
+        onComplete: () => {
+          // Clean up after animation
+          gsap.set(element, { clearProps: "transform" });
+        }
+      }
+    );
+    
+    activeAnimations.set(element, tween);
+    tweenPool.push(tween);
+  }
+
+  function cleanupElement(element: HTMLElement) {
+    const tween = activeAnimations.get(element);
+    if (tween) {
+      tween.kill();
+      activeAnimations.delete(element);
+    }
+  }
+
+  function setupAdvancedAnimations() {
+    // Shared timeline for better performance
+    const masterTimeline = gsap.timeline({ paused: true });
+    
+    // Batch similar animations for efficiency
+    const cards = gsap.utils.toArray('.terminal-card') as HTMLElement[];
+    if (cards.length > 0) {
+      // Use single tween for multiple elements
+      gsap.set(cards, { 
+        transformOrigin: "center center",
+        force3D: true 
+      });
+
+      // Hover effects with shared timeline
+      cards.forEach((card, index) => {
+        const hoverTween = gsap.to(card, {
+          y: -4,
+          scale: 1.01,
+          duration: 0.15,
+          ease: "power1.out",
+          paused: true,
+          force3D: true
+        });
+
+        card.addEventListener('mouseenter', () => hoverTween.play());
+        card.addEventListener('mouseleave', () => hoverTween.reverse());
+      });
+    }
+  }
+
+  function setupPerformanceMonitoring() {
+    function measureFPS() {
+      frameCount++;
+      const currentTime = performance.now();
+      
+      if (currentTime - lastTime >= 250) { // Check every 250ms for ultra-fast response
+        fps = Math.round((frameCount * 4000) / (currentTime - lastTime));
+        frameCount = 0;
+        lastTime = currentTime;
+        
+        // Ultra-aggressive performance scaling
+        if (fps < 55 && performanceMode !== 'low') {
+          performanceMode = 'low';
+          // Emergency performance mode
+          gsap.globalTimeline.timeScale(0.6);
+          ScrollTrigger.config({ syncInterval: 64 });
+          document.body.classList.add('emergency-performance');
+          
+        } else if (fps >= 59 && performanceMode !== 'ultra') {
+          performanceMode = 'ultra';
+          // Ultra mode
+          gsap.globalTimeline.timeScale(1.1);
+          ScrollTrigger.config({ syncInterval: 8 });
+          document.body.classList.remove('emergency-performance');
+        }
+      }
+      
+      rafId = requestAnimationFrame(measureFPS);
+    }
+    
+    measureFPS();
+  }
+
+  function setupMemoryManagement() {
+    // Aggressive cleanup every 5 seconds
+    setInterval(() => {
+      // Clean up completed tweens
+      tweenPool = tweenPool.filter(tween => tween.isActive());
+      
+      // Force garbage collection hint (if available)
+      if ('gc' in window && typeof (window as any).gc === 'function') {
+        (window as any).gc();
+      }
+    }, 5000);
+
+    // Clean up on visibility change
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        // Pause all animations when tab is hidden
+        gsap.globalTimeline.pause();
+      } else {
+        // Resume when tab is visible
+        gsap.globalTimeline.resume();
+      }
+    });
+  }
+
+  function setupEventOptimization() {
+    // Ultra-optimized scroll handling
+    const optimizedScrollHandler = throttle(() => {
+      // Minimal scroll logic here
+      requestAnimationFrame(() => {
+        // Batch DOM reads/writes
+        const scrollY = window.scrollY;
+        // Update scroll-dependent animations
+      });
+    }, 8); // 8ms throttle for 120fps capability
+
+    // Optimized resize handler
+    const optimizedResizeHandler = debounce(() => {
+      ScrollTrigger.refresh();
+    }, 50); // Very fast resize response
+
+    // Add passive listeners for better performance
+    window.addEventListener('scroll', optimizedScrollHandler, { passive: true });
+    window.addEventListener('resize', optimizedResizeHandler, { passive: true });
+  }
+
+  // Cleanup function
+  function cleanupUltraPerformance() {
+    if (rafId) cancelAnimationFrame(rafId);
+    if (intersectionObserver) intersectionObserver.disconnect();
+    
+    ScrollTrigger.getAll().forEach(trigger => trigger.kill(true));
+    gsap.killTweensOf("*");
+    gsap.set("*", { clearProps: "all" });
+    
+    tweenPool.length = 0;
+    activeAnimations = new WeakMap();
+    
+    document.body.classList.remove('emergency-performance');
+  }
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', initUltraPerformance);
+  document.addEventListener('astro:page-load', initUltraPerformance);
+  
+  // Cleanup on page unload
+  document.addEventListener('astro:before-preparation', cleanupUltraPerformance);
+  window.addEventListener('beforeunload', cleanupUltraPerformance);
+</script>
+
+<style>
+  /* Ultra performance CSS optimizations */
+  .ultra-animate {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  /* Emergency performance mode */
+  .emergency-performance * {
+    animation-duration: 0.1s !important;
+    transition-duration: 0.1s !important;
+  }
+
+  .emergency-performance .ultra-animate {
+    will-change: auto;
+    transform: none;
+  }
+
+  /* GPU acceleration utilities */
+  .gpu-layer {
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    backface-visibility: hidden;
+  }
+
+  /* Optimized for 60fps+ */
+  .ultra-smooth {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
+</style>

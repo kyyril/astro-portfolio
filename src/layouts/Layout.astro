@@ -2,6 +2,7 @@
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import ThemeProvider from '../components/ThemeProvider.astro';
+import GSAPAnimations from '../components/GSAPAnimations.astro';
 
 interface Props {
   title: string;
@@ -80,10 +81,11 @@ const canonicalURL = Astro.site
   </head>
   <body>
     <ThemeProvider />
+    <GSAPAnimations />
     <main>
       <slot />
     </main>
     <Navigation />
-      <Footer />
+    <Footer />
   </body>
 </html>

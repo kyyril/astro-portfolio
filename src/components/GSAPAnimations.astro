@@ -1,0 +1,510 @@
+---
+// GSAP Animations Component for Performance
+---
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  import { TextPlugin } from 'gsap/TextPlugin';
+
+  // Register GSAP plugins
+  gsap.registerPlugin(ScrollTrigger, TextPlugin);
+
+  // Initialize GSAP animations when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    initGSAPAnimations();
+  });
+
+  // Re-initialize on page transitions (for Astro view transitions)
+  document.addEventListener('astro:page-load', () => {
+    initGSAPAnimations();
+  });
+
+  function initGSAPAnimations() {
+    // Set GSAP defaults for better performance
+    gsap.defaults({
+      duration: 0.6,
+      ease: "power2.out"
+    });
+
+    // Smooth scroll setup with GSAP
+    setupSmoothScroll();
+    
+    // Fade in animations for cards
+    setupCardAnimations();
+    
+    // Navigation animations
+    setupNavigationAnimations();
+    
+    // Theme toggle animations
+    setupThemeToggleAnimations();
+    
+    // Text animations
+    setupTextAnimations();
+    
+    // Performance optimizations
+    setupPerformanceOptimizations();
+  }
+
+  function setupSmoothScroll() {
+    // GSAP smooth scroll with better performance than locomotive
+    ScrollTrigger.normalizeScroll(true);
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          gsap.to(window, {
+            duration: 1,
+            scrollTo: { y: target, offsetY: 80 },
+            ease: "power2.inOut"
+          });
+        }
+      });
+    });
+  }
+
+  function setupCardAnimations() {
+    // Animate terminal cards on scroll
+    gsap.utils.toArray('.terminal-card').forEach((card, index) => {
+      gsap.fromTo(card, 
+        {
+          y: 60,
+          opacity: 0,
+          scale: 0.95
+        },
+        {
+          y: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            end: "bottom 15%",
+            toggleActions: "play none none reverse"
+          },
+          delay: index * 0.1 // Stagger effect
+        }
+      );
+
+      // Hover animations for cards
+      card.addEventListener('mouseenter', () => {
+        gsap.to(card, {
+          y: -8,
+          scale: 1.02,
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      });
+
+      card.addEventListener('mouseleave', () => {
+        gsap.to(card, {
+          y: 0,
+          scale: 1,
+          duration: 0.3,
+          ease: "power2.out"
+        });
+      });
+    });
+  }
+
+  function setupNavigationAnimations() {
+    const navBar = document.querySelector('.nav-bar');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    if (navBar) {
+      // Initial animation for navigation bar
+      gsap.fromTo(navBar, 
+        { y: 100, opacity: 0 },
+        { 
+          y: 0, 
+          opacity: 1, 
+          duration: 0.8, 
+          ease: "back.out(1.7)",
+          delay: 0.5
+        }
+      );
+
+      // Animate nav items
+      navItems.forEach((item, index) => {
+        item.addEventListener('mouseenter', () => {
+          gsap.to(item, {
+            scale: 1.1,
+            y: -3,
+            duration: 0.2,
+            ease: "power2.out"
+          });
+        });
+
+        item.addEventListener('mouseleave', () => {
+          gsap.to(item, {
+            scale: 1,
+            y: 0,
+            duration: 0.2,
+            ease: "power2.out"
+          });
+        });
+      });
+    }
+  }
+
+  function setupThemeToggleAnimations() {
+    const themeToggle = document.querySelector('.theme-toggle-btn');
+    const themeDropdown = document.querySelector('.theme-dropdown');
+
+    if (themeToggle) {
+      // Initial animation
+      gsap.fromTo(themeToggle, 
+        { scale: 0, rotation: -180 },
+        { 
+          scale: 1, 
+          rotation: 0, 
+          duration: 0.6, 
+          ease: "back.out(1.7)",
+          delay: 0.3
+        }
+      );
+
+      // Hover animation
+      themeToggle.addEventListener('mouseenter', () => {
+        gsap.to(themeToggle, {
+          scale: 1.1,
+          rotation: 5,
+          duration: 0.2,
+          ease: "power2.out"
+        });
+      });
+
+      themeToggle.addEventListener('mouseleave', () => {
+        gsap.to(themeToggle, {
+          scale: 1,
+          rotation: 0,
+          duration: 0.2,
+          ease: "power2.out"
+        });
+      });
+    }
+
+    if (themeDropdown) {
+      // Override default dropdown animation with GSAP
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+            const isHidden = themeDropdown.classList.contains('hidden');
+            if (!isHidden) {
+              gsap.fromTo(themeDropdown, 
+                { opacity: 0, y: -10, scale: 0.95 },
+                { 
+                  opacity: 1, 
+                  y: 0, 
+                  scale: 1, 
+                  duration: 0.3, 
+                  ease: "back.out(1.7)" 
+                }
+              );
+            }
+          }
+        });
+      });
+      observer.observe(themeDropdown, { attributes: true });
+    }
+  }
+
+  function setupTextAnimations() {
+    // Animate headings on scroll
+    gsap.utils.toArray('h1, h2, h3').forEach((heading) => {
+      gsap.fromTo(heading,
+        { 
+          opacity: 0, 
+          y: 30,
+          skewY: 3
+        },
+        {
+          opacity: 1,
+          y: 0,
+          skewY: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: heading,
+            start: "top 90%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      );
+    });
+
+    // Animate paragraphs
+    gsap.utils.toArray('p').forEach((paragraph, index) => {
+      gsap.fromTo(paragraph,
+        { 
+          opacity: 0, 
+          y: 20
+        },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: paragraph,
+            start: "top 95%",
+            toggleActions: "play none none reverse"
+          },
+          delay: index * 0.05
+        }
+      );
+    });
+  }
+
+  function setupPerformanceOptimizations() {
+    // Advanced GSAP Performance Configuration for 60fps
+    gsap.config({
+      force3D: true,
+      nullTargetWarn: false
+    });
+
+    // Ultra-optimized ScrollTrigger settings for 60fps
+    ScrollTrigger.config({
+      limitCallbacks: true,
+      syncInterval: 16, // 60fps = 16.67ms per frame
+      autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+      ignoreMobileResize: true
+    });
+
+    // Enable maximum GPU acceleration
+    gsap.set("body", {
+      force3D: true,
+      transformStyle: "preserve-3d",
+      backfaceVisibility: "hidden"
+    });
+
+    // Advanced batching with performance monitoring
+    let batchTweens = [];
+
+    ScrollTrigger.batch('.animate-on-scroll', {
+      onEnter: (elements) => {
+        // Kill any existing tweens to prevent conflicts
+        gsap.killTweensOf(elements);
+
+        const tween = gsap.fromTo(elements,
+          {
+            opacity: 0,
+            y: 20, // Reduced distance for faster animation
+            scale: 0.98, // Subtle scale for performance
+            rotationX: 0.01 // Force 3D layer
+          },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            rotationX: 0,
+            duration: 0.3, // Faster duration
+            stagger: {
+              amount: 0.15, // Reduced stagger time
+              ease: "power1.out"
+            },
+            ease: "power1.out", // Faster easing
+            force3D: true,
+            immediateRender: false,
+            lazy: false
+          }
+        );
+
+        batchTweens.push(tween);
+      },
+      onLeave: (elements) => {
+        gsap.to(elements, {
+          opacity: 0.6,
+          duration: 0.15, // Very fast fade
+          ease: "none", // No easing for performance
+          force3D: true
+        });
+      },
+      onEnterBack: (elements) => {
+        gsap.to(elements, {
+          opacity: 1,
+          duration: 0.15,
+          ease: "none",
+          force3D: true
+        });
+      },
+      start: "top 90%", // Earlier trigger for smoother experience
+      end: "bottom 10%"
+    });
+
+    // Optimized resize handler with better debouncing
+    let resizeTimer: number;
+    let isResizing = false;
+
+    window.addEventListener('resize', () => {
+      if (!isResizing) {
+        isResizing = true;
+        requestAnimationFrame(() => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            ScrollTrigger.refresh();
+            isResizing = false;
+          }, 150);
+        });
+      }
+    });
+
+    // Optimize scroll performance
+    ScrollTrigger.addEventListener("scrollStart", () => {
+      document.body.style.pointerEvents = "none";
+    });
+
+    ScrollTrigger.addEventListener("scrollEnd", () => {
+      document.body.style.pointerEvents = "auto";
+    });
+
+    // Advanced Performance Monitoring for 60fps
+    let fps = 60;
+    let frameCount = 0;
+    let lastTime = performance.now();
+    let performanceMode = 'ultra';
+    let rafId: number;
+
+    // Memory management arrays
+    let activeTweens: gsap.core.Tween[] = [];
+    let scrollTriggers: ScrollTrigger[] = [];
+
+    function monitorPerformance() {
+      frameCount++;
+      const currentTime = performance.now();
+
+      if (currentTime - lastTime >= 500) { // Check every 500ms for faster response
+        fps = Math.round((frameCount * 2000) / (currentTime - lastTime));
+        frameCount = 0;
+        lastTime = currentTime;
+
+        // Ultra-aggressive performance scaling for 60fps
+        if (fps < 50 && performanceMode !== 'low') {
+          performanceMode = 'low';
+          gsap.globalTimeline.timeScale(0.8);
+          ScrollTrigger.config({
+            limitCallbacks: true,
+            syncInterval: 32
+          });
+          document.body.classList.add('low-performance');
+          cleanupNonEssentialAnimations();
+
+        } else if (fps >= 58 && performanceMode !== 'ultra') {
+          performanceMode = 'ultra';
+          gsap.globalTimeline.timeScale(1.05); // Slightly faster for snappiness
+          ScrollTrigger.config({
+            limitCallbacks: false,
+            syncInterval: 16
+          });
+          document.body.classList.remove('low-performance');
+        }
+      }
+
+      rafId = requestAnimationFrame(monitorPerformance);
+    }
+
+    // Advanced memory management
+    function cleanupNonEssentialAnimations() {
+      activeTweens.forEach(tween => {
+        const target = tween.targets()[0] as Element;
+        if (target && !isElementInViewport(target)) {
+          tween.kill();
+        }
+      });
+      activeTweens = activeTweens.filter(tween => tween.isActive());
+    }
+
+    function isElementInViewport(element: Element): boolean {
+      const rect = element.getBoundingClientRect();
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+      const windowWidth = window.innerWidth || document.documentElement.clientWidth;
+
+      return (
+        rect.top < windowHeight + 100 &&
+        rect.bottom > -100 &&
+        rect.left < windowWidth + 100 &&
+        rect.right > -100
+      );
+    }
+
+    monitorPerformance();
+
+    // Optimized reduced motion handling
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gsap.globalTimeline.timeScale(0.1);
+      ScrollTrigger.config({ limitCallbacks: true });
+      document.body.classList.add('reduced-motion');
+    }
+  }
+
+  // Advanced cleanup function with memory management
+  function cleanupGSAP() {
+    // Cancel performance monitoring
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+    }
+
+    // Kill all ScrollTriggers with proper cleanup
+    ScrollTrigger.getAll().forEach(trigger => {
+      trigger.kill(true); // true = remove from DOM
+    });
+
+    // Kill all tweens and clear properties
+    gsap.killTweensOf("*");
+
+    // Clear properties to prevent memory leaks
+    gsap.set("*", { clearProps: "all" });
+
+    // Clear memory management arrays
+    activeTweens.length = 0;
+    scrollTriggers.length = 0;
+
+    // Remove event listeners
+    window.removeEventListener('resize', handleResize);
+
+    // Reset performance mode
+    performanceMode = 'ultra';
+    fps = 60;
+
+    // Remove performance classes
+    document.body.classList.remove('low-performance', 'reduced-motion');
+
+    // Reset pointer events
+    document.body.style.pointerEvents = 'auto';
+  }
+
+  // Cleanup on page unload
+  document.addEventListener('astro:before-preparation', cleanupGSAP);
+  window.addEventListener('beforeunload', cleanupGSAP);
+</script>
+
+<style>
+  /* GSAP performance optimizations */
+  .terminal-card,
+  .nav-item,
+  .theme-toggle-btn {
+    will-change: transform;
+    transform: translateZ(0);
+  }
+
+  /* Smooth transitions for GSAP animations */
+  .gsap-fade-in {
+    opacity: 0;
+  }
+
+  .gsap-slide-up {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+
+  /* Optimize for animations */
+  .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+</style>

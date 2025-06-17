@@ -1,0 +1,254 @@
+---
+// Ultra Performance Layout - 60fps Optimized
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Ultra-fast performance website" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="ultra-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    
+    <!-- Performance optimizations -->
+    <meta name="theme-color" content="#1e1e2e" />
+    <meta name="color-scheme" content="dark" />
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/global.css" as="style" />
+    <link rel="preload" href="/tailwind.css" as="style" />
+    
+    <!-- Critical CSS -->
+    <link href="/global.css" rel="stylesheet" />
+    <link href="/tailwind.css" rel="stylesheet" />
+    
+    <!-- Performance hints -->
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    
+    <!-- Ultra performance meta tags -->
+    <meta name="renderer" content="webkit" />
+    <meta name="force-rendering" content="webkit" />
+    
+    <style>
+      /* Critical inline CSS for ultra-fast loading */
+      html {
+        scroll-behavior: auto !important; /* Let GSAP handle smoothness */
+      }
+      
+      body {
+        opacity: 0;
+        transition: opacity 0.1s ease;
+      }
+      
+      body.loaded {
+        opacity: 1;
+      }
+      
+      /* Ultra-fast loading spinner */
+      .ultra-loader {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid var(--color-border, #45475a);
+        border-top: 2px solid var(--color-primary, #89b4fa);
+        border-radius: 50%;
+        animation: ultraSpin 0.5s linear infinite;
+        z-index: 10000;
+      }
+      
+      @keyframes ultraSpin {
+        0% { transform: translate(-50%, -50%) rotate(0deg); }
+        100% { transform: translate(-50%, -50%) rotate(360deg); }
+      }
+      
+      body.loaded .ultra-loader {
+        display: none;
+      }
+      
+      /* Prevent FOUC */
+      .ultra-animate {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      
+      /* Emergency performance mode */
+      .emergency-performance * {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        will-change: auto !important;
+      }
+    </style>
+  </head>
+  
+  <body class="gpu-accelerated">
+    <!-- Ultra-fast loading indicator -->
+    <div class="ultra-loader" id="ultraLoader"></div>
+    
+    <!-- Main content with performance optimizations -->
+    <main class="ultra-smooth contain-layout">
+      <slot />
+    </main>
+    
+    <!-- Ultra Performance Components -->
+    <script>
+      // Ultra-fast page load optimization
+      document.addEventListener('DOMContentLoaded', () => {
+        // Remove loader and show content ultra-fast
+        requestAnimationFrame(() => {
+          document.body.classList.add('loaded');
+          
+          // Initialize ultra performance after content is visible
+          setTimeout(() => {
+            initUltraPerformance();
+          }, 50);
+        });
+      });
+      
+      function initUltraPerformance() {
+        // Add ultra-animate class to all animatable elements
+        const animatableElements = document.querySelectorAll(
+          '.terminal-card, .project-card, h1, h2, h3, p, .nav-item'
+        );
+        
+        animatableElements.forEach(el => {
+          el.classList.add('ultra-animate');
+        });
+        
+        // Performance monitoring
+        let fps = 60;
+        let frameCount = 0;
+        let lastTime = performance.now();
+        
+        function monitorUltraPerformance() {
+          frameCount++;
+          const currentTime = performance.now();
+          
+          if (currentTime - lastTime >= 100) { // Ultra-fast monitoring
+            fps = Math.round((frameCount * 10000) / (currentTime - lastTime));
+            frameCount = 0;
+            lastTime = currentTime;
+            
+            // Emergency performance mode
+            if (fps < 50) {
+              document.body.classList.add('emergency-performance');
+            } else if (fps >= 58) {
+              document.body.classList.remove('emergency-performance');
+            }
+          }
+          
+          requestAnimationFrame(monitorUltraPerformance);
+        }
+        
+        monitorUltraPerformance();
+      }
+      
+      // Ultra-fast page transitions for Astro
+      document.addEventListener('astro:page-load', () => {
+        initUltraPerformance();
+      });
+      
+      // Cleanup on page unload
+      document.addEventListener('astro:before-preparation', () => {
+        // Quick cleanup
+        document.body.classList.remove('loaded', 'emergency-performance');
+      });
+      
+      // Optimize for different connection speeds
+      if ('connection' in navigator) {
+        const connection = (navigator as any).connection;
+        if (connection && connection.effectiveType) {
+          if (connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+            document.body.classList.add('emergency-performance');
+          }
+        }
+      }
+      
+      // Optimize for battery level
+      if ('getBattery' in navigator) {
+        (navigator as any).getBattery().then((battery: any) => {
+          if (battery.level < 0.2) { // Low battery
+            document.body.classList.add('emergency-performance');
+          }
+        });
+      }
+      
+      // Memory pressure detection
+      if ('memory' in performance) {
+        const memInfo = (performance as any).memory;
+        if (memInfo.usedJSHeapSize / memInfo.jsHeapSizeLimit > 0.8) {
+          document.body.classList.add('emergency-performance');
+        }
+      }
+    </script>
+  </body>
+</html>
+
+<!-- Import ultra performance components -->
+<script>
+  // Dynamic import for better performance
+  import('../components/GSAPUltraPerformance.astro');
+  import('../components/ScrollOptimizer.astro');
+</script>
+
+<style>
+  /* Layout-specific ultra performance optimizations */
+  main {
+    min-height: 100vh;
+    min-height: 100dvh;
+    contain: layout style paint;
+    transform: translateZ(0);
+  }
+  
+  /* Ultra-smooth scrolling container */
+  .ultra-smooth {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    perspective: 1000px;
+  }
+  
+  /* Responsive performance optimizations */
+  @media (max-width: 768px) {
+    .ultra-animate {
+      animation-duration: 0.1s !important;
+    }
+    
+    .emergency-performance .ultra-animate {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+  
+  /* High refresh rate display optimizations */
+  @media (min-resolution: 120dpi) {
+    .ultra-animate {
+      animation-duration: 0.08s !important;
+    }
+  }
+  
+  /* Reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    
+    .ultra-animate {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+</style>

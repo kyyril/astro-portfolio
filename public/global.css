@@ -19,17 +19,18 @@
   --color-success: #a6e3a1;
   --color-error: #f38ba8;
 
-  /* Performance variables */
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.3s ease;
-  --transition-slow: 0.5s ease;
+  /* Speed-Focused Transition Variables */
+  --transition-lightning: 0.03s ease-out;
+  --transition-instant: 0.05s ease-out;
+  --transition-fast: 0.08s ease-out;
+  --transition-normal: 0.1s ease-out;
   --border-radius: 8px;
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
 }
 
-/* Performance optimizations */
+/* Fast & Cool Transitions - Simple and Elegant */
 *,
 *::before,
 *::after {
@@ -41,7 +42,7 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   font-feature-settings: "kern" 1;
-  scroll-behavior: smooth;
+  scroll-behavior: auto; /* Let custom smooth scroll handle this */
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -56,11 +57,23 @@ body {
   min-height: 100dvh;
   transition: background-color var(--transition-normal),
     color var(--transition-normal);
-  contain: layout style paint;
   overflow-x: hidden;
 }
 
-/* Optimized component styles */
+/* 120fps Smooth Scroll Optimizations */
+.smooth-scroll-120fps {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: scroll-position;
+}
+
+.smooth-scroll-120fps * {
+  transform-style: flat;
+  backface-visibility: hidden;
+}
+
+/* Speed-Focused Component Styles */
 .terminal-card {
   background: rgba(var(--color-surface-rgb), 0.8);
   backdrop-filter: blur(5px);
@@ -69,15 +82,19 @@ body {
   padding: 1.5rem;
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-md);
-  transition: transform var(--transition-fast),
-    box-shadow var(--transition-fast);
-  contain: layout style paint;
-  will-change: transform;
+  transition: transform var(--transition-instant),
+    box-shadow var(--transition-instant);
+  cursor: pointer;
 }
 
 .terminal-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-lg);
+  transform: translateY(-1px); /* Minimal movement for speed */
+  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.15);
+}
+
+.terminal-card:active {
+  transform: scale(0.98);
+  transition: transform var(--transition-lightning);
 }
 
 .darker-card {
@@ -112,38 +129,60 @@ body {
   background: var(--color-background);
 }
 
-/* Performance utility classes */
-.gpu-accelerated {
-  transform: translate3d(0, 0, 0);
-  will-change: transform;
+/* Speed-Focused Utility Classes */
+.lightning-hover {
+  transition: transform var(--transition-instant);
 }
 
-.contain-layout {
-  contain: layout;
+.lightning-hover:hover {
+  transform: translateY(-1px);
 }
 
-.contain-paint {
-  contain: paint;
+.instant-click {
+  transition: transform var(--transition-lightning);
 }
 
-.contain-strict {
-  contain: strict;
+.instant-click:active {
+  transform: scale(0.98);
 }
 
-/* Animation performance classes */
-.animate-fade-in {
-  animation: fadeIn 0.5s ease-out;
+.speed-glow:hover {
+  box-shadow: 0 0 8px rgba(var(--color-primary-rgb), 0.3);
+  transition: box-shadow var(--transition-instant);
 }
 
-.animate-slide-up {
-  animation: slideUp 0.6s ease-out;
+.fade-in-fast {
+  opacity: 0;
+  animation: fadeInFast 0.1s ease-out forwards;
 }
 
-.animate-scale-in {
-  animation: scaleIn 0.4s ease-out;
+.speedy-reveal {
+  opacity: 0;
+  transition: opacity var(--transition-fast);
 }
 
-@keyframes fadeIn {
+.speedy-reveal.visible {
+  opacity: 1;
+}
+
+/* Lightning-fast button effects */
+.btn-speedy {
+  transition: all var(--transition-instant);
+  position: relative;
+}
+
+.btn-speedy:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.btn-speedy:active {
+  transform: scale(0.98);
+  transition: transform var(--transition-lightning);
+}
+
+/* Speed-Focused Animations - No Pop-ups */
+@keyframes fadeInFast {
   from {
     opacity: 0;
   }
@@ -152,26 +191,56 @@ body {
   }
 }
 
-@keyframes slideUp {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
+@keyframes flashFeedback {
+  0% {
+    background-color: var(--color-primary);
   }
-  to {
-    transform: translateY(0);
-    opacity: 1;
+  100% {
+    background-color: transparent;
   }
 }
 
-@keyframes scaleIn {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
+@keyframes quickPulse {
+  0%,
+  100% {
     opacity: 1;
   }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Lightning-fast loading animation */
+@keyframes spinFast {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-fast {
+  animation: spinFast 0.5s linear infinite;
+}
+
+/* Speed indicator animation */
+@keyframes speedIndicator {
+  0% {
+    transform: scaleX(0);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+
+.speed-bar {
+  animation: speedIndicator 0.1s ease-out;
+}
+
+/* Instant feedback flash */
+.feedback-flash {
+  animation: flashFeedback 0.1s ease-out;
 }
 
 /* Responsive optimizations */
@@ -209,7 +278,7 @@ body {
   }
 }
 
-/* Guestbook Styles */
+/* Guestbook Styles - Menggunakan variabel warna global untuk fleksibilitas */
 .guestbook-container {
   max-width: 800px;
   margin: 0 auto;
@@ -247,6 +316,7 @@ body {
   color: var(--color-muted);
 }
 
+/* Buttons */
 .btn {
   background: transparent;
   border: 1px solid var(--color-border);
@@ -256,7 +326,7 @@ body {
   cursor: pointer;
   font-family: inherit;
   font-size: 0.85rem;
-  transition: all var(--transition-fast);
+  transition: all var(--transition-normal);
 }
 
 .btn:hover {
@@ -274,6 +344,7 @@ body {
   background: var(--color-secondary);
 }
 
+/* Form Elements */
 .form-group {
   margin-bottom: 1rem;
 }
@@ -288,8 +359,7 @@ body {
   font-family: inherit;
   font-size: 0.9rem;
   resize: vertical;
-  transition: border-color var(--transition-fast),
-    background-color var(--transition-fast);
+  transition: all var(--transition-normal);
 }
 
 .form-input:focus {
@@ -305,50 +375,74 @@ body {
   margin-top: 0.25rem;
 }
 
+/* Messages Container */
 .messages-container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
+/* Message Item */
 .message-item {
   background: rgba(var(--color-surface-rgb), 0.3);
   border-radius: var(--border-radius);
   padding: 1rem;
   position: relative;
   margin-bottom: 4px;
-  transition: background-color var(--transition-fast);
+  transition: transform var(--transition-normal),
+    box-shadow var(--transition-normal);
 }
 
-.message-header {
+.message-item:hover {
+  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.15);
+}
+
+/* Form Actions */
+.form-actions {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 0.75rem;
+  gap: 0.5rem;
+  justify-content: flex-end;
 }
 
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  flex: 1;
+.form-btn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 0.375rem 0.75rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.8rem;
+  transition: all var(--transition-normal);
 }
 
-.user-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  object-fit: cover;
+.form-btn:hover {
+  background: var(--color-surface);
 }
 
-.user-details {
-  flex: 1;
+.save-btn {
+  border-color: var(--color-success);
+  color: var(--color-success);
 }
 
-.timestamp {
-  font-size: 0.75rem;
-  color: var(--color-muted);
-  margin-top: 0.25rem;
+.save-btn:hover {
+  background: var(--color-success);
+  color: var(--color-background);
+}
+
+/* Replies Section */
+.replies-container {
+  margin-top: 1rem;
+  border-left: 2px solid var(--color-border);
+  margin-left: 1rem;
+  padding-left: 0;
+}
+
+.tree-connector {
+  color: var(--color-border);
+  font-weight: bold;
+  margin-left: -1rem;
+  margin-right: 0.25rem;
 }
 
 /* Navigation Styles */
@@ -381,7 +475,7 @@ body {
 .nav-item {
   position: relative;
   color: var(--color-text);
-  transition: all var(--transition-normal);
+  transition: all var(--transition-instant);
   text-decoration: none;
   padding: 0.5rem;
   border-radius: var(--border-radius);
@@ -389,12 +483,13 @@ body {
 
 .nav-item:hover {
   color: var(--color-primary);
-  transform: scale(1.1);
-  background: rgba(var(--color-surface-rgb), 0.3);
+  background: rgba(var(--color-primary-rgb), 0.1);
+  /* No transform for speed */
 }
 
 .nav-item:active {
-  transform: scale(0.95);
+  background: rgba(var(--color-primary-rgb), 0.2);
+  transition: background var(--transition-lightning);
 }
 
 .nav-item[data-current="true"] {

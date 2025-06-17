@@ -1,0 +1,392 @@
+---
+// Speedy Layout - Membuat web terlihat sangat cepat
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Lightning fast web experience" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    
+    <!-- Critical CSS -->
+    <link href="/global.css" rel="stylesheet" />
+    <link href="/tailwind.css" rel="stylesheet" />
+    
+    <style>
+      /* Critical speed-focused styles */
+      body {
+        opacity: 0;
+        transition: opacity 0.05s ease-out;
+      }
+      
+      body.speedy-loaded {
+        opacity: 1;
+      }
+      
+      /* Lightning-fast loading indicator */
+      .speed-loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--color-primary);
+        transform: scaleX(0);
+        transform-origin: left;
+        animation: speedLoad 0.3s ease-out forwards;
+        z-index: 10000;
+      }
+      
+      body.speedy-loaded .speed-loader {
+        animation: speedLoadComplete 0.1s ease-out 0.2s forwards;
+      }
+      
+      @keyframes speedLoad {
+        to {
+          transform: scaleX(1);
+        }
+      }
+      
+      @keyframes speedLoadComplete {
+        to {
+          opacity: 0;
+        }
+      }
+      
+      /* Speed-focused content reveal */
+      .speedy-content {
+        opacity: 0;
+        transition: opacity 0.08s ease-out;
+      }
+      
+      .speedy-content.visible {
+        opacity: 1;
+      }
+      
+      /* Instant interaction feedback */
+      .instant-feedback {
+        position: relative;
+        overflow: hidden;
+      }
+      
+      .instant-feedback::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        background: rgba(var(--color-primary-rgb), 0.3);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s ease, height 0.3s ease;
+        pointer-events: none;
+      }
+      
+      .instant-feedback:active::after {
+        width: 200px;
+        height: 200px;
+      }
+      
+      /* Speed indicator */
+      .speed-indicator {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.8);
+        color: var(--color-primary);
+        padding: 8px 12px;
+        border-radius: 4px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.1s ease;
+      }
+      
+      .speed-indicator.show {
+        opacity: 1;
+      }
+      
+      .speed-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        background: var(--color-primary);
+        border-radius: 50%;
+        margin-right: 6px;
+        animation: speedPulse 1s infinite;
+      }
+      
+      @keyframes speedPulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+      }
+    </style>
+  </head>
+  
+  <body>
+    <!-- Lightning-fast loading bar -->
+    <div class="speed-loader"></div>
+    
+    <!-- Speed indicator -->
+    <div class="speed-indicator" id="speedIndicator">
+      <span class="speed-dot"></span>
+      LIGHTNING FAST
+    </div>
+    
+    <!-- Main content -->
+    <main class="speedy-content">
+      <slot />
+    </main>
+    
+    <script>
+      // Lightning-fast page initialization
+      class SpeedyPageLoader {
+        constructor() {
+          this.loadStartTime = performance.now();
+          this.init();
+        }
+        
+        init() {
+          // Instant content reveal
+          this.revealContent();
+          
+          // Setup speed interactions
+          this.setupSpeedInteractions();
+          
+          // Show speed indicator
+          this.showSpeedIndicator();
+          
+          // Setup instant feedback
+          this.setupInstantFeedback();
+        }
+        
+        revealContent() {
+          // Ultra-fast content reveal
+          requestAnimationFrame(() => {
+            document.body.classList.add('speedy-loaded');
+            
+            // Reveal content with minimal delay
+            setTimeout(() => {
+              const content = document.querySelector('.speedy-content');
+              if (content) {
+                content.classList.add('visible');
+              }
+            }, 50);
+          });
+        }
+        
+        setupSpeedInteractions() {
+          // Lightning-fast hover effects
+          document.querySelectorAll('.terminal-card, .project-card').forEach(card => {
+            card.classList.add('lightning-hover');
+            
+            card.addEventListener('mouseenter', () => {
+              card.style.transform = 'translateY(-1px)';
+              card.style.boxShadow = '0 2px 8px rgba(var(--color-primary-rgb), 0.15)';
+              card.style.transition = 'all 0.05s ease-out';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+              card.style.transform = '';
+              card.style.boxShadow = '';
+              card.style.transition = 'all 0.08s ease-out';
+            });
+          });
+          
+          // Instant button feedback
+          document.querySelectorAll('button, .btn').forEach(btn => {
+            btn.classList.add('instant-click');
+            
+            btn.addEventListener('mousedown', () => {
+              btn.style.transform = 'scale(0.98)';
+              btn.style.transition = 'transform 0.03s ease-out';
+            });
+            
+            btn.addEventListener('mouseup', () => {
+              btn.style.transform = '';
+              btn.style.transition = 'transform 0.05s ease-out';
+            });
+          });
+          
+          // Speed-focused navigation
+          document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('mouseenter', () => {
+              item.style.backgroundColor = 'rgba(var(--color-primary-rgb), 0.1)';
+              item.style.color = 'var(--color-primary)';
+              item.style.transition = 'all 0.05s ease-out';
+            });
+            
+            item.addEventListener('mouseleave', () => {
+              item.style.backgroundColor = '';
+              item.style.color = '';
+              item.style.transition = 'all 0.08s ease-out';
+            });
+          });
+        }
+        
+        setupInstantFeedback() {
+          // Add instant feedback to interactive elements
+          document.querySelectorAll('button, .btn, .terminal-card').forEach(element => {
+            element.classList.add('instant-feedback');
+          });
+          
+          // Instant form feedback
+          document.querySelectorAll('input, textarea').forEach(input => {
+            input.addEventListener('focus', () => {
+              input.style.borderColor = 'var(--color-primary)';
+              input.style.boxShadow = '0 0 0 2px rgba(var(--color-primary-rgb), 0.1)';
+              input.style.transition = 'all 0.05s ease-out';
+            });
+            
+            input.addEventListener('blur', () => {
+              input.style.borderColor = '';
+              input.style.boxShadow = '';
+              input.style.transition = 'all 0.08s ease-out';
+            });
+          });
+        }
+        
+        showSpeedIndicator() {
+          const loadTime = performance.now() - this.loadStartTime;
+          const indicator = document.getElementById('speedIndicator');
+          
+          if (indicator) {
+            // Show speed indicator briefly
+            setTimeout(() => {
+              indicator.classList.add('show');
+              
+              // Hide after 2 seconds
+              setTimeout(() => {
+                indicator.classList.remove('show');
+              }, 2000);
+            }, 500);
+          }
+          
+          // Log performance
+          console.log(`⚡ Page loaded in ${Math.round(loadTime)}ms`);
+        }
+        
+        // Instant page transitions
+        setupPageTransitions() {
+          // Instant link navigation
+          document.querySelectorAll('a[href^="/"], a[href^="#"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+              // Visual feedback for instant navigation
+              link.style.backgroundColor = 'rgba(var(--color-primary-rgb), 0.2)';
+              link.style.transition = 'background-color 0.03s ease-out';
+              
+              setTimeout(() => {
+                link.style.backgroundColor = '';
+              }, 100);
+            });
+          });
+        }
+      }
+      
+      // Initialize speedy loader
+      let speedyLoader;
+      
+      document.addEventListener('DOMContentLoaded', () => {
+        speedyLoader = new SpeedyPageLoader();
+      });
+      
+      document.addEventListener('astro:page-load', () => {
+        speedyLoader = new SpeedyPageLoader();
+      });
+      
+      // Instant theme switching
+      document.addEventListener('click', (e) => {
+        const themeToggle = e.target.closest('.theme-toggle-btn');
+        if (themeToggle) {
+          document.body.style.transition = 'background-color 0.08s ease, color 0.08s ease';
+        }
+      });
+      
+      // Speed-focused scroll handling
+      let scrollTimeout;
+      window.addEventListener('scroll', () => {
+        // Instant scroll feedback
+        document.body.classList.add('scrolling');
+        
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          document.body.classList.remove('scrolling');
+        }, 100);
+      }, { passive: true });
+      
+      // Cleanup
+      document.addEventListener('astro:before-preparation', () => {
+        document.body.classList.remove('speedy-loaded', 'scrolling');
+      });
+    </script>
+    
+    <style>
+      /* Additional speed-focused styles */
+      main {
+        min-height: 100vh;
+      }
+      
+      /* Speed-focused scrolling */
+      body.scrolling {
+        pointer-events: none;
+      }
+      
+      body.scrolling * {
+        pointer-events: none;
+      }
+      
+      /* Lightning-fast transitions for all elements */
+      * {
+        transition-timing-function: ease-out;
+      }
+      
+      /* Mobile speed optimizations */
+      @media (max-width: 768px) {
+        .lightning-hover:hover {
+          transform: none !important;
+        }
+        
+        .instant-click:active {
+          transform: scale(0.99);
+        }
+        
+        /* Faster transitions on mobile */
+        * {
+          transition-duration: 0.03s !important;
+        }
+      }
+      
+      /* High refresh rate optimization */
+      @media (min-resolution: 120dpi) {
+        * {
+          transition-duration: 0.03s !important;
+        }
+      }
+      
+      /* Reduced motion - instant everything */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition-duration: 0.01ms !important;
+          animation-duration: 0.01ms !important;
+        }
+        
+        .speed-loader {
+          animation: none;
+          opacity: 0;
+        }
+      }
+    </style>
+  </body>
+</html>

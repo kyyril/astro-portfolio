@@ -1,0 +1,273 @@
+---
+// Ultra Performance Demo Page - Showcasing 60fps optimizations
+import UltraPerformanceLayout from '../layouts/UltraPerformanceLayout.astro';
+import GSAPUltraPerformance from '../components/GSAPUltraPerformance.astro';
+import ScrollOptimizer from '../components/ScrollOptimizer.astro';
+---
+
+<UltraPerformanceLayout title="Ultra Performance Demo - 60fps GSAP Optimizations">
+  <!-- Performance monitoring display -->
+  <div class="fixed top-4 left-4 z-50 bg-black/80 text-white p-2 rounded text-xs font-mono" id="performanceMonitor">
+    FPS: <span id="fpsDisplay">60</span> | Mode: <span id="modeDisplay">Ultra</span>
+  </div>
+
+  <!-- Hero section with ultra-fast animations -->
+  <section class="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <!-- Animated background elements -->
+    <div class="absolute inset-0 opacity-20">
+      <div class="ultra-animate absolute top-1/4 left-1/4 w-32 h-32 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur-xl"></div>
+      <div class="ultra-animate absolute top-3/4 right-1/4 w-24 h-24 bg-gradient-to-r from-pink-500 to-yellow-500 rounded-full blur-xl"></div>
+      <div class="ultra-animate absolute top-1/2 left-1/2 w-40 h-40 bg-gradient-to-r from-green-500 to-blue-500 rounded-full blur-xl"></div>
+    </div>
+
+    <div class="text-center z-10 max-w-4xl mx-auto px-4">
+      <h1 class="ultra-animate text-6xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+        Ultra Performance
+      </h1>
+      <p class="ultra-animate text-xl lg:text-2xl text-[var(--color-text)] mb-8 leading-relaxed">
+        60fps GSAP animations with advanced optimization techniques
+      </p>
+      <div class="ultra-animate flex gap-4 justify-center">
+        <button class="px-6 py-3 bg-[var(--color-primary)] text-[var(--color-background)] rounded-lg hover:scale-105 transition-transform duration-150">
+          Test Performance
+        </button>
+        <button class="px-6 py-3 border border-[var(--color-border)] text-[var(--color-text)] rounded-lg hover:bg-[var(--color-surface)] transition-colors duration-150">
+          View Metrics
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Performance demonstration cards -->
+  <section class="py-16 px-4">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="ultra-animate text-4xl font-bold text-center mb-12 text-[var(--color-text)]">
+        Performance Optimizations
+      </h2>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Memory Management Card -->
+        <div class="ultra-animate terminal-card gpu-accelerated">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+            <h3 class="text-lg font-semibold text-[var(--color-text)]">Memory Management</h3>
+          </div>
+          <p class="text-[var(--color-secondary)] mb-4">
+            Advanced cleanup with gsap.killTweensOf() and clearProps for zero memory leaks.
+          </p>
+          <ul class="text-sm text-[var(--color-muted)] space-y-1">
+            <li>• Automatic tween cleanup</li>
+            <li>• WeakMap for references</li>
+            <li>• Garbage collection hints</li>
+          </ul>
+        </div>
+
+        <!-- GPU Acceleration Card -->
+        <div class="ultra-animate terminal-card gpu-accelerated">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+            <h3 class="text-lg font-semibold text-[var(--color-text)]">GPU Acceleration</h3>
+          </div>
+          <p class="text-[var(--color-secondary)] mb-4">
+            Force 3D transforms and compositing layers for maximum performance.
+          </p>
+          <ul class="text-sm text-[var(--color-muted)] space-y-1">
+            <li>• translate3d() transforms</li>
+            <li>• will-change properties</li>
+            <li>• Backface visibility</li>
+          </ul>
+        </div>
+
+        <!-- Batching Card -->
+        <div class="ultra-animate terminal-card gpu-accelerated">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+            <h3 class="text-lg font-semibold text-[var(--color-text)]">Animation Batching</h3>
+          </div>
+          <p class="text-[var(--color-secondary)] mb-4">
+            Batch DOM operations and shared timelines for efficiency.
+          </p>
+          <ul class="text-sm text-[var(--color-muted)] space-y-1">
+            <li>• ScrollTrigger.batch()</li>
+            <li>• Shared timelines</li>
+            <li>• Staggered animations</li>
+          </ul>
+        </div>
+
+        <!-- Performance Monitoring Card -->
+        <div class="ultra-animate terminal-card gpu-accelerated">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+            <h3 class="text-lg font-semibold text-[var(--color-text)]">Real-time Monitoring</h3>
+          </div>
+          <p class="text-[var(--color-secondary)] mb-4">
+            Adaptive quality scaling based on FPS performance.
+          </p>
+          <ul class="text-sm text-[var(--color-muted)] space-y-1">
+            <li>• FPS monitoring</li>
+            <li>• Adaptive scaling</li>
+            <li>• Emergency mode</li>
+          </ul>
+        </div>
+
+        <!-- Event Optimization Card -->
+        <div class="ultra-animate terminal-card gpu-accelerated">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+            <h3 class="text-lg font-semibold text-[var(--color-text)]">Event Optimization</h3>
+          </div>
+          <p class="text-[var(--color-secondary)] mb-4">
+            Throttled and debounced event handlers for smooth interactions.
+          </p>
+          <ul class="text-sm text-[var(--color-muted)] space-y-1">
+            <li>• Passive listeners</li>
+            <li>• Throttled scroll</li>
+            <li>• Debounced resize</li>
+          </ul>
+        </div>
+
+        <!-- Intersection Observer Card -->
+        <div class="ultra-animate terminal-card gpu-accelerated">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-cyan-500 rounded-full mr-2"></div>
+            <h3 class="text-lg font-semibold text-[var(--color-text)]">Smart Loading</h3>
+          </div>
+          <p class="text-[var(--color-secondary)] mb-4">
+            Intersection Observer for viewport-based animation triggers.
+          </p>
+          <ul class="text-sm text-[var(--color-muted)] space-y-1">
+            <li>• Viewport detection</li>
+            <li>• Lazy animations</li>
+            <li>• Resource cleanup</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Performance test section -->
+  <section class="py-16 px-4 bg-[var(--color-surface)]/20">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="ultra-animate text-4xl font-bold mb-8 text-[var(--color-text)]">
+        Performance Test
+      </h2>
+      <p class="ultra-animate text-lg text-[var(--color-secondary)] mb-8">
+        Click the button below to stress test the animation system
+      </p>
+      
+      <button 
+        id="stressTestBtn"
+        class="ultra-animate px-8 py-4 bg-[var(--color-accent)] text-[var(--color-background)] rounded-lg font-semibold hover:scale-105 transition-transform duration-150"
+      >
+        Start Stress Test
+      </button>
+      
+      <div id="stressTestContainer" class="mt-8 grid grid-cols-4 md:grid-cols-8 gap-2 opacity-0">
+        <!-- Stress test elements will be added here -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Include ultra performance components -->
+  <GSAPUltraPerformance />
+  <ScrollOptimizer />
+</UltraPerformanceLayout>
+
+<script>
+  // Performance monitoring display
+  let fps = 60;
+  let frameCount = 0;
+  let lastTime = performance.now();
+  let performanceMode = 'Ultra';
+
+  function updatePerformanceDisplay() {
+    frameCount++;
+    const currentTime = performance.now();
+    
+    if (currentTime - lastTime >= 1000) {
+      fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+      frameCount = 0;
+      lastTime = currentTime;
+      
+      // Update display
+      const fpsDisplay = document.getElementById('fpsDisplay');
+      const modeDisplay = document.getElementById('modeDisplay');
+      
+      if (fpsDisplay) fpsDisplay.textContent = fps.toString();
+      
+      // Update performance mode
+      if (fps < 45) {
+        performanceMode = 'Emergency';
+        if (modeDisplay) modeDisplay.style.color = '#ef4444';
+      } else if (fps < 55) {
+        performanceMode = 'Low';
+        if (modeDisplay) modeDisplay.style.color = '#f59e0b';
+      } else {
+        performanceMode = 'Ultra';
+        if (modeDisplay) modeDisplay.style.color = '#10b981';
+      }
+      
+      if (modeDisplay) modeDisplay.textContent = performanceMode;
+    }
+    
+    requestAnimationFrame(updatePerformanceDisplay);
+  }
+
+  // Stress test functionality
+  document.getElementById('stressTestBtn')?.addEventListener('click', function() {
+    const container = document.getElementById('stressTestContainer');
+    if (!container) return;
+    
+    // Clear existing elements
+    container.innerHTML = '';
+    
+    // Create 32 animated elements
+    for (let i = 0; i < 32; i++) {
+      const element = document.createElement('div');
+      element.className = 'w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg ultra-animate';
+      element.style.animationDelay = `${i * 0.02}s`;
+      container.appendChild(element);
+    }
+    
+    // Show container with animation
+    container.style.opacity = '1';
+    container.style.transition = 'opacity 0.3s ease';
+    
+    // Start stress test animations
+    setTimeout(() => {
+      const elements = container.querySelectorAll('.ultra-animate');
+      elements.forEach((el, index) => {
+        setInterval(() => {
+          (el as HTMLElement).style.transform = `translateY(${Math.sin(Date.now() * 0.01 + index) * 20}px) scale(${1 + Math.sin(Date.now() * 0.005 + index) * 0.1})`;
+        }, 16); // 60fps updates
+      });
+    }, 500);
+  });
+
+  // Start performance monitoring
+  updatePerformanceDisplay();
+</script>
+
+<style>
+  /* Demo-specific optimizations */
+  .ultra-animate {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: ultraFadeIn 0.3s ease-out forwards;
+  }
+  
+  @keyframes ultraFadeIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Stagger animation delays */
+  .ultra-animate:nth-child(1) { animation-delay: 0.1s; }
+  .ultra-animate:nth-child(2) { animation-delay: 0.15s; }
+  .ultra-animate:nth-child(3) { animation-delay: 0.2s; }
+  .ultra-animate:nth-child(4) { animation-delay: 0.25s; }
+  .ultra-animate:nth-child(5) { animation-delay: 0.3s; }
+  .ultra-animate:nth-child(6) { animation-delay: 0.35s; }
+</style>

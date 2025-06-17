@@ -1,0 +1,284 @@
+---
+// Fast & Cool Transitions - Simple and Elegant
+---
+
+<script>
+  // Simple and fast transition system
+  document.addEventListener('DOMContentLoaded', () => {
+    initFastTransitions();
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    initFastTransitions();
+  });
+
+  function initFastTransitions() {
+    // Add fast-transition class to elements
+    const elements = document.querySelectorAll('.terminal-card, .nav-item, .project-card, h1, h2, h3, p, button, a');
+    
+    elements.forEach((element, index) => {
+      element.classList.add('fast-transition');
+      
+      // Stagger appearance with simple opacity
+      element.style.opacity = '0';
+      element.style.transform = 'translateY(10px)';
+      
+      setTimeout(() => {
+        element.style.opacity = '1';
+        element.style.transform = 'translateY(0)';
+      }, index * 50); // Fast stagger
+    });
+
+    // Setup hover effects
+    setupHoverEffects();
+    
+    // Setup click effects
+    setupClickEffects();
+    
+    // Setup scroll reveal
+    setupScrollReveal();
+  }
+
+  function setupHoverEffects() {
+    // Terminal cards hover
+    document.querySelectorAll('.terminal-card').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        card.style.transform = 'translateY(-4px)';
+        card.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'translateY(0)';
+        card.style.boxShadow = '';
+      });
+    });
+
+    // Button hover effects
+    document.querySelectorAll('button, .btn').forEach(btn => {
+      btn.addEventListener('mouseenter', () => {
+        btn.style.transform = 'scale(1.02)';
+      });
+      
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = 'scale(1)';
+      });
+    });
+
+    // Navigation items
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('mouseenter', () => {
+        item.style.transform = 'scale(1.1)';
+        item.style.backgroundColor = 'rgba(var(--color-primary-rgb), 0.1)';
+      });
+      
+      item.addEventListener('mouseleave', () => {
+        item.style.transform = 'scale(1)';
+        item.style.backgroundColor = '';
+      });
+    });
+  }
+
+  function setupClickEffects() {
+    // Add click ripple effect
+    document.querySelectorAll('button, .btn, .nav-item').forEach(element => {
+      element.addEventListener('click', (e) => {
+        // Quick scale down and up
+        element.style.transform = 'scale(0.95)';
+        
+        setTimeout(() => {
+          element.style.transform = '';
+        }, 100);
+        
+        // Create ripple effect
+        createRipple(e, element);
+      });
+    });
+  }
+
+  function createRipple(event: MouseEvent, element: HTMLElement) {
+    const ripple = document.createElement('span');
+    const rect = element.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    const x = event.clientX - rect.left - size / 2;
+    const y = event.clientY - rect.top - size / 2;
+    
+    ripple.style.cssText = `
+      position: absolute;
+      width: ${size}px;
+      height: ${size}px;
+      left: ${x}px;
+      top: ${y}px;
+      background: rgba(var(--color-primary-rgb), 0.3);
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple 0.3s ease-out;
+      pointer-events: none;
+      z-index: 1;
+    `;
+    
+    element.style.position = 'relative';
+    element.style.overflow = 'hidden';
+    element.appendChild(ripple);
+    
+    setTimeout(() => {
+      ripple.remove();
+    }, 300);
+  }
+
+  function setupScrollReveal() {
+    // Simple scroll reveal with Intersection Observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const element = entry.target as HTMLElement;
+          element.style.opacity = '1';
+          element.style.transform = 'translateY(0)';
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    });
+
+    // Observe elements that should reveal on scroll
+    document.querySelectorAll('.scroll-reveal').forEach(el => {
+      (el as HTMLElement).style.opacity = '0';
+      (el as HTMLElement).style.transform = 'translateY(20px)';
+      observer.observe(el);
+    });
+  }
+
+  // Theme toggle smooth transition
+  function setupThemeTransition() {
+    const themeToggle = document.querySelector('.theme-toggle-btn');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        document.body.style.transition = 'background-color 0.2s ease, color 0.2s ease';
+      });
+    }
+  }
+
+  // Cleanup
+  function cleanup() {
+    // Simple cleanup - remove event listeners if needed
+    document.querySelectorAll('.fast-transition').forEach(el => {
+      el.style.transition = '';
+    });
+  }
+
+  document.addEventListener('astro:before-preparation', cleanup);
+  window.addEventListener('beforeunload', cleanup);
+</script>
+
+<style>
+  /* Fast and cool transitions */
+  .fast-transition {
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Smooth hover transitions */
+  .terminal-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .nav-item {
+    transition: transform 0.15s ease, background-color 0.15s ease;
+  }
+
+  button, .btn {
+    transition: transform 0.1s ease, background-color 0.15s ease;
+  }
+
+  /* Scroll reveal elements */
+  .scroll-reveal {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  /* Ripple animation */
+  @keyframes ripple {
+    to {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+
+  /* Fast loading animation */
+  .fade-in-fast {
+    animation: fadeInFast 0.2s ease-out;
+  }
+
+  @keyframes fadeInFast {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Cool hover effects */
+  .hover-lift:hover {
+    transform: translateY(-2px);
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.02);
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 20px rgba(var(--color-primary-rgb), 0.3);
+  }
+
+  /* Fast theme transition */
+  body {
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  /* Smooth focus states */
+  button:focus,
+  input:focus,
+  textarea:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    transition: outline 0.1s ease;
+  }
+
+  /* Loading states */
+  .loading {
+    opacity: 0.7;
+    pointer-events: none;
+    transition: opacity 0.1s ease;
+  }
+
+  /* Active states */
+  .active {
+    transform: scale(0.98);
+    transition: transform 0.05s ease;
+  }
+
+  /* Mobile optimizations */
+  @media (max-width: 768px) {
+    .fast-transition {
+      transition-duration: 0.1s;
+    }
+    
+    .terminal-card {
+      transition-duration: 0.15s;
+    }
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .fast-transition,
+    .terminal-card,
+    .nav-item,
+    button,
+    .btn,
+    .scroll-reveal {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+</style>

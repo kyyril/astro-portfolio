@@ -1,0 +1,320 @@
+---
+// Speedy Demo - Web yang terlihat sangat cepat
+import SpeedyLayout from '../layouts/SpeedyLayout.astro';
+import SpeedyAnimations from '../components/SpeedyAnimations.astro';
+---
+
+<SpeedyLayout title="Speedy Demo - Lightning Fast Web">
+  <!-- Hero Section -->
+  <section class="min-h-screen flex items-center justify-center px-4">
+    <div class="text-center max-w-4xl mx-auto">
+      <h1 class="speedy-reveal text-6xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+        Lightning Fast
+      </h1>
+      <p class="speedy-reveal text-xl lg:text-2xl text-[var(--color-text)] mb-8 leading-relaxed">
+        Web yang terlihat sangat cepat tanpa animasi pop-up yang lambat
+      </p>
+      <div class="speedy-reveal flex gap-4 justify-center flex-wrap">
+        <button class="btn-speedy instant-feedback px-6 py-3 bg-[var(--color-primary)] text-[var(--color-background)] rounded-lg font-semibold">
+          Instant Action
+        </button>
+        <button class="btn-speedy instant-feedback px-6 py-3 border border-[var(--color-border)] text-[var(--color-text)] rounded-lg">
+          Lightning Fast
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Speed Features -->
+  <section class="py-16 px-4">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="speed-reveal text-4xl font-bold text-center mb-12 text-[var(--color-text)]">
+        Fitur Kecepatan Maksimal
+      </h2>
+      
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Instant Feedback -->
+        <div class="terminal-card lightning-hover instant-feedback">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+            <h3 class="text-lg font-semibold text-[var(--color-text)]">Instant Feedback</h3>
+          </div>
+          <p class="text-[var(--color-secondary)] mb-4">
+            Feedback visual yang instant tanpa delay. Klik untuk merasakan!
+          </p>
+          <ul class="text-sm text-[var(--color-muted)] space-y-1">
+            <li>• 0.03s response time</li>
+            <li>• Visual feedback langsung</li>
+            <li>• Tidak ada lag</li>
+          </ul>
+        </div>
+
+        <!-- Lightning Hover -->
+        <div class="terminal-card lightning-hover instant-feedback">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+            <h3 class="text-lg font-semibold text-[var(--color-text)]">Lightning Hover</h3>
+          </div>
+          <p class="text-[var(--color-secondary)] mb-4">
+            Efek hover yang sangat cepat dengan minimal movement.
+          </p>
+          <ul class="text-sm text-[var(--color-muted)] space-y-1">
+            <li>• 0.05s transition</li>
+            <li>• Minimal transform</li>
+            <li>• Instant response</li>
+          </ul>
+        </div>
+
+        <!-- No Pop-ups -->
+        <div class="terminal-card lightning-hover instant-feedback">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-purple-500 rounded-full mr-2"></div>
+            <h3 class="text-lg font-semibold text-[var(--color-text)]">No Pop-ups</h3>
+          </div>
+          <p class="text-[var(--color-secondary)] mb-4">
+            Tidak ada animasi pop-up yang membuat web terasa lambat.
+          </p>
+          <ul class="text-sm text-[var(--color-muted)] space-y-1">
+            <li>• Hanya opacity transitions</li>
+            <li>• Tidak ada scale/transform</li>
+            <li>• Terasa instant</li>
+          </ul>
+        </div>
+
+        <!-- Speed Loading -->
+        <div class="terminal-card lightning-hover instant-feedback">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+            <h3 class="text-lg font-semibold text-[var(--color-text)]">Speed Loading</h3>
+          </div>
+          <p class="text-[var(--color-secondary)] mb-4">
+            Loading states yang cepat dan tidak mengganggu.
+          </p>
+          <div class="flex items-center gap-2 mt-4">
+            <div class="loading-fast w-4 h-4 border-2 border-[var(--color-border)] border-t-[var(--color-primary)] rounded-full"></div>
+            <span class="text-sm text-[var(--color-muted)]">Super Fast</span>
+          </div>
+        </div>
+
+        <!-- Instant Navigation -->
+        <div class="terminal-card lightning-hover instant-feedback">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+            <h3 class="text-lg font-semibold text-[var(--color-text)]">Instant Navigation</h3>
+          </div>
+          <p class="text-[var(--color-secondary)] mb-4">
+            Navigasi yang responsif dengan feedback instant.
+          </p>
+          <ul class="text-sm text-[var(--color-muted)] space-y-1">
+            <li>• Background color change</li>
+            <li>• No transform delays</li>
+            <li>• Lightning fast</li>
+          </ul>
+        </div>
+
+        <!-- Speed Optimized -->
+        <div class="terminal-card lightning-hover instant-feedback">
+          <div class="flex items-center mb-4">
+            <div class="w-3 h-3 bg-cyan-500 rounded-full mr-2"></div>
+            <h3 class="text-lg font-semibold text-[var(--color-text)]">Speed Optimized</h3>
+          </div>
+          <p class="text-[var(--color-secondary)] mb-4">
+            Semua optimasi fokus pada kecepatan visual.
+          </p>
+          <ul class="text-sm text-[var(--color-muted)] space-y-1">
+            <li>• Minimal CSS transitions</li>
+            <li>• Instant user feedback</li>
+            <li>• No animation delays</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Speed Test -->
+  <section class="py-16 px-4 bg-[var(--color-surface)]/20">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="speed-reveal text-4xl font-bold mb-8 text-[var(--color-text)]">
+        Test Kecepatan Interaksi
+      </h2>
+      <p class="speed-reveal text-lg text-[var(--color-secondary)] mb-8">
+        Coba berbagai elemen di bawah ini dan rasakan kecepatannya
+      </p>
+      
+      <!-- Speed Test Buttons -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <button class="btn-speedy instant-feedback px-4 py-3 bg-[var(--color-primary)] text-[var(--color-background)] rounded-lg">
+          Instant Click
+        </button>
+        <button class="btn-speedy instant-feedback px-4 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg">
+          Lightning Fast
+        </button>
+        <button class="btn-speedy instant-feedback px-4 py-3 border border-[var(--color-border)] text-[var(--color-text)] rounded-lg">
+          Speed Test
+        </button>
+        <button class="btn-speedy instant-feedback px-4 py-3 bg-[var(--color-accent)] text-[var(--color-background)] rounded-lg">
+          Ultra Fast
+        </button>
+      </div>
+      
+      <!-- Speed Test Cards -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="terminal-card lightning-hover instant-feedback cursor-pointer">
+          <h3 class="text-lg font-semibold mb-2">Lightning Hover</h3>
+          <p class="text-[var(--color-secondary)]">Hover untuk instant feedback</p>
+        </div>
+        <div class="terminal-card lightning-hover instant-feedback cursor-pointer">
+          <h3 class="text-lg font-semibold mb-2">Instant Click</h3>
+          <p class="text-[var(--color-secondary)]">Klik untuk ripple effect</p>
+        </div>
+        <div class="terminal-card lightning-hover instant-feedback cursor-pointer">
+          <h3 class="text-lg font-semibold mb-2">Speed Glow</h3>
+          <p class="text-[var(--color-secondary)]">Hover untuk glow effect</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Speed Comparison -->
+  <section class="py-16 px-4">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="speed-reveal text-4xl font-bold text-center mb-12 text-[var(--color-text)]">
+        Perbandingan Kecepatan
+      </h2>
+      
+      <div class="grid md:grid-cols-2 gap-8">
+        <!-- Before (Slow) -->
+        <div class="terminal-card">
+          <h3 class="text-xl font-semibold mb-4 text-red-400">❌ Animasi Lambat</h3>
+          <ul class="space-y-3 text-[var(--color-secondary)]">
+            <li>• Pop-up animations (0.3s+)</li>
+            <li>• Scale transforms yang berat</li>
+            <li>• Delay pada hover effects</li>
+            <li>• Loading yang terasa lama</li>
+            <li>• Transisi yang mengganggu</li>
+          </ul>
+          <div class="mt-4 p-3 bg-red-500/10 rounded border border-red-500/20">
+            <p class="text-sm text-red-400">Terasa lambat meski web sudah cepat</p>
+          </div>
+        </div>
+        
+        <!-- After (Fast) -->
+        <div class="terminal-card">
+          <h3 class="text-xl font-semibold mb-4 text-green-400">✅ Lightning Fast</h3>
+          <ul class="space-y-3 text-[var(--color-secondary)]">
+            <li>• Instant feedback (0.03-0.08s)</li>
+            <li>• Minimal transforms</li>
+            <li>• Immediate hover response</li>
+            <li>• Lightning-fast loading</li>
+            <li>• Smooth, tidak mengganggu</li>
+          </ul>
+          <div class="mt-4 p-3 bg-green-500/10 rounded border border-green-500/20">
+            <p class="text-sm text-green-400">Terasa sangat cepat dan responsif</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Speed Tips -->
+  <section class="py-16 px-4 bg-[var(--color-surface)]/20">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="speed-reveal text-4xl font-bold mb-8 text-[var(--color-text)]">
+        Tips Kecepatan
+      </h2>
+      
+      <div class="terminal-card text-left">
+        <h3 class="text-xl font-semibold mb-6 text-[var(--color-primary)]">Prinsip Lightning Fast:</h3>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h4 class="font-semibold mb-3 text-[var(--color-text)]">✨ Yang Dilakukan:</h4>
+            <ul class="space-y-2 text-[var(--color-secondary)]">
+              <li>• Transisi 0.03-0.08s</li>
+              <li>• Hanya opacity & minimal transform</li>
+              <li>• Instant visual feedback</li>
+              <li>• Background color changes</li>
+              <li>• Lightning-fast loading bars</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h4 class="font-semibold mb-3 text-[var(--color-text)]">❌ Yang Dihindari:</h4>
+            <ul class="space-y-2 text-[var(--color-secondary)]">
+              <li>• Pop-up animations</li>
+              <li>• Scale transforms yang besar</li>
+              <li>• Delay pada interactions</li>
+              <li>• Animasi yang mengganggu</li>
+              <li>• Loading yang terasa lama</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Include Speedy Animations -->
+  <SpeedyAnimations />
+</SpeedyLayout>
+
+<style>
+  /* Demo-specific speed optimizations */
+  .speedy-reveal {
+    opacity: 0;
+    transition: opacity 0.08s ease-out;
+  }
+  
+  .speedy-reveal.visible {
+    opacity: 1;
+  }
+  
+  .speed-reveal {
+    opacity: 0;
+    transition: opacity 0.1s ease-out;
+  }
+  
+  .speed-reveal.visible {
+    opacity: 1;
+  }
+  
+  /* Gradient animation - fast version */
+  .bg-gradient-to-r {
+    background-size: 200% 200%;
+    animation: gradientShiftFast 2s ease infinite;
+  }
+  
+  @keyframes gradientShiftFast {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+  
+  /* Speed-focused stagger */
+  .speedy-reveal:nth-child(1) { animation-delay: 0.02s; }
+  .speedy-reveal:nth-child(2) { animation-delay: 0.04s; }
+  .speedy-reveal:nth-child(3) { animation-delay: 0.06s; }
+  .speedy-reveal:nth-child(4) { animation-delay: 0.08s; }
+</style>
+
+<script>
+  // Auto-reveal elements on load
+  document.addEventListener('DOMContentLoaded', () => {
+    // Instant reveal with minimal stagger
+    const speedyElements = document.querySelectorAll('.speedy-reveal');
+    speedyElements.forEach((el, index) => {
+      setTimeout(() => {
+        el.classList.add('visible');
+      }, index * 20); // 20ms stagger for speed
+    });
+    
+    // Speed reveal for scroll elements
+    const speedElements = document.querySelectorAll('.speed-reveal');
+    speedElements.forEach((el, index) => {
+      setTimeout(() => {
+        el.classList.add('visible');
+      }, 100 + (index * 30)); // Slightly delayed but still fast
+    });
+  });
+</script>
