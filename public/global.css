@@ -82,34 +82,19 @@ body {
   backface-visibility: hidden;
 }
 
-/* Speed-Focused Component Styles */
+/* Optimized Component Styles - Performance First */
 .terminal-card {
-  background: rgba(var(--color-surface-rgb), 0.8);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: var(--color-surface);
   border-radius: var(--border-radius);
   padding: 1.5rem;
   border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
-  transition: transform var(--transition-instant),
-    box-shadow var(--transition-instant);
   cursor: pointer;
-}
-
-.terminal-card:hover {
-  transform: translateY(-1px); /* Minimal movement for speed */
-  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.15);
-}
-
-.terminal-card:active {
-  transform: scale(0.98);
-  transition: transform var(--transition-lightning);
+  /* Removed backdrop-filter and complex transitions for performance */
 }
 
 .darker-card {
-  background-color: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background-color: rgba(0, 0, 0, 0.3);
+  /* Removed backdrop-filter for performance */
   contain: layout style paint;
 }
 
@@ -138,57 +123,20 @@ body {
   background: var(--color-background);
 }
 
-/* Speed-Focused Utility Classes */
-.lightning-hover {
-  transition: transform var(--transition-instant);
-}
-
-.lightning-hover:hover {
-  transform: translateY(-1px);
-}
-
-/* Clean button effects */
+/* Simplified Utility Classes - Performance Optimized */
 .btn-clean {
-  transition: all 0.3s ease;
   position: relative;
+  /* Removed complex transitions and transforms for performance */
 }
 
-.btn-clean:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.15);
-}
-
-.btn-clean:active {
-  transform: scale(0.98);
-}
-
-/* Clean Animations */
+/* Essential Animations Only */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
-}
-
-/* Loading animation */
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
   to {
     transform: rotate(360deg);
   }
@@ -198,26 +146,11 @@ body {
   animation: spin 1s linear infinite;
 }
 
-/* Progress bar animation */
-@keyframes progressBar {
-  0% {
-    transform: scaleX(0);
-  }
-  100% {
-    transform: scaleX(1);
-  }
-}
-
-.progress-bar {
-  animation: progressBar 0.3s ease-out;
-}
-
 /* Responsive optimizations */
 @media (max-width: 768px) {
   .terminal-card {
     padding: 1rem;
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
+    /* Removed backdrop-filter for mobile performance */
   }
 
   ::-webkit-scrollbar {
@@ -238,11 +171,6 @@ body {
   }
 
   .terminal-card {
-    will-change: auto;
-  }
-
-  .gpu-accelerated {
-    will-change: auto;
     transform: none;
   }
 }
@@ -298,20 +226,13 @@ body {
   transition: all var(--transition-normal);
 }
 
-.btn:hover {
-  background: var(--color-surface);
-  border-color: var(--color-primary);
-}
-
 .btn-primary {
   background: var(--color-primary);
   color: var(--color-background);
   border-color: var(--color-primary);
 }
 
-.btn-primary:hover {
-  background: var(--color-secondary);
-}
+/* Removed hover effects for performance */
 
 /* Form Elements */
 .form-group {
@@ -334,7 +255,7 @@ body {
 .form-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  background: rgba(var(--color-surface-rgb), 0.8);
+  background: var(--color-surface);
 }
 
 .char-counter {
@@ -353,17 +274,12 @@ body {
 
 /* Message Item */
 .message-item {
-  background: rgba(var(--color-surface-rgb), 0.3);
+  background: var(--color-surface);
   border-radius: var(--border-radius);
   padding: 1rem;
   position: relative;
   margin-bottom: 4px;
-  transition: transform var(--transition-normal),
-    box-shadow var(--transition-normal);
-}
-
-.message-item:hover {
-  box-shadow: 0 2px 8px rgba(var(--color-primary-rgb), 0.15);
+  /* Removed hover effects and transitions for performance */
 }
 
 /* Form Actions */
@@ -385,19 +301,12 @@ body {
   transition: all var(--transition-normal);
 }
 
-.form-btn:hover {
-  background: var(--color-surface);
-}
-
 .save-btn {
   border-color: var(--color-success);
   color: var(--color-success);
 }
 
-.save-btn:hover {
-  background: var(--color-success);
-  color: var(--color-background);
-}
+/* Removed hover effects for performance */
 
 /* Replies Section */
 .replies-container {
@@ -414,24 +323,21 @@ body {
   margin-right: 0.25rem;
 }
 
-/* Navigation Styles */
+/* Navigation Styles - Performance Optimized */
 .nav-bar {
   position: fixed !important;
   bottom: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
   width: 330px;
-  background: rgba(var(--color-surface-rgb), 0.8);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: var(--color-surface);
   z-index: 9999;
   border-radius: var(--border-radius);
   border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-lg);
-  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-md);
   pointer-events: auto;
-  will-change: transform;
-  contain: layout style paint;
+  contain: layout style;
+  /* Removed backdrop-filter and transitions for performance */
 }
 
 .nav-container {
@@ -444,26 +350,15 @@ body {
 .nav-item {
   position: relative;
   color: var(--color-text);
-  transition: all var(--transition-instant);
   text-decoration: none;
   padding: 0.5rem;
   border-radius: var(--border-radius);
-}
-
-.nav-item:hover {
-  color: var(--color-primary);
-  background: rgba(var(--color-primary-rgb), 0.1);
-  /* No transform for speed */
-}
-
-.nav-item:active {
-  background: rgba(var(--color-primary-rgb), 0.2);
-  transition: background var(--transition-lightning);
+  /* Removed transitions and hover effects for performance */
 }
 
 .nav-item[data-current="true"] {
   color: var(--color-primary);
-  background: rgba(var(--color-surface-rgb), 0.5);
+  background: var(--color-surface);
 }
 
 .nav-item[data-current="true"] svg {
@@ -477,13 +372,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-normal);
+  /* Removed transitions for performance */
 }
 
 .nav-svg {
   width: 1.25rem;
   height: 1.25rem;
-  transition: color var(--transition-normal);
+  /* Removed transitions for performance */
 }
 
 /* Legacy theme toggle container - now using StickyThemeToggle */
@@ -501,13 +396,6 @@ body {
   position: relative;
 }
 
-.theme-toggle-container:hover {
-  /* Enhanced hover effect for the container */
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(var(--color-primary-rgb), 0.2);
-  transform: translateZ(0) scale(1.02);
-}
-
 .theme-toggle-btn {
   padding: 0.75rem;
   border-radius: 8px;
@@ -515,16 +403,10 @@ body {
   border: none;
   color: var(--color-text);
   cursor: pointer;
-  transition: all var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.theme-toggle-btn:hover {
-  background: rgba(var(--color-primary-rgb), 0.1);
-  color: var(--color-primary);
-  transform: scale(1.05);
+  /* Removed hover effects and transitions for performance */
 }
 
 .theme-toggle-icon {
@@ -537,28 +419,23 @@ body {
   right: 0;
   top: calc(100% + 0.5rem);
   width: 12rem;
-  background: rgba(var(--color-surface-rgb), 0.95);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-lg);
   z-index: 10002;
   opacity: 0;
-  transform: translateY(-10px);
-  transition: all var(--transition-fast);
   pointer-events: none;
+  /* Removed backdrop-filter and transitions for performance */
 }
 
 .theme-dropdown:not(.hidden) {
   opacity: 1;
-  transform: translateY(0);
   pointer-events: auto;
 }
 
 .theme-dropdown.show {
   opacity: 1;
-  transform: translateY(0);
   pointer-events: auto;
 }
 
@@ -576,12 +453,7 @@ body {
   cursor: pointer;
   font-family: inherit;
   font-size: 0.875rem;
-  transition: all var(--transition-fast);
-}
-
-.theme-option:hover {
-  background: rgba(var(--color-surface-rgb), 0.7);
-  color: var(--color-primary);
+  /* Removed hover effects and transitions for performance */
 }
 
 .hidden {
@@ -596,14 +468,13 @@ body {
 }
 
 .terminal-glass {
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
+  /* Removed backdrop-filter for performance */
 }
 
 .terminal-default {
-  background: rgba(var(--color-surface-rgb), 0.95);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
 }
 
@@ -775,120 +646,13 @@ body {
   }
 }
 
-/* Clean System Classes */
-.fade-in {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.fade-in.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Ripple effect */
-.ripple-effect {
-  position: relative;
-  overflow: hidden;
-}
-
-.ripple-effect::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  background: rgba(var(--color-primary-rgb), 0.2);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: width 0.4s ease, height 0.4s ease;
-  pointer-events: none;
-}
-
-.ripple-effect:active::after {
-  width: 200px;
-  height: 200px;
-}
-
-/* Speed loading bar */
-.speed-loader {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--color-primary);
-  transform: scaleX(0);
-  transform-origin: left;
-  animation: speedLoad 0.3s ease-out forwards;
-  z-index: 10000;
-}
-
-@keyframes speedLoad {
-  to {
-    transform: scaleX(1);
-  }
-}
-
-/* Speed indicator */
-.speed-indicator {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: rgba(0, 0, 0, 0.8);
-  color: var(--color-primary);
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  z-index: 9999;
-  opacity: 0;
-  transition: opacity 0.1s ease;
-}
-
-.speed-indicator.show {
-  opacity: 1;
-}
-
-.speed-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: var(--color-primary);
-  border-radius: 50%;
-  margin-right: 6px;
-}
-
-/* Speed-focused scroll indicator */
-.scroll-indicator {
-  transition: all 0.05s ease-out;
-}
-
-/* No transform animations - only opacity and minimal movement */
+/* Simplified System Classes - Performance Optimized */
 .fade-in-fast {
-  animation: fadeInFast 0.1s ease-out;
+  opacity: 0;
+  animation: fadeIn 0.1s ease-out forwards;
 }
 
-@keyframes fadeInFast {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Simple hover effects */
-.hover-fast:hover {
-  opacity: 0.8;
-}
-
-/* Instant visual feedback */
-.feedback-instant:active {
-  background-color: rgba(var(--color-primary-rgb), 0.2);
-}
+/* Removed complex animations and effects for performance */
 
 /* Chat-Specific Styles - Using Global Color Variables */
 .chat-container {
@@ -897,15 +661,14 @@ body {
 }
 
 .chat-sidebar {
-  background: rgba(var(--color-surface-rgb), 0.95);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
+  background: var(--color-surface);
   border-right: 1px solid var(--color-border);
+  /* Removed backdrop-filter for performance */
 }
 
 .chat-sidebar-header {
   border-bottom: 1px solid var(--color-border);
-  background: rgba(var(--color-surface-rgb), 0.8);
+  background: var(--color-surface);
 }
 
 .chat-new-btn {
@@ -915,68 +678,47 @@ body {
   transition: all var(--transition-normal);
 }
 
-.chat-new-btn:hover {
-  background: var(--color-secondary);
-  border-color: var(--color-secondary);
-  opacity: 0.9;
-}
-
-.chat-new-btn:active {
-  opacity: 0.8;
-}
-
 .chat-history-item {
   background: transparent;
   border-radius: var(--border-radius);
-  transition: all var(--transition-normal);
   cursor: pointer;
-}
-
-.chat-history-item:hover {
-  background: rgba(var(--color-surface-rgb), 0.6);
+  /* Removed hover effects and transitions for performance */
 }
 
 .chat-history-item.active {
-  background: rgba(var(--color-primary-rgb), 0.1);
-  border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary);
 }
 
 .chat-header {
-  background: rgba(var(--color-surface-rgb), 0.8);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
+  /* Removed backdrop-filter for performance */
 }
 
 .chat-avatar {
   border: 2px solid var(--color-primary);
-  transition: all var(--transition-normal);
-}
-
-.chat-avatar:hover {
-  opacity: 0.8;
+  /* Removed hover effects and transitions for performance */
 }
 
 .chat-input-container {
-  background: rgba(var(--color-surface-rgb), 0.8);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: var(--color-surface);
   border-top: 1px solid var(--color-border);
+  /* Removed backdrop-filter for performance */
 }
 
 .chat-input {
-  background: rgba(var(--color-surface-rgb), 0.7);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   color: var(--color-text);
   border-radius: var(--border-radius);
-  transition: all var(--transition-normal);
+  /* Removed transitions for performance */
 }
 
 .chat-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  background: rgba(var(--color-surface-rgb), 0.9);
-  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2);
+  background: var(--color-surface);
 }
 
 .chat-input::placeholder {
@@ -1021,29 +763,19 @@ body {
     4px;
 }
 
-.chat-message {
-  transition: all var(--transition-normal);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-}
-
-.chat-message:hover {
-  opacity: 0.95;
-}
+/* .chat-message styles removed for performance */
 
 .chat-overlay {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.7);
+  /* Removed backdrop-filter for performance */
 }
 
 .chat-modal {
-  background: rgba(var(--color-surface-rgb), 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
   box-shadow: var(--shadow-lg);
+  /* Removed backdrop-filter for performance */
 }
 
 .chat-btn-secondary {

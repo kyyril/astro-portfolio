@@ -1,0 +1,65 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  loading?: 'lazy' | 'eager';
+  decoding?: 'async' | 'sync' | 'auto';
+  class?: string;
+  sizes?: string;
+  quality?: number;
+  format?: 'webp' | 'avif' | 'png' | 'jpg';
+  fetchpriority?: 'high' | 'low' | 'auto';
+}
+
+const {
+  src,
+  alt,
+  width = 800,
+  height = 450,
+  loading = 'lazy',
+  decoding = 'async',
+  class: className = '',
+  sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
+  quality = 80,
+  format = 'webp',
+  fetchpriority = 'auto'
+} = Astro.props;
+
+// Check if it's a remote image
+const isRemoteImage = src.startsWith('http') || src.startsWith('//');
+---
+
+{isRemoteImage ? (
+  <!-- Remote images - use regular img with optimization attributes -->
+  <img
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding={decoding}
+    class={className}
+    sizes={sizes}
+    fetchpriority={fetchpriority}
+    style="aspect-ratio: auto; object-fit: cover;"
+  />
+) : (
+  <!-- Local images - use Astro's Image component for optimization -->
+  <Image
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding={decoding}
+    class={className}
+    sizes={sizes}
+    quality={quality}
+    format={format}
+    fetchpriority={fetchpriority}
+  />
+)}

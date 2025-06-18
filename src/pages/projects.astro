@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import OptimizedImage from '../components/OptimizedImage.astro';
 import { projects } from '../data/portfolio';
 ---
 
@@ -21,33 +22,39 @@ import { projects } from '../data/portfolio';
       <button class="filter-btn px-4 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-primary)] hover:text-white transition-all" data-filter="library">Library</button>
     </div>
 
-    <!-- Projects grid -->
+    <!-- Optimized projects grid -->
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {projects.map(project => (
+      {projects.map((project, index) => (
         <div class={`project-card terminal-card ${project.category}`} data-category={project.category}>
           {project.featured && (
             <div class="absolute top-2 right-2 px-2 py-1 text-xs bg-[var(--color-accent)] text-black rounded">
               Featured
             </div>
           )}
-          
+
           <div class="relative mb-4 aspect-video overflow-hidden rounded-lg">
-            <img 
-              src={project.images[0]} 
+            <OptimizedImage
+              src={project.images[0]}
               alt={project.title}
-              class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-              loading="lazy"
+              class="w-full h-full object-cover"
+              loading={index < 6 ? "eager" : "lazy"}
+              decoding="async"
+              width={400}
+              height={225}
+              fetchpriority={index < 3 ? "high" : "auto"}
+              quality={85}
+              format="webp"
             />
           </div>
-          
+
           <div class="space-y-3">
             <div class="flex items-center justify-between">
               <h3 class="text-xl font-semibold text-[var(--color-accent)]">{project.title}</h3>
               <span class="text-sm text-[var(--color-secondary)] capitalize">{project.type}</span>
             </div>
-            
+
             <p class="text-[var(--color-text)] text-sm line-clamp-3">{project.description}</p>
-            
+
             <div class="flex flex-wrap gap-1">
               {project.technologies.slice(0, 3).map(tech => (
                 <span class="px-2 py-1 text-xs bg-[var(--color-surface)] text-[var(--color-secondary)] border border-[var(--color-border)] rounded">{tech}</span>
@@ -93,6 +100,7 @@ import { projects } from '../data/portfolio';
 </Layout>
 
 <style>
+  /* Essential styles for projects page */
   .line-clamp-3 {
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -106,91 +114,67 @@ import { projects } from '../data/portfolio';
     border-color: var(--color-primary) !important;
   }
 
-  .project-card {
-    position: relative;
-    transition: all 0.3s ease;
-    opacity: 1;
-    transform: scale(1);
+  .filter-btn {
+    transition: background-color var(--transition-fast),
+                border-color var(--transition-fast),
+                color var(--transition-fast);
   }
 
-  .project-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(var(--color-primary-rgb), 0.15);
+  .project-card {
+    position: relative;
+    contain: layout style;
+    /* Removed hover effects for performance */
   }
 
   .project-card.hidden {
-    opacity: 0;
-    transform: scale(0.8);
-    pointer-events: none;
-    height: 0;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
+    display: none;
   }
 
-  /* Fade in animation for project cards */
+  /* Simple fade-in animation */
   .project-card {
-    animation: fadeInUp 0.6s ease forwards;
+    animation: fadeIn 0.3s ease forwards;
   }
 
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
-
-  /* Stagger animation delays */
-  .project-card:nth-child(1) { animation-delay: 0.1s; }
-  .project-card:nth-child(2) { animation-delay: 0.2s; }
-  .project-card:nth-child(3) { animation-delay: 0.3s; }
-  .project-card:nth-child(4) { animation-delay: 0.4s; }
-  .project-card:nth-child(5) { animation-delay: 0.5s; }
-  .project-card:nth-child(6) { animation-delay: 0.6s; }
 </style>
 
 <script>
-  const filterBtns = document.querySelectorAll('.filter-btn') as NodeListOf<HTMLElement>;
-  const projectCards = document.querySelectorAll('.project-card') as NodeListOf<HTMLElement>;
+  // Lightweight project filtering
+  function initFiltering() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
 
-  function filterProjects(filter: string) {
-    projectCards.forEach((card, index) => {
-      const shouldShow = filter === 'all' || card.classList.contains(filter);
+    function filterProjects(filter) {
+      projectCards.forEach(card => {
+        const shouldShow = filter === 'all' || card.classList.contains(filter);
+        card.classList.toggle('hidden', !shouldShow);
+      });
+    }
 
-      if (shouldShow) {
-        // Show card with staggered animation
-        setTimeout(() => {
-          card.classList.remove('hidden');
-        }, index * 100);
-      } else {
-        // Hide card immediately
-        card.classList.add('hidden');
-      }
+    // Simple event delegation
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (!target || !target.classList.contains('filter-btn')) return;
+
+      // Update active state
+      filterBtns.forEach(btn => btn.classList.remove('active'));
+      target.classList.add('active');
+
+      // Filter projects
+      const filter = target.getAttribute('data-filter') || 'all';
+      filterProjects(filter);
     });
   }
 
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Remove active class from all buttons
-      filterBtns.forEach(b => b.classList.remove('active'));
-      // Add active class to clicked button
-      btn.classList.add('active');
+  // Initialize
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFiltering);
+  } else {
+    initFiltering();
+  }
 
-      const filter = btn.getAttribute('data-filter') || 'all';
-      filterProjects(filter);
-    });
-  });
-
-  // Initialize with all projects visible
-  document.addEventListener('DOMContentLoaded', () => {
-    filterProjects('all');
-  });
-
-  document.addEventListener('astro:page-load', () => {
-    filterProjects('all');
-  });
+  document.addEventListener('astro:page-load', initFiltering);
 </script>

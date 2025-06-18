@@ -10,60 +10,27 @@ import SkillsSection from 'src/components/home/SkillsSection.astro';
 <Layout title="Portfolio - Professional Developer">
   <div class="max-w-6xl mx-auto px-4 py-6 space-y-12">
     <!-- Profile Section -->
-    <div class="fade-in">
+    <div>
       <ProfileSection />
     </div>
 
     <!-- Experience Section -->
-    <div class="fade-in">
+    <div>
       <ExperienceSection />
     </div>
 
     <!-- Education Section -->
-    <div class="fade-in">
+    <div>
       <EducationSection />
     </div>
 
     <!-- Skills Section -->
-    <div class="fade-in">
+    <div>
       <SkillsSection />
     </div>
   </div>
 </Layout>
 
-<style>
-  /* Simple fade in animations */
-  .fade-in {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
+<!-- Removed fade-in styles for performance -->
 
-  .fade-in.visible {
-    opacity: 1;
-  }
-</style>
-
-<script>
-  // Intersection Observer for fade-in animations
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, observerOptions);
-
-  // Initialize animations
-  function initAnimations() {
-    const fadeElements = document.querySelectorAll('.fade-in');
-    fadeElements.forEach(el => observer.observe(el));
-  }
-
-  document.addEventListener('DOMContentLoaded', initAnimations);
-  document.addEventListener('astro:page-load', initAnimations);
-</script>
+<!-- Removed intersection observer for performance -->

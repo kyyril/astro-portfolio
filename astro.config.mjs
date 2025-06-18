@@ -46,50 +46,103 @@ export default defineConfig({
       entrypoint: "astro/assets/services/sharp",
       config: {
         limitInputPixels: 268402689,
+        // Optimize for performance
+        jpeg: { quality: 80, progressive: true },
+        png: { compressionLevel: 9, adaptiveFiltering: true },
+        webp: { quality: 85, effort: 6 },
+        avif: { quality: 80, effort: 6 },
       },
     },
-    domains: ["images.pexels.com"],
+    domains: ["images.pexels.com", "res.cloudinary.com", "i.pinimg.com"],
     remotePatterns: [
       {
         protocol: "https",
         hostname: "**.pexels.com",
       },
+      {
+        protocol: "https",
+        hostname: "res.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "i.pinimg.com",
+      },
     ],
   },
   prefetch: {
-    prefetchAll: true,
-    defaultStrategy: "viewport",
+    prefetchAll: false,
+    defaultStrategy: "hover",
   },
 
   build: {
-    inlineStylesheets: "auto",
+    inlineStylesheets: "never",
     split: true,
+    assets: "_astro",
+    format: "file",
+  },
+  compressHTML: true,
+  server: {
+    headers: {
+      "Cache-Control": "public, max-age=3600",
+    },
   },
   vite: {
     optimizeDeps: {
-      include: [
-        "react",
-        "react-dom",
-        "@prisma/client",
-        "gsap",
-        "gsap/ScrollTrigger",
-        "gsap/TextPlugin",
-        "gsap/ScrollToPlugin",
-      ],
-      exclude: ["@astrojs/cloudflare"],
+      include: ["react", "react-dom", "@prisma/client"],
+      exclude: ["@astrojs/cloudflare", "gsap"],
     },
     ssr: {
-      external: ["@prisma/client"],
-      noExternal: ["gsap"],
+      external: ["@prisma/client", "gsap"],
+      noExternal: [],
     },
     build: {
       cssCodeSplit: true,
+      minify: "terser",
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+          pure_funcs: [
+            "console.log",
+            "console.info",
+            "console.debug",
+            "console.warn",
+          ],
+          passes: 3,
+          unsafe: true,
+          unsafe_comps: true,
+          unsafe_math: true,
+          unsafe_methods: true,
+          unsafe_proto: true,
+          unsafe_regexp: true,
+          unsafe_undefined: true,
+        },
+        mangle: {
+          safari10: true,
+          toplevel: true,
+        },
+        format: {
+          comments: false,
+        },
+      },
       rollupOptions: {
         output: {
-          manualChunks: {
-            vendor: ["react", "react-dom"],
-            gsap: ["gsap"],
+          manualChunks: (id) => {
+            if (id.includes("node_modules")) {
+              if (id.includes("react")) return "react";
+              if (id.includes("@prisma")) return "prisma";
+              return "vendor";
+            }
           },
+          chunkFileNames: "assets/[name]-[hash].js",
+          entryFileNames: "assets/[name]-[hash].js",
+          assetFileNames: "assets/[name]-[hash].[ext]",
+        },
+        treeshake: {
+          preset: "recommended",
+          moduleSideEffects: false,
+          propertyReadSideEffects: false,
+          tryCatchDeoptimization: false,
         },
       },
     },

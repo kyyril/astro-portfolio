@@ -1149,11 +1149,10 @@ video {
 .duration-300 {
   transition-duration: 0.3s;
 }
-/* Duplikat CSS dihapus - gunakan global.css */
+/* Optimized CSS - removed backdrop-filter for performance */
 .darker-card {
-  background-color: rgba(0, 0, 0, 0.155);
-  -webkit-backdrop-filter: blur(15px);
-  backdrop-filter: blur(15px);
+  background-color: rgba(0, 0, 0, 0.3);
+  /* Removed backdrop-filter for performance */
 }
 ::-webkit-scrollbar {
   width: 8px;

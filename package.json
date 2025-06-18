@@ -21,7 +21,10 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
-    "test:all": "npm run test:run && npm run test:e2e"
+    "test:all": "npm run test:run && npm run test:e2e",
+    "test:performance": "node scripts/performance-test.js",
+    "test:mobile": "node scripts/mobile-performance-test.js",
+    "test:perf:all": "npm run test:performance && npm run test:mobile"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.5.4",
@@ -35,7 +38,6 @@
     "@types/react-dom": "^18.3.1",
     "astro": "^5.9.3",
     "auth-astro": "^4.2.0",
-    "gsap": "^3.13.0",
     "prisma": "^5.22.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -44,14 +46,18 @@
     "vite": "^6.2.0"
   },
   "devDependencies": {
+    "@fullhuman/postcss-purgecss": "^7.0.2",
     "@playwright/test": "^1.53.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/user-event": "^14.6.1",
     "@vitest/ui": "^3.2.4",
+    "cssnano": "^7.0.7",
     "happy-dom": "^18.0.1",
     "jsdom": "^26.1.0",
     "playwright": "^1.53.0",
+    "postcss-preset-env": "^10.2.3",
     "rimraf": "^6.0.1",
+    "terser": "^5.43.0",
     "vitest": "^3.2.4"
   }
 }

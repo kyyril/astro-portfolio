@@ -2,11 +2,11 @@
 import { experiences } from '../../data/portfolio';
 ---
 
-<section class="fade-in">
-  <h2 class="text-3xl font-bold mb-8 text-[var(--color-primary)] fade-in">💼 Professional Experience</h2>
+<section>
+  <h2 class="text-3xl font-bold mb-8 text-[var(--color-primary)]">💼 Professional Experience</h2>
   <div class="space-y-6">
-    {experiences.map((exp, index) => (
-      <div class="terminal-card fade-in">
+    {experiences.map((exp) => (
+      <div class="terminal-card">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
           <div>
             <h3 class="text-xl font-semibold text-[var(--color-accent)]">{exp.job}</h3>
@@ -28,47 +28,4 @@ import { experiences } from '../../data/portfolio';
   </div>
 </section>
 
-<style>
-  /* Fade in animations for experience */
-  .fade-in {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Staggered animation delays */
-  .fade-in:nth-child(1) { transition-delay: 0.1s; }
-  .fade-in:nth-child(2) { transition-delay: 0.2s; }
-  .fade-in:nth-child(3) { transition-delay: 0.3s; }
-  .fade-in:nth-child(4) { transition-delay: 0.4s; }
-</style>
-
-<script>
-  // Intersection Observer for experience animations
-  const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-  };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, observerOptions);
-
-  // Initialize experience animations
-  function initExperienceAnimations() {
-    const fadeElements = document.querySelectorAll('.fade-in');
-    fadeElements.forEach(el => observer.observe(el));
-  }
-
-  document.addEventListener('DOMContentLoaded', initExperienceAnimations);
-  document.addEventListener('astro:page-load', initExperienceAnimations);
-</script>
+<!-- Removed animations for performance -->
