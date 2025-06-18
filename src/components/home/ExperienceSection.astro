@@ -2,28 +2,73 @@
 import { experiences } from '../../data/portfolio';
 ---
 
-<section class="animate-slide-up">
-  <h2 class="text-3xl font-bold mb-8 text-[var(--color-primary)]">Experience</h2>
+<section class="fade-in">
+  <h2 class="text-3xl font-bold mb-8 text-[var(--color-primary)] fade-in">💼 Professional Experience</h2>
   <div class="space-y-6">
-    {experiences.map(exp => (
-      <div class="terminal-card">
+    {experiences.map((exp, index) => (
+      <div class="terminal-card fade-in">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
           <div>
             <h3 class="text-xl font-semibold text-[var(--color-accent)]">{exp.job}</h3>
             <p class="text-[var(--color-secondary)]">{exp.institution} • {exp.location}</p>
           </div>
           <div class="text-sm text-[var(--color-secondary)] mt-2 md:mt-0">
-<p>{new Date(exp.startDate).toLocaleDateString()} - {exp.endDate ? new Date(exp.endDate).toLocaleDateString() : 'Present'}</p>
+            <p>{new Date(exp.startDate).toLocaleDateString()} - {exp.endDate ? new Date(exp.endDate).toLocaleDateString() : 'Present'}</p>
             <p class="capitalize">{exp.status} • {exp.working}</p>
           </div>
         </div>
         <p class="text-[var(--color-text)] mb-4">{exp.description}</p>
         <div class="flex flex-wrap gap-2">
           {exp.technologies.map(tech => (
-            <span class="px-2 py-1 text-xs  rounded">{tech}</span>
+            <span class="px-2 py-1 text-xs rounded bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-primary)] hover:text-white transition-colors">{tech}</span>
           ))}
         </div>
       </div>
     ))}
   </div>
 </section>
+
+<style>
+  /* Fade in animations for experience */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Staggered animation delays */
+  .fade-in:nth-child(1) { transition-delay: 0.1s; }
+  .fade-in:nth-child(2) { transition-delay: 0.2s; }
+  .fade-in:nth-child(3) { transition-delay: 0.3s; }
+  .fade-in:nth-child(4) { transition-delay: 0.4s; }
+</style>
+
+<script>
+  // Intersection Observer for experience animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, observerOptions);
+
+  // Initialize experience animations
+  function initExperienceAnimations() {
+    const fadeElements = document.querySelectorAll('.fade-in');
+    fadeElements.forEach(el => observer.observe(el));
+  }
+
+  document.addEventListener('DOMContentLoaded', initExperienceAnimations);
+  document.addEventListener('astro:page-load', initExperienceAnimations);
+</script>

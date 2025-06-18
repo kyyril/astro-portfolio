@@ -7,11 +7,117 @@ import SkillsSection from 'src/components/home/SkillsSection.astro';
 
 ---
 
-<Layout title="Home - Portfolio">
-  <div class="max-w-6xl mx-auto px-4 py-6 space-y-6">
-    <ProfileSection />
-    <ExperienceSection />
-    <EducationSection />
-    <SkillsSection />
+<Layout title="Portfolio - Professional Developer">
+  <div class="max-w-6xl mx-auto px-4 py-6 space-y-12">
+    <!-- Hero Section -->
+    <section class="min-h-screen flex items-center justify-center">
+      <div class="text-center max-w-4xl mx-auto">
+        <h1 class="text-5xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+          Developer Portfolio
+        </h1>
+        <p class="text-xl lg:text-2xl text-[var(--color-text)] mb-8 leading-relaxed">
+          Crafting digital experiences with modern web technologies
+        </p>
+        <div class="flex gap-4 justify-center flex-wrap">
+          <a href="/projects" class="px-6 py-3 bg-[var(--color-primary)] text-[var(--color-background)] rounded-lg font-semibold hover:opacity-90 transition-opacity">
+            View Projects
+          </a>
+          <a href="/guestbook" class="px-6 py-3 border border-[var(--color-border)] text-[var(--color-text)] rounded-lg hover:bg-[var(--color-surface)] transition-colors">
+            Get In Touch
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-16">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-[var(--color-text)] mb-4">About Me</h2>
+        <p class="text-lg text-[var(--color-secondary)] max-w-3xl mx-auto">
+          I'm a passionate developer focused on creating efficient, scalable, and user-friendly web applications.
+          With expertise in modern frameworks and a keen eye for design, I bring ideas to life through code.
+        </p>
+      </div>
+    </section>
+
+    <!-- Profile Section -->
+    <div class="fade-in">
+      <ProfileSection />
+    </div>
+
+    <!-- Experience Section -->
+    <div class="fade-in">
+      <ExperienceSection />
+    </div>
+
+    <!-- Education Section -->
+    <div class="fade-in">
+      <EducationSection />
+    </div>
+
+    <!-- Skills Section -->
+    <div class="fade-in">
+      <SkillsSection />
+    </div>
   </div>
 </Layout>
+
+<style>
+  /* Fade in animations */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Gradient animation */
+  .bg-gradient-to-r {
+    background-size: 200% 200%;
+    animation: gradientShift 4s ease infinite;
+  }
+
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /* Staggered animation delays */
+  .fade-in:nth-child(1) { transition-delay: 0.1s; }
+  .fade-in:nth-child(2) { transition-delay: 0.2s; }
+  .fade-in:nth-child(3) { transition-delay: 0.3s; }
+  .fade-in:nth-child(4) { transition-delay: 0.4s; }
+</style>
+
+<script>
+  // Intersection Observer for fade-in animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, observerOptions);
+
+  // Initialize animations
+  function initAnimations() {
+    const fadeElements = document.querySelectorAll('.fade-in');
+    fadeElements.forEach(el => observer.observe(el));
+  }
+
+  document.addEventListener('DOMContentLoaded', initAnimations);
+  document.addEventListener('astro:page-load', initAnimations);
+</script>

@@ -4,19 +4,34 @@ import Footer from '../components/Footer.astro';
 import ThemeProvider from '../components/ThemeProvider.astro';
 import DisableConflictingScrolls from '../components/DisableConflictingScrolls.astro';
 import ScrollOptimizer from '../components/ScrollOptimizer.astro';
+import StickyThemeToggle from '../components/StickyThemeToggle.astro';
+import AccessibilityEnhancer from '../components/AccessibilityEnhancer.astro';
+import SEOEnhancer from '../components/SEOEnhancer.astro';
 
 interface Props {
   title: string;
   description?: string;
   noIndex?: boolean;
   ogImage?: string;
+  type?: 'website' | 'article' | 'profile';
+  publishedTime?: string;
+  modifiedTime?: string;
+  tags?: string[];
+  author?: string;
+  section?: string;
 }
 
 const {
   title,
   description = "Modern portfolio built with Astro.js - High-performance web development with smooth animations",
   noIndex = false,
-  ogImage = "/og-image.jpg"
+  ogImage = "/og-image.jpg",
+  type = 'website',
+  publishedTime,
+  modifiedTime,
+  tags = [],
+  author = "Portfolio Developer",
+  section = "Portfolio"
 } = Astro.props;
 
 const canonicalURL = Astro.site
@@ -68,6 +83,19 @@ const canonicalURL = Astro.site
     <meta name="color-scheme" content="dark light" />
     <!-- Critical CSS akan diambil dari global.css -->
 
+    <!-- SEO Enhancements -->
+    <SEOEnhancer
+      title={title}
+      description={description}
+      type={type}
+      image={ogImage}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      tags={tags}
+      author={author}
+      section={section}
+    />
+
     <!-- Non-critical CSS -->
     <link rel="stylesheet" href="/global.css" />
 
@@ -79,15 +107,55 @@ const canonicalURL = Astro.site
         });
       }
     </script>
+
+
   </head>
   <body>
     <ThemeProvider />
     <DisableConflictingScrolls />
     <ScrollOptimizer />
+    <StickyThemeToggle />
+    <AccessibilityEnhancer />
+
     <main>
       <slot />
     </main>
     <Navigation />
     <Footer />
+
+    <script is:inline>
+      // Basic page initialization
+      function initPage() {
+        // Add hover effects to cards
+        document.querySelectorAll('.terminal-card, .project-card').forEach(card => {
+          card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-2px)';
+            card.style.boxShadow = '0 4px 12px rgba(var(--color-primary-rgb), 0.15)';
+          });
+
+          card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+            card.style.boxShadow = '';
+          });
+        });
+
+        // Form focus effects
+        document.querySelectorAll('input, textarea').forEach(input => {
+          input.addEventListener('focus', () => {
+            input.style.borderColor = 'var(--color-primary)';
+            input.style.boxShadow = '0 0 0 2px rgba(var(--color-primary-rgb), 0.1)';
+          });
+
+          input.addEventListener('blur', () => {
+            input.style.borderColor = '';
+            input.style.boxShadow = '';
+          });
+        });
+      }
+
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', initPage);
+      document.addEventListener('astro:page-load', initPage);
+    </script>
   </body>
 </html>

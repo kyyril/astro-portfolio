@@ -1,0 +1,344 @@
+---
+// Comprehensive Accessibility Enhancement Component
+// Provides ARIA support, keyboard navigation, focus management, and screen reader support
+---
+
+<script>
+  // Accessibility enhancement variables
+  let focusedElement: HTMLElement | null = null;
+
+  let announcer: HTMLElement | null = null;
+  let focusIndicator: HTMLElement | null = null;
+
+  // Initialize accessibility enhancements
+  function initAccessibilityEnhancements() {
+
+    createScreenReaderAnnouncer();
+    createFocusIndicator();
+    enhanceKeyboardNavigation();
+    addAriaLabels();
+    setupFocusManagement();
+    setupReducedMotionEnhancements();
+    setupHighContrastSupport();
+    monitorAccessibilityPreferences();
+  }
+
+
+  // Create screen reader announcer for dynamic content
+  function createScreenReaderAnnouncer() {
+    announcer = document.createElement('div');
+    announcer.id = 'sr-announcer';
+    announcer.className = 'sr-only';
+    announcer.setAttribute('aria-live', 'polite');
+    announcer.setAttribute('aria-atomic', 'true');
+    document.body.appendChild(announcer);
+  }
+
+  // Create visual focus indicator
+  function createFocusIndicator() {
+    focusIndicator = document.createElement('div');
+    focusIndicator.className = 'focus-indicator';
+    document.body.appendChild(focusIndicator);
+  }
+
+  // Enhance keyboard navigation
+  function enhanceKeyboardNavigation() {
+    // Tab navigation enhancement
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        document.body.classList.add('keyboard-navigation');
+        updateFocusIndicator(e.target as HTMLElement);
+      }
+      
+      // Escape key to close modals/dropdowns
+      if (e.key === 'Escape') {
+        closeAllDropdowns();
+        announceToScreenReader('Closed all open menus');
+      }
+      
+      // Arrow key navigation for nav items
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        handleArrowNavigation(e);
+      }
+    });
+
+    // Remove keyboard navigation class on mouse use
+    document.addEventListener('mousedown', () => {
+      document.body.classList.remove('keyboard-navigation');
+    });
+  }
+
+  // Add ARIA labels and roles
+  function addAriaLabels() {
+    // Main navigation
+    const nav = document.querySelector('.nav-bar');
+    if (nav) {
+      nav.setAttribute('role', 'navigation');
+      nav.setAttribute('aria-label', 'Main navigation');
+      nav.id = 'navigation';
+    }
+
+    // Main content area
+    const main = document.querySelector('main');
+    if (main) {
+      main.setAttribute('role', 'main');
+    }
+
+    // Footer
+    const footer = document.querySelector('footer');
+    if (footer) {
+      footer.id = 'footer';
+      footer.setAttribute('role', 'contentinfo');
+    }
+
+    // Theme toggle
+    const themeToggle = document.querySelector('.theme-toggle-btn, .sticky-theme-toggle-btn');
+    if (themeToggle) {
+      themeToggle.setAttribute('aria-label', 'Toggle theme menu');
+      themeToggle.setAttribute('aria-expanded', 'false');
+      themeToggle.setAttribute('aria-haspopup', 'true');
+    }
+
+
+
+    // Navigation items
+    document.querySelectorAll('.nav-item').forEach((item, index) => {
+      const href = item.getAttribute('href');
+      let label = 'Navigation item';
+      
+      if (href === '/') label = 'Home page';
+      else if (href === '/projects') label = 'Projects page';
+      else if (href === '/blog') label = 'Blog page';
+      else if (href === '/guestbook') label = 'Guestbook page';
+      else if (href === '/chat') label = 'Chat page';
+      
+      item.setAttribute('aria-label', label);
+      item.setAttribute('role', 'link');
+    });
+  }
+
+  // Setup focus management
+  function setupFocusManagement() {
+    // Track focus changes
+    document.addEventListener('focusin', (e) => {
+      focusedElement = e.target as HTMLElement;
+      updateFocusIndicator(focusedElement);
+    });
+
+    // Handle focus trapping in modals/dropdowns
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        const activeDropdown = document.querySelector('.theme-dropdown:not(.hidden)');
+        if (activeDropdown) {
+          trapFocusInElement(e, activeDropdown as HTMLElement);
+        }
+      }
+    });
+  }
+
+  // Setup reduced motion enhancements
+  function setupReducedMotionEnhancements() {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    
+    function handleReducedMotion(mediaQuery: MediaQueryList) {
+      if (mediaQuery.matches) {
+        document.body.classList.add('reduced-motion-preference');
+        announceToScreenReader('Reduced motion mode enabled');
+      } else {
+        document.body.classList.remove('reduced-motion-preference');
+      }
+    }
+
+    handleReducedMotion(prefersReducedMotion);
+    prefersReducedMotion.addEventListener('change', handleReducedMotion);
+  }
+
+  // Setup high contrast support
+  function setupHighContrastSupport() {
+    const prefersHighContrast = window.matchMedia('(prefers-contrast: high)');
+    
+    function handleHighContrast(mediaQuery: MediaQueryList) {
+      if (mediaQuery.matches) {
+        document.body.classList.add('high-contrast-preference');
+        announceToScreenReader('High contrast mode detected');
+      } else {
+        document.body.classList.remove('high-contrast-preference');
+      }
+    }
+
+    handleHighContrast(prefersHighContrast);
+    prefersHighContrast.addEventListener('change', handleHighContrast);
+  }
+
+  // Monitor accessibility preferences
+  function monitorAccessibilityPreferences() {
+    // Check for screen reader
+    const isScreenReader = window.navigator.userAgent.includes('NVDA') || 
+                          window.navigator.userAgent.includes('JAWS') ||
+                          window.speechSynthesis;
+    
+    if (isScreenReader) {
+      document.body.classList.add('screen-reader-detected');
+    }
+
+    // Monitor color scheme preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    prefersDark.addEventListener('change', (e) => {
+      announceToScreenReader(`Color scheme changed to ${e.matches ? 'dark' : 'light'} mode`);
+    });
+  }
+
+  // Utility functions
+  function announceToScreenReader(message: string) {
+    if (announcer) {
+      announcer.textContent = message;
+      setTimeout(() => {
+        announcer!.textContent = '';
+      }, 1000);
+    }
+  }
+
+  function updateFocusIndicator(element: HTMLElement) {
+    if (!focusIndicator || !element) return;
+    
+    const rect = element.getBoundingClientRect();
+    focusIndicator.style.left = `${rect.left - 2}px`;
+    focusIndicator.style.top = `${rect.top - 2}px`;
+    focusIndicator.style.width = `${rect.width + 4}px`;
+    focusIndicator.style.height = `${rect.height + 4}px`;
+    focusIndicator.style.opacity = '1';
+  }
+
+  function closeAllDropdowns() {
+    document.querySelectorAll('.theme-dropdown').forEach(dropdown => {
+      dropdown.classList.add('hidden');
+    });
+    
+    // Update aria-expanded attributes
+    document.querySelectorAll('[aria-expanded="true"]').forEach(element => {
+      element.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  function handleArrowNavigation(e: KeyboardEvent) {
+    const navItems = Array.from(document.querySelectorAll('.nav-item')) as HTMLElement[];
+    const currentIndex = navItems.findIndex(item => item === document.activeElement);
+    
+    if (currentIndex === -1) return;
+    
+    let nextIndex;
+    if (e.key === 'ArrowLeft') {
+      nextIndex = currentIndex > 0 ? currentIndex - 1 : navItems.length - 1;
+    } else {
+      nextIndex = currentIndex < navItems.length - 1 ? currentIndex + 1 : 0;
+    }
+    
+    e.preventDefault();
+    navItems[nextIndex].focus();
+  }
+
+  function trapFocusInElement(e: KeyboardEvent, element: HTMLElement) {
+    const focusableElements = element.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    ) as NodeListOf<HTMLElement>;
+    
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+    
+    if (e.shiftKey && document.activeElement === firstElement) {
+      e.preventDefault();
+      lastElement.focus();
+    } else if (!e.shiftKey && document.activeElement === lastElement) {
+      e.preventDefault();
+      firstElement.focus();
+    }
+  }
+
+  // Initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', initAccessibilityEnhancements);
+  document.addEventListener('astro:page-load', initAccessibilityEnhancements);
+
+  // Cleanup on page unload
+  document.addEventListener('astro:before-preparation', () => {
+
+    if (announcer) announcer.remove();
+    if (focusIndicator) focusIndicator.remove();
+  });
+</script>
+
+<style>
+
+
+  /* Screen reader only content */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Focus indicator */
+  .focus-indicator {
+    position: fixed;
+    pointer-events: none;
+    z-index: 10004;
+    border: 2px solid var(--color-primary);
+    border-radius: var(--border-radius);
+    opacity: 0;
+    transition: all var(--transition-lightning);
+    box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.3);
+  }
+
+  /* Enhanced focus styles for keyboard navigation */
+  .keyboard-navigation *:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  .keyboard-navigation .nav-item:focus {
+    background: rgba(var(--color-primary-rgb), 0.2);
+    transform: translateY(-2px);
+  }
+
+  /* High contrast mode enhancements */
+  .high-contrast-preference {
+    filter: contrast(1.5);
+  }
+
+  .high-contrast-preference .terminal-card,
+  .high-contrast-preference .nav-bar {
+    border: 2px solid var(--color-text);
+  }
+
+  /* Reduced motion preference enhancements */
+  .reduced-motion-preference * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+
+
+  /* Enhanced button accessibility */
+  button:focus-visible,
+  .nav-item:focus-visible,
+  .theme-toggle-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(var(--color-primary-rgb), 0.2);
+  }
+
+  /* Improved color contrast for accessibility */
+  @media (prefers-contrast: high) {
+    :root {
+      --color-text: #ffffff;
+      --color-background: #000000;
+      --color-border: #ffffff;
+    }
+  }
+</style>

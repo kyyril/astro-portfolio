@@ -150,80 +150,45 @@ body {
   transform: translateY(-1px);
 }
 
-.instant-click {
-  transition: transform var(--transition-lightning);
-}
-
-.instant-click:active {
-  transform: scale(0.98);
-}
-
-.speed-glow:hover {
-  box-shadow: 0 0 8px rgba(var(--color-primary-rgb), 0.3);
-  transition: box-shadow var(--transition-instant);
-}
-
-.fade-in-fast {
-  opacity: 0;
-  animation: fadeInFast 0.1s ease-out forwards;
-}
-
-.speedy-reveal {
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-}
-
-.speedy-reveal.visible {
-  opacity: 1;
-}
-
-/* Lightning-fast button effects */
-.btn-speedy {
-  transition: all var(--transition-instant);
+/* Clean button effects */
+.btn-clean {
+  transition: all 0.3s ease;
   position: relative;
 }
 
-.btn-speedy:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(var(--color-primary-rgb), 0.2);
+.btn-clean:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.15);
 }
 
-.btn-speedy:active {
+.btn-clean:active {
   transform: scale(0.98);
-  transition: transform var(--transition-lightning);
 }
 
-/* Speed-Focused Animations - No Pop-ups */
-@keyframes fadeInFast {
+/* Clean Animations */
+@keyframes fadeIn {
   from {
     opacity: 0;
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@keyframes flashFeedback {
-  0% {
-    background-color: var(--color-primary);
-  }
-  100% {
-    background-color: transparent;
-  }
-}
-
-@keyframes quickPulse {
+@keyframes pulse {
   0%,
   100% {
     opacity: 1;
   }
   50% {
-    opacity: 0.8;
+    opacity: 0.7;
   }
 }
 
-/* Lightning-fast loading animation */
-@keyframes spinFast {
+/* Loading animation */
+@keyframes spin {
   from {
     transform: rotate(0deg);
   }
@@ -232,12 +197,12 @@ body {
   }
 }
 
-.loading-fast {
-  animation: spinFast 0.5s linear infinite;
+.loading {
+  animation: spin 1s linear infinite;
 }
 
-/* Speed indicator animation */
-@keyframes speedIndicator {
+/* Progress bar animation */
+@keyframes progressBar {
   0% {
     transform: scaleX(0);
   }
@@ -246,13 +211,8 @@ body {
   }
 }
 
-.speed-bar {
-  animation: speedIndicator 0.1s ease-out;
-}
-
-/* Instant feedback flash */
-.feedback-flash {
-  animation: flashFeedback 0.1s ease-out;
+.progress-bar {
+  animation: progressBar 0.3s ease-out;
 }
 
 /* Responsive optimizations */
@@ -529,13 +489,9 @@ body {
   transition: color var(--transition-normal);
 }
 
+/* Legacy theme toggle container - now using StickyThemeToggle */
 .theme-toggle-container {
-  position: fixed !important;
-  top: 1rem;
-  right: 1rem;
-  z-index: 10001;
-  pointer-events: auto;
-  will-change: transform;
+  display: none; /* Hide old theme toggle */
 }
 
 .nav-spacer {
@@ -548,21 +504,29 @@ body {
   position: relative;
 }
 
+.theme-toggle-container:hover {
+  /* Enhanced hover effect for the container */
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(var(--color-primary-rgb), 0.2);
+  transform: translateZ(0) scale(1.02);
+}
+
 .theme-toggle-btn {
-  padding: 0.5rem;
-  border-radius: var(--border-radius);
-  background: rgba(var(--color-surface-rgb), 0.5);
-  border: 1px solid var(--color-border);
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
   color: var(--color-text);
   cursor: pointer;
   transition: all var(--transition-fast);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .theme-toggle-btn:hover {
-  background: var(--color-surface);
-  border-color: var(--color-primary);
+  background: rgba(var(--color-primary-rgb), 0.1);
+  color: var(--color-primary);
   transform: scale(1.05);
 }
 
@@ -739,6 +703,21 @@ body {
   .theme-toggle-container {
     top: 0.5rem;
     right: 0.5rem;
+    padding: 0.375rem;
+    border-radius: 10px;
+
+    /* Slightly smaller on mobile but still prominent */
+    box-shadow: 0 3px 15px rgba(0, 0, 0, 0.12),
+      0 0 0 1px rgba(var(--color-primary-rgb), 0.08);
+  }
+
+  .theme-toggle-btn {
+    padding: 0.5rem;
+  }
+
+  .theme-toggle-icon {
+    width: 1rem;
+    height: 1rem;
   }
 
   .theme-dropdown {
@@ -759,4 +738,140 @@ body {
     gap: 0.5rem;
     align-items: flex-start;
   }
+}
+
+/* Clean System Classes */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Ripple effect */
+.ripple-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple-effect::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(var(--color-primary-rgb), 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.4s ease, height 0.4s ease;
+  pointer-events: none;
+}
+
+.ripple-effect:active::after {
+  width: 200px;
+  height: 200px;
+}
+
+/* Speed loading bar */
+.speed-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: var(--color-primary);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: speedLoad 0.3s ease-out forwards;
+  z-index: 10000;
+}
+
+@keyframes speedLoad {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Speed indicator */
+.speed-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.8);
+  color: var(--color-primary);
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.speed-indicator.show {
+  opacity: 1;
+}
+
+.speed-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: var(--color-primary);
+  border-radius: 50%;
+  margin-right: 6px;
+  animation: speedPulse 1s infinite;
+}
+
+@keyframes speedPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* Speed-focused scroll indicator */
+.scroll-indicator {
+  transition: all 0.05s ease-out;
+}
+
+/* No transform animations - only opacity and minimal movement */
+.fade-in-fast {
+  animation: fadeInFast 0.1s ease-out;
+}
+
+@keyframes fadeInFast {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Speed-focused hover effects */
+.hover-fast:hover {
+  transform: translateY(-1px);
+  transition: transform 0.05s ease-out;
+}
+
+.glow-fast:hover {
+  box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.3);
+  transition: box-shadow 0.05s ease-out;
+}
+
+/* Instant visual feedback */
+.feedback-instant {
+  transition: background-color 0.03s ease-out;
+}
+
+.feedback-instant:active {
+  background-color: rgba(var(--color-primary-rgb), 0.2);
 }

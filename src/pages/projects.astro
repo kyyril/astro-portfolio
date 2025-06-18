@@ -14,11 +14,11 @@ import { projects } from '../data/portfolio';
 
     <!-- Filter buttons -->
     <div class="flex flex-wrap justify-center gap-2 mb-8">
-      <button class="filter-btn active px-4 py-2 rounded-lg " data-filter="all">All</button>
-      <button class="filter-btn px-4 py-2 rounded-lg " data-filter="web">Web</button>
-      <button class="filter-btn px-4 py-2 rounded-lg " data-filter="mobile">Mobile</button>
-      <button class="filter-btn px-4 py-2 rounded-lg " data-filter="desktop">Desktop</button>
-      <button class="filter-btn px-4 py-2 rounded-lg " data-filter="library">Library</button>
+      <button class="filter-btn active px-4 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-primary)] hover:text-white transition-all" data-filter="all">All</button>
+      <button class="filter-btn px-4 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-primary)] hover:text-white transition-all" data-filter="web">Web</button>
+      <button class="filter-btn px-4 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-primary)] hover:text-white transition-all" data-filter="mobile">Mobile</button>
+      <button class="filter-btn px-4 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-primary)] hover:text-white transition-all" data-filter="desktop">Desktop</button>
+      <button class="filter-btn px-4 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] text-[var(--color-text)] hover:bg-[var(--color-primary)] hover:text-white transition-all" data-filter="library">Library</button>
     </div>
 
     <!-- Projects grid -->
@@ -50,36 +50,36 @@ import { projects } from '../data/portfolio';
             
             <div class="flex flex-wrap gap-1">
               {project.technologies.slice(0, 3).map(tech => (
-                <span class="px-2 py-1 text-xs  rounded">{tech}</span>
+                <span class="px-2 py-1 text-xs bg-[var(--color-surface)] text-[var(--color-secondary)] border border-[var(--color-border)] rounded">{tech}</span>
               ))}
               {project.technologies.length > 3 && (
-                <span class="px-2 py-1 text-xs  rounded">+{project.technologies.length - 3}</span>
+                <span class="px-2 py-1 text-xs bg-[var(--color-surface)] text-[var(--color-secondary)] border border-[var(--color-border)] rounded">+{project.technologies.length - 3}</span>
               )}
             </div>
-            
+
             <div class="flex space-x-2 pt-2">
-              <a 
+              <a
                 href={`/projects/${project.id}`}
-                class="flex-1 text-center py-2 px-4  rounded hover:bg-[var(--color-primary)] hover:text-white transition-all"
+                class="flex-1 text-center py-2 px-4 bg-[var(--color-surface)] border border-[var(--color-border)] text-[var(--color-text)] rounded hover:bg-[var(--color-primary)] hover:text-white transition-all"
               >
                 Details
               </a>
               {project.live_url && (
-                <a 
-                  href={project.live_url} 
-                  target="_blank" 
+                <a
+                  href={project.live_url}
+                  target="_blank"
                   rel="noopener noreferrer"
-                  class="px-4 py-2  rounded hover:bg-[var(--color-accent)] hover:text-black transition-all"
+                  class="px-4 py-2 bg-[var(--color-accent)] text-black rounded hover:bg-opacity-80 transition-all"
                 >
                   Live
                 </a>
               )}
               {project.code_repo_url && !project.isPrivate && (
-                <a 
-                  href={project.code_repo_url} 
-                  target="_blank" 
+                <a
+                  href={project.code_repo_url}
+                  target="_blank"
                   rel="noopener noreferrer"
-                  class="px-4 py-2  rounded hover:bg-[var(--color-secondary)] hover:text-black transition-all"
+                  class="px-4 py-2 bg-[var(--color-secondary)] text-black rounded hover:bg-opacity-80 transition-all"
                 >
                   Code
                 </a>
@@ -101,23 +101,77 @@ import { projects } from '../data/portfolio';
   }
 
   .filter-btn.active {
-    background-color: var(--color-primary);
-    color: white;
+    background-color: var(--color-primary) !important;
+    color: white !important;
+    border-color: var(--color-primary) !important;
   }
 
   .project-card {
     position: relative;
     transition: all 0.3s ease;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .project-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(var(--color-primary-rgb), 0.15);
   }
 
   .project-card.hidden {
-    display: none;
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
   }
+
+  /* Fade in animation for project cards */
+  .project-card {
+    animation: fadeInUp 0.6s ease forwards;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Stagger animation delays */
+  .project-card:nth-child(1) { animation-delay: 0.1s; }
+  .project-card:nth-child(2) { animation-delay: 0.2s; }
+  .project-card:nth-child(3) { animation-delay: 0.3s; }
+  .project-card:nth-child(4) { animation-delay: 0.4s; }
+  .project-card:nth-child(5) { animation-delay: 0.5s; }
+  .project-card:nth-child(6) { animation-delay: 0.6s; }
 </style>
 
 <script>
-  const filterBtns = document.querySelectorAll('.filter-btn');
-  const projectCards = document.querySelectorAll('.project-card');
+  const filterBtns = document.querySelectorAll('.filter-btn') as NodeListOf<HTMLElement>;
+  const projectCards = document.querySelectorAll('.project-card') as NodeListOf<HTMLElement>;
+
+  function filterProjects(filter: string) {
+    projectCards.forEach((card, index) => {
+      const shouldShow = filter === 'all' || card.classList.contains(filter);
+
+      if (shouldShow) {
+        // Show card with staggered animation
+        setTimeout(() => {
+          card.classList.remove('hidden');
+        }, index * 100);
+      } else {
+        // Hide card immediately
+        card.classList.add('hidden');
+      }
+    });
+  }
 
   filterBtns.forEach(btn => {
     btn.addEventListener('click', () => {
@@ -126,15 +180,17 @@ import { projects } from '../data/portfolio';
       // Add active class to clicked button
       btn.classList.add('active');
 
-      const filter: any = btn.getAttribute('data-filter');
-
-      projectCards.forEach(card => {
-        if (filter === 'all' || card.classList.contains(filter)) {
-          card.classList.remove('hidden');
-        } else {
-          card.classList.add('hidden');
-        }
-      });
+      const filter = btn.getAttribute('data-filter') || 'all';
+      filterProjects(filter);
     });
+  });
+
+  // Initialize with all projects visible
+  document.addEventListener('DOMContentLoaded', () => {
+    filterProjects('all');
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    filterProjects('all');
   });
 </script>

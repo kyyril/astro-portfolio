@@ -1,0 +1,282 @@
+---
+import { themes } from '../config/themes';
+---
+
+<!-- Sticky Theme Toggle that follows scroll -->
+<div class="sticky-theme-wrapper">
+  <div class="sticky-theme-toggle">
+    <button id="sticky-theme-toggle" class="sticky-theme-btn" title="Switch Theme">
+      <svg class="sticky-theme-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5H9M21 9H9M21 13H9M21 17H9M21 21H9">
+        </path>
+      </svg>
+    </button>
+
+    <div id="sticky-theme-dropdown" class="sticky-theme-dropdown hidden">
+      <div class="sticky-theme-dropdown-content">
+        {Object.entries(themes).map(([key, theme]) => (
+          <button
+            class="sticky-theme-option"
+            data-theme={key}
+          >
+            {theme.displayName}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const stickyThemeToggle = document.getElementById('sticky-theme-toggle');
+  const stickyThemeDropdown = document.getElementById('sticky-theme-dropdown');
+  const stickyThemeOptions = document.querySelectorAll('.sticky-theme-option');
+
+  stickyThemeToggle?.addEventListener('click', () => {
+    stickyThemeDropdown?.classList.toggle('hidden');
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!stickyThemeToggle?.contains(e.target as Node) && !stickyThemeDropdown?.contains(e.target as Node)) {
+      stickyThemeDropdown?.classList.add('hidden');
+    }
+  });
+
+  stickyThemeOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      const themeName = option.getAttribute('data-theme');
+      if (themeName) {
+        // Try to call switchTheme function
+        if (typeof (window as any).switchTheme === 'function') {
+          (window as any).switchTheme(themeName);
+        } else {
+          // Fallback: dispatch custom event
+          window.dispatchEvent(new CustomEvent('switchTheme', { detail: { theme: themeName } }));
+        }
+        stickyThemeDropdown?.classList.add('hidden');
+      }
+    });
+  });
+
+  // Listen for custom theme switch events as fallback
+  window.addEventListener('switchTheme', (event: any) => {
+    const themeName = event.detail?.theme;
+    if (themeName && (window as any).themes && (window as any).applyTheme) {
+      const theme = (window as any).themes[themeName];
+      if (theme) {
+        (window as any).applyTheme(theme);
+        localStorage.setItem('theme', themeName);
+        document.documentElement.setAttribute('data-theme', themeName);
+      }
+    }
+  });
+
+  // Make theme toggle follow scroll smoothly
+  function initStickyScrollBehavior() {
+    const themeWrapper = document.querySelector('.sticky-theme-wrapper') as HTMLElement;
+    if (!themeWrapper) return;
+
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    function updateThemeTogglePosition() {
+      const currentScrollY = window.scrollY;
+      const scrollDelta = currentScrollY - lastScrollY;
+
+      // Add scrolling class for visual feedback
+      themeWrapper.classList.add('scrolling');
+
+      // Add subtle movement based on scroll direction
+      if (Math.abs(scrollDelta) > 1) {
+        if (scrollDelta > 0) {
+          // Scrolling down - slight move
+          themeWrapper.style.transform = 'translateZ(0) translateY(2px)';
+        } else {
+          // Scrolling up - slight move
+          themeWrapper.style.transform = 'translateZ(0) translateY(-2px)';
+        }
+
+        // Reset position and remove scrolling class after a short delay
+        setTimeout(() => {
+          themeWrapper.style.transform = 'translateZ(0) translateY(0)';
+          themeWrapper.classList.remove('scrolling');
+        }, 200);
+      } else {
+        // Remove scrolling class if no significant movement
+        setTimeout(() => {
+          themeWrapper.classList.remove('scrolling');
+        }, 100);
+      }
+
+      lastScrollY = currentScrollY;
+      ticking = false;
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateThemeTogglePosition);
+        ticking = true;
+      }
+    }
+
+    // Add scroll listener
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+    };
+  }
+
+  // Initialize sticky behavior
+  document.addEventListener('DOMContentLoaded', initStickyScrollBehavior);
+  document.addEventListener('astro:page-load', initStickyScrollBehavior);
+</script>
+
+<style>
+  /* Sticky Theme Toggle Styles - Fixed Position that follows scroll */
+  .sticky-theme-wrapper {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 10001;
+    pointer-events: auto;
+
+    /* Enhanced sticky appearance */
+    background: rgba(var(--color-surface-rgb), 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 12px;
+    padding: 0.5rem;
+    border: 1px solid rgba(var(--color-border), 0.3);
+    box-shadow:
+      0 4px 20px rgba(0, 0, 0, 0.15),
+      0 0 0 1px rgba(var(--color-primary-rgb), 0.1);
+
+    /* Smooth transitions */
+    transition: all var(--transition-normal);
+
+    /* Ensure it stays visible during scroll */
+    transform: translateZ(0);
+    will-change: transform;
+  }
+
+  .sticky-theme-toggle {
+    position: relative;
+    pointer-events: auto;
+  }
+
+  .sticky-theme-wrapper:hover {
+    box-shadow:
+      0 6px 25px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(var(--color-primary-rgb), 0.2);
+    transform: translateZ(0) scale(1.02);
+  }
+
+  /* Scroll-responsive styles */
+  .sticky-theme-wrapper.scrolling {
+    background: rgba(var(--color-surface-rgb), 0.98);
+    box-shadow:
+      0 6px 30px rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(var(--color-primary-rgb), 0.15);
+  }
+
+  .sticky-theme-btn {
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sticky-theme-btn:hover {
+    background: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary);
+    transform: scale(1.05);
+  }
+
+  .sticky-theme-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .sticky-theme-dropdown {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+    width: 12rem;
+    background: rgba(var(--color-surface-rgb), 0.95);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    z-index: 10002;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all var(--transition-fast);
+    pointer-events: none;
+  }
+
+  .sticky-theme-dropdown:not(.hidden) {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .sticky-theme-dropdown-content {
+    padding: 0.5rem 0;
+  }
+
+  .sticky-theme-option {
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+  }
+
+  .sticky-theme-option:hover {
+    background: rgba(var(--color-surface-rgb), 0.7);
+    color: var(--color-primary);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 768px) {
+    .sticky-theme-toggle {
+      top: 0.5rem;
+      right: 0.5rem;
+      padding: 0.375rem;
+      border-radius: 10px;
+    }
+    
+    .sticky-theme-btn {
+      padding: 0.5rem;
+    }
+    
+    .sticky-theme-icon {
+      width: 1rem;
+      height: 1rem;
+    }
+    
+    .sticky-theme-dropdown {
+      width: 10rem;
+    }
+  }
+</style>

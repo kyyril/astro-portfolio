@@ -1,0 +1,314 @@
+---
+// Comprehensive SEO Enhancement Component
+// Provides structured data, enhanced meta tags, and SEO optimizations
+interface Props {
+  title?: string;
+  description?: string;
+  type?: 'website' | 'article' | 'profile';
+  image?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  tags?: string[];
+  author?: string;
+  section?: string;
+}
+
+const {
+  title = "Portfolio - Professional Developer",
+  description = "Modern portfolio built with Astro.js - High-performance web development with smooth animations and cutting-edge technologies",
+  type = 'website',
+  image = "/og-image.jpg",
+  publishedTime,
+  modifiedTime,
+  tags = [],
+  author = "Portfolio Developer",
+  section = "Portfolio"
+} = Astro.props;
+
+const canonicalURL = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site)
+  : new URL(Astro.url.pathname, `http://localhost:4321`);
+
+const fullImageURL = new URL(image, canonicalURL).toString();
+
+// Generate structured data
+const websiteStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Professional Developer Portfolio",
+  "description": description,
+  "url": canonicalURL.toString(),
+  "author": {
+    "@type": "Person",
+    "name": author,
+    "url": canonicalURL.toString()
+  },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": `${canonicalURL.origin}/search?q={search_term_string}`
+    },
+    "query-input": "required name=search_term_string"
+  }
+};
+
+const personStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": author,
+  "url": canonicalURL.toString(),
+  "image": fullImageURL,
+  "jobTitle": "Full Stack Developer",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "Freelance"
+  },
+  "knowsAbout": [
+    "Web Development",
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Astro.js",
+    "Node.js",
+    "Performance Optimization"
+  ],
+  "sameAs": [
+    "https://github.com/username",
+    "https://linkedin.com/in/username",
+    "https://twitter.com/username"
+  ]
+};
+
+const breadcrumbStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": canonicalURL.origin
+    }
+  ]
+};
+
+// Add current page to breadcrumb
+const pathSegments = Astro.url.pathname.split('/').filter(Boolean);
+pathSegments.forEach((segment, index) => {
+  const url = `${canonicalURL.origin}/${pathSegments.slice(0, index + 1).join('/')}`;
+  breadcrumbStructuredData.itemListElement.push({
+    "@type": "ListItem",
+    "position": index + 2,
+    "name": segment.charAt(0).toUpperCase() + segment.slice(1),
+    "item": url
+  });
+});
+
+const organizationStructuredData = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Professional Developer Portfolio",
+  "url": canonicalURL.toString(),
+  "logo": {
+    "@type": "ImageObject",
+    "url": `${canonicalURL.origin}/favicon.svg`
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "Professional Inquiry",
+    "url": `${canonicalURL.origin}/contact`
+  }
+};
+---
+
+<!-- Enhanced SEO Meta Tags -->
+<meta name="application-name" content="Portfolio" />
+<meta name="apple-mobile-web-app-title" content="Portfolio" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="msapplication-config" content="/browserconfig.xml" />
+<meta name="msapplication-TileColor" content="#1e1e2e" />
+<meta name="msapplication-tap-highlight" content="no" />
+<meta name="theme-color" content="#1e1e2e" />
+
+<!-- Enhanced Open Graph -->
+<meta property="og:site_name" content="Professional Developer Portfolio" />
+<meta property="og:locale" content="en_US" />
+{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+{author && <meta property="article:author" content={author} />}
+{section && <meta property="article:section" content={section} />}
+{tags.map(tag => <meta property="article:tag" content={tag} />)}
+
+<!-- Enhanced Twitter Cards -->
+<meta name="twitter:site" content="@portfolio" />
+<meta name="twitter:creator" content="@portfolio" />
+<meta name="twitter:domain" content={canonicalURL.hostname} />
+
+<!-- Additional SEO Meta Tags -->
+<meta name="referrer" content="origin-when-cross-origin" />
+<meta name="color-scheme" content="dark light" />
+<meta name="supported-color-schemes" content="dark light" />
+
+<!-- Performance and Security -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="renderer" content="webkit" />
+<meta name="force-rendering" content="webkit" />
+
+<!-- Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(websiteStructuredData)} />
+<script type="application/ld+json" set:html={JSON.stringify(personStructuredData)} />
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbStructuredData)} />
+<script type="application/ld+json" set:html={JSON.stringify(organizationStructuredData)} />
+
+<script>
+  // SEO Enhancement JavaScript
+  function initSEOEnhancements() {
+    // Add performance metrics for SEO
+    addPerformanceMetrics();
+    
+    // Enhance internal linking
+    enhanceInternalLinks();
+    
+    // Add reading time estimation
+    addReadingTime();
+    
+    // Monitor Core Web Vitals
+    monitorCoreWebVitals();
+    
+    // Add last modified date
+    addLastModified();
+  }
+
+  function addPerformanceMetrics() {
+    // Add performance observer for SEO metrics
+    if ('PerformanceObserver' in window) {
+      const observer = new PerformanceObserver((list) => {
+        for (const entry of list.getEntries()) {
+          // Track performance metrics for SEO
+          if (entry.entryType === 'navigation') {
+            const navEntry = entry as PerformanceNavigationTiming;
+            
+            // Add meta tag for page load time
+            const loadTimeMeta = document.createElement('meta');
+            loadTimeMeta.name = 'page-load-time';
+            loadTimeMeta.content = Math.round(navEntry.loadEventEnd - navEntry.fetchStart).toString();
+            document.head.appendChild(loadTimeMeta);
+          }
+        }
+      });
+      
+      observer.observe({ entryTypes: ['navigation'] });
+    }
+  }
+
+  function enhanceInternalLinks() {
+    // Add rel attributes to internal links for SEO
+    document.querySelectorAll('a[href^="/"]').forEach(link => {
+      const href = link.getAttribute('href');
+      if (href && !link.getAttribute('rel')) {
+        // Add appropriate rel attributes
+        if (href.includes('/projects/')) {
+          link.setAttribute('rel', 'bookmark');
+        } else if (href.includes('/blog/')) {
+          link.setAttribute('rel', 'bookmark');
+        }
+      }
+    });
+  }
+
+  function addReadingTime() {
+    // Calculate and add reading time for content pages
+    const content = document.querySelector('main');
+    if (content) {
+      const text = content.textContent || '';
+      const wordsPerMinute = 200;
+      const wordCount = text.trim().split(/\s+/).length;
+      const readingTime = Math.ceil(wordCount / wordsPerMinute);
+      
+      // Add reading time meta tag
+      const readingTimeMeta = document.createElement('meta');
+      readingTimeMeta.name = 'reading-time';
+      readingTimeMeta.content = `${readingTime} min read`;
+      document.head.appendChild(readingTimeMeta);
+    }
+  }
+
+  function monitorCoreWebVitals() {
+    // Monitor Core Web Vitals for SEO
+    if ('web-vitals' in window || typeof webVitals !== 'undefined') {
+      // This would integrate with web-vitals library if available
+      // For now, we'll use basic performance API
+      
+      // Monitor Largest Contentful Paint (LCP)
+      if ('PerformanceObserver' in window) {
+        const lcpObserver = new PerformanceObserver((list) => {
+          const entries = list.getEntries();
+          const lastEntry = entries[entries.length - 1];
+          
+          // Add LCP meta tag for monitoring
+          const lcpMeta = document.createElement('meta');
+          lcpMeta.name = 'lcp-time';
+          lcpMeta.content = Math.round(lastEntry.startTime).toString();
+          document.head.appendChild(lcpMeta);
+        });
+        
+        lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+      }
+    }
+  }
+
+  function addLastModified() {
+    // Add last modified date for SEO
+    const lastModified = document.lastModified;
+    if (lastModified) {
+      const lastModifiedMeta = document.createElement('meta');
+      lastModifiedMeta.name = 'last-modified';
+      lastModifiedMeta.content = new Date(lastModified).toISOString();
+      document.head.appendChild(lastModifiedMeta);
+    }
+  }
+
+  // Initialize SEO enhancements
+  document.addEventListener('DOMContentLoaded', initSEOEnhancements);
+  document.addEventListener('astro:page-load', initSEOEnhancements);
+</script>
+
+<style>
+  /* SEO-friendly styles */
+  
+  /* Ensure proper heading hierarchy */
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  h3 { font-size: 1.75rem; }
+  h4 { font-size: 1.5rem; }
+  h5 { font-size: 1.25rem; }
+  h6 { font-size: 1rem; }
+  
+  /* Improve readability for SEO */
+  p {
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+  
+  /* Ensure images are SEO-friendly */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Print styles for SEO */
+  @media print {
+    .nav-bar,
+    .theme-toggle-container,
+    .performance-monitor {
+      display: none !important;
+    }
+    
+    body {
+      background: white !important;
+      color: black !important;
+    }
+  }
+</style>

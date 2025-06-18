@@ -5,124 +5,181 @@ import Terminal from "../Terminal.astro";
 
 <section class="min-h-screen flex items-center justify-center py-8">
   <div class="container mx-auto px-4 grid grid-cols-1 max-w-3xl gap-8">
-      <Terminal title="~/profile" variant="glass">
+      <Terminal title="~/about" variant="glass">
         <div class="space-y-4" style={{ color: "var(--color-accent)" }}>
-          <div>
+          <div class="fade-in">
             <span style={{ color: "var(--color-primary)" }}>$</span> cat
-            about.me
+            profile.json
           </div>
           <div
-            class="pl-4 space-y-2"
+            class="pl-4 space-y-2 fade-in"
             style={{ color: "var(--color-text)" }}
           >
-            <div>
-              <span style={{ lor: "var(--color-secondary)" }}>name:</span>
+            <div class="fade-in">
+              <span style={{ color: "var(--color-secondary)" }}>name:</span>
               "Khairil"
             </div>
-            <div>
+            <div class="fade-in">
               <span style={{ color: "var(--color-secondary)" }}>role:</span>
-              "Software Developer"
+              "Full Stack Developer"
             </div>
-            <div>
+            <div class="fade-in">
               <span style={{ color: "var(--color-secondary)" }}>
                 experience:
               </span>
               "3+ years"
             </div>
-            <div>
+            <div class="fade-in">
               <span style={{ color: "var(--color-secondary)" }}>
                 location:
               </span>
-              "Remote"
+              "Remote / Indonesia"
             </div>
-            <div>
+            <div class="fade-in">
               <span style={{ color: "var(--color-secondary)" }}>
                 languages:
               </span>
-              ["TypeScript", "Python", "Rust"]
+              ["TypeScript", "Python", "Rust", "JavaScript"]
             </div>
-            <div>
+            <div class="fade-in">
               <span style={{ color: "var(--color-secondary)" }}>
-                focus:
+                specialization:
               </span>
-              "Performance & UX"
+              "Modern Web Development & UI/UX"
+            </div>
+            <div class="fade-in">
+              <span style={{ color: "var(--color-secondary)" }}>
+                passion:
+              </span>
+              "Creating elegant solutions to complex problems"
             </div>
           </div>
-          <div class="mt-4">
+          <div class="mt-4 fade-in">
             <span style={{ color: "var(--color-primary)" }}>$</span>
-            <span class="animate-pulse  text-2xl">_</span>
+            <span class="animate-pulse text-2xl">_</span>
           </div>
         </div>
       </Terminal>
 
       <!-- Contact Links -->
-      <div class="flex flex-wrap gap-4">
+      <div class="flex flex-wrap gap-4 fade-in">
         <a
           href={`mailto:${contactInfo.email}`}
-          class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-opacity-80"
           style={{
-            backgroundColor: "var(--color-primary-rgb, 53, 132, 228, 0.2)",
-            borderColor: "var(--color-primary-rgb, 53, 132, 228, 0.3)",
+            backgroundColor: "rgba(var(--color-primary-rgb), 0.2)",
+            borderColor: "rgba(var(--color-primary-rgb), 0.3)",
             color: "var(--color-primary)",
+            border: "1px solid rgba(var(--color-primary-rgb), 0.3)",
           }}
         >
-          <span>Email</span>
+          <span>📧 Email</span>
         </a>
         <a
           href={contactInfo.github}
           target="_blank"
           rel="noopener noreferrer"
-          class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-opacity-80"
           style={{
-            backgroundColor:
-              "var(--color-secondary-rgb, 153, 193, 241, 0.2)",
-            borderColor: "var(--color-secondary-rgb, 153, 193, 241, 0.3)",
+            backgroundColor: "rgba(var(--color-secondary-rgb), 0.2)",
+            borderColor: "rgba(var(--color-secondary-rgb), 0.3)",
             color: "var(--color-secondary)",
+            border: "1px solid rgba(var(--color-secondary-rgb), 0.3)",
           }}
         >
-          <span>GitHub</span>
+          <span>🐙 GitHub</span>
         </a>
         <a
           href={contactInfo.linkedin}
           target="_blank"
           rel="noopener noreferrer"
-          class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-opacity-80"
           style={{
-            backgroundColor: "var(--color-accent-rgb, 246, 211, 45, 0.2)",
-            borderColor: "var(--color-accent-rgb, 246, 211, 45, 0.3)",
+            backgroundColor: "rgba(var(--color-accent-rgb), 0.2)",
+            borderColor: "rgba(var(--color-accent-rgb), 0.3)",
             color: "var(--color-accent)",
+            border: "1px solid rgba(var(--color-accent-rgb), 0.3)",
           }}
         >
-          <span>LinkedIn</span>
+          <span>💼 LinkedIn</span>
         </a>
         <a
           href={contactInfo.cv}
           download
-          class="flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-opacity-80"
           style={{
-            backgroundColor: "var(--color-primary-rgb, 53, 132, 228, 0.2)",
-            borderColor: "var(--color-primary-rgb, 53, 132, 228, 0.3)",
+            backgroundColor: "rgba(var(--color-primary-rgb), 0.2)",
+            borderColor: "rgba(var(--color-primary-rgb), 0.3)",
             color: "var(--color-primary)",
+            border: "1px solid rgba(var(--color-primary-rgb), 0.3)",
           }}
         >
-          <span>Download CV</span>
+          <span>📄 Download CV</span>
         </a>
       </div>
 
-      <!-- Quick Info -->
+      <!-- Status Info -->
       <div
-        class="flex flex-wrap gap-6"
+        class="flex flex-wrap gap-6 fade-in"
         style={{ color: "var(--color-text)" }}
       >
-        <div class="flex items-center gap-2">
-          <span>Remote / Worldwide</span>
+        <div class="flex items-center gap-2 terminal-card px-3 py-2 transition-transform hover:scale-105">
+          <span class="text-green-400">●</span>
+          <span>Available for Remote Work</span>
         </div>
-        <div class="flex items-center gap-2">
-          <span>Available for hire</span>
+        <div class="flex items-center gap-2 terminal-card px-3 py-2 transition-transform hover:scale-105">
+          <span class="text-blue-400">🚀</span>
+          <span>Open to New Opportunities</span>
         </div>
       </div>
   </div>
 </section>
 
+<style>
+  /* Fade in animations for profile */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
 
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
 
+  /* Staggered delays */
+  .fade-in:nth-child(1) { transition-delay: 0.1s; }
+  .fade-in:nth-child(2) { transition-delay: 0.2s; }
+  .fade-in:nth-child(3) { transition-delay: 0.3s; }
+  .fade-in:nth-child(4) { transition-delay: 0.4s; }
+  .fade-in:nth-child(5) { transition-delay: 0.5s; }
+  .fade-in:nth-child(6) { transition-delay: 0.6s; }
+  .fade-in:nth-child(7) { transition-delay: 0.7s; }
+  .fade-in:nth-child(8) { transition-delay: 0.8s; }
+</style>
+
+<script>
+  // Intersection Observer for profile animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, observerOptions);
+
+  // Initialize profile animations
+  function initProfileAnimations() {
+    const fadeElements = document.querySelectorAll('.fade-in');
+    fadeElements.forEach(el => observer.observe(el));
+  }
+
+  document.addEventListener('DOMContentLoaded', initProfileAnimations);
+  document.addEventListener('astro:page-load', initProfileAnimations);
+</script>
