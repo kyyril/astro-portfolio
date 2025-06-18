@@ -2,28 +2,28 @@
 // No server-side logic needed for this component
 ---
 
-<div id="chat-app" class="max-w-7xl w-full min-h-screen px-4 md:px-8 mx-auto">
+<div id="chat-app" class="chat-container max-w-7xl w-full min-h-screen px-4 md:px-8 mx-auto">
   <div class="flex flex-col md:flex-row gap-4 min-h-screen py-4">
-    
+
     <!-- Mobile Menu Button -->
-    <button id="mobile-menu-btn" class="md:hidden fixed top-4 left-4 z-50  p-2 rounded-lg">
+    <button id="mobile-menu-btn" class="md:hidden fixed top-4 left-4 z-50 chat-btn-secondary p-2 rounded-lg">
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
       </svg>
     </button>
 
     <!-- Chat History Sidebar -->
-    <div id="chat-sidebar" class="fixed md:relative inset-y-0 top-0 left-0 z-40 w-64  md:-hover transition-transform transform -translate-x-full md:translate-x-0 md:flex md:flex-col min-h-screen">
+    <div id="chat-sidebar" class="fixed md:relative inset-y-0 top-0 left-0 z-40 w-64 chat-sidebar transition-transform transform -translate-x-full md:translate-x-0 md:flex md:flex-col min-h-screen">
       <div class="flex flex-col min-h-screen">
-        <div class="p-4 border-b border-border">
+        <div class="chat-sidebar-header p-4">
           <h2 class="text-lg font-semibold text-text">Chat History</h2>
           <p class="text-xs text-secondary mt-1">
-            <span class="text-red-400">*</span> Saved in browser storage
+            <span style="color: var(--color-error);">*</span> Saved in browser storage
           </p>
         </div>
 
         <div class="p-4">
-          <button id="new-chat-btn" class="w-full bg-primary hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2">
+          <button id="new-chat-btn" class="w-full chat-new-btn py-2 px-4 rounded-lg flex items-center justify-center gap-2">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
             </svg>
@@ -40,27 +40,27 @@
     </div>
 
     <!-- Overlay for mobile -->
-    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden hidden"></div>
+    <div id="sidebar-overlay" class="chat-overlay fixed inset-0 z-30 md:hidden hidden"></div>
 
     <!-- Main Chat Area -->
     <div class="flex-1  flex flex-col min-h-screen md:ml-0 ml-0">
       
       <!-- Chat Header -->
-      <header class="flex items-center p-4 border-b border-border">
+      <header class="chat-header flex items-center p-4">
         <button id="avatar-btn" class="flex-shrink-0">
-          <img 
-            src="https://i.pinimg.com/736x/f7/19/5c/f7195c01f50c2d9c95b4a9fafe92fa88.jpg" 
-            alt="Katou" 
-            class="w-12 h-12 rounded-full border-2 border-primary hover:opacity-80 transition-opacity cursor-pointer"
+          <img
+            src="https://i.pinimg.com/736x/f7/19/5c/f7195c01f50c2d9c95b4a9fafe92fa88.jpg"
+            alt="Katou"
+            class="chat-avatar w-12 h-12 rounded-full cursor-pointer"
           />
         </button>
-        
+
         <div class="ml-3 flex-1">
           <h1 class="text-lg font-light text-text">加藤 恵</h1>
           <p class="text-sm text-accent">Online</p>
         </div>
 
-        <button id="header-new-chat" class="-hover px-3 py-1 rounded-lg text-sm flex items-center gap-2">
+        <button id="header-new-chat" class="chat-btn-secondary px-3 py-1 rounded-lg text-sm flex items-center gap-2">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
           </svg>
@@ -71,25 +71,25 @@
       <!-- Messages Container -->
       <div id="messages-container" class="flex-1 overflow-y-auto p-4 space-y-4">
         <div class="flex justify-start animate-fadeIn">
-          <div class="max-w-[85%]  p-3 rounded-r-lg rounded-b-lg">
+          <div class="chat-message chat-message-ai max-w-[85%] p-3">
             <p>How can I help you today?</p>
           </div>
         </div>
       </div>
 
       <!-- Input Section -->
-      <div class="p-4 border-t border-border">
+      <div class="chat-input-container p-4">
         <div class="flex gap-2">
-          <input 
+          <input
             id="message-input"
-            type="text" 
-            placeholder="Ask something..." 
-            class="flex-1 bg-surface border border-border rounded-lg px-4 py-2 text-text placeholder-secondary focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+            type="text"
+            placeholder="Ask something..."
+            class="flex-1 chat-input px-4 py-2"
             disabled
           />
-          <button 
+          <button
             id="send-btn"
-            class="bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            class="chat-send-btn px-4 py-2 flex items-center justify-center"
             disabled
           >
             <svg id="send-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,25 +106,25 @@
 </div>
 
 <!-- Avatar Modal -->
-<div id="avatar-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-  <div class=" p-4 rounded-xl max-w-md">
+<div id="avatar-modal" class="chat-overlay fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+  <div class="chat-modal p-4 rounded-xl max-w-md">
     <img src="https://i.pinimg.com/736x/f7/19/5c/f7195c01f50c2d9c95b4a9fafe92fa88.jpg" alt="Katou" class="w-full rounded-lg" />
-    <button id="close-modal" class="mt-4 w-full bg-secondary hover:bg-slate-600 text-white py-2 rounded-lg transition-colors">
+    <button id="close-modal" class="mt-4 w-full chat-btn-secondary py-2 rounded-lg">
       Close
     </button>
   </div>
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
-  <div class=" p-6 rounded-xl max-w-sm w-full">
+<div id="delete-modal" class="chat-overlay fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+  <div class="chat-modal p-6 rounded-xl max-w-sm w-full">
     <h3 class="text-lg font-semibold text-text mb-2">Delete Chat?</h3>
     <p class="text-secondary mb-4">This will permanently delete this chat history. This action cannot be undone.</p>
     <div class="flex gap-2">
-      <button id="cancel-delete" class="flex-1 bg-secondary hover:bg-slate-600 text-white py-2 rounded-lg transition-colors">
+      <button id="cancel-delete" class="flex-1 chat-btn-secondary py-2 rounded-lg">
         Cancel
       </button>
-      <button id="confirm-delete" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-2 rounded-lg transition-colors">
+      <button id="confirm-delete" class="flex-1 chat-btn-danger py-2 rounded-lg">
         Delete
       </button>
     </div>
@@ -428,10 +428,10 @@
 
       container.innerHTML = this.messages.map(msg => `
         <div class="flex ${msg.isUser ? 'justify-end' : 'justify-start'} animate-fadeIn">
-          <div class="max-w-[85%] ${msg.isUser 
-            ? 'bg-primary text-white rounded-l-lg rounded-b-lg' 
-            : ' rounded-r-lg rounded-b-lg'
-          } p-3">
+          <div class="chat-message ${msg.isUser
+            ? 'chat-message-user'
+            : 'chat-message-ai'
+          } max-w-[85%] p-3">
             <div class="prose prose-invert max-w-none text-sm">
               ${parseMarkdown(msg.text)}
             </div>
@@ -453,13 +453,13 @@
       }
 
       container.innerHTML = this.savedChats.map(chat => `
-        <div class="chat-item ${this.activeChat === chat.id ? 'bg-surface' : ''} -hover rounded-lg p-3 cursor-pointer group" data-chat-id="${chat.id}">
+        <div class="chat-history-item ${this.activeChat === chat.id ? 'active' : ''} rounded-lg p-3 group" data-chat-id="${chat.id}">
           <div class="flex items-center justify-between">
             <div class="flex-1 min-w-0">
               <p class="text-sm font-medium text-text truncate">${chat.title}</p>
               <p class="text-xs text-secondary">${formatDate(chat.timestamp)}</p>
             </div>
-            <button class="delete-chat-btn opacity-0 group-hover:opacity-100 p-1 text-secondary hover:text-red-400 transition-all" data-chat-id="${chat.id}">
+            <button class="chat-delete-btn opacity-0 group-hover:opacity-100 p-1 transition-all" data-chat-id="${chat.id}">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
               </svg>

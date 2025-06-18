@@ -711,6 +711,7 @@ body {
       0 0 0 1px rgba(var(--color-primary-rgb), 0.08);
   }
 
+  /* Legacy theme toggle styles - now handled by component styles */
   .theme-toggle-btn {
     padding: 0.5rem;
   }
@@ -718,6 +719,43 @@ body {
   .theme-toggle-icon {
     width: 1rem;
     height: 1rem;
+  }
+
+  /* Additional mobile responsive improvements */
+  @media (max-width: 480px) {
+    .theme-toggle-container {
+      top: 0.375rem;
+      right: 0.375rem;
+      padding: 0.25rem;
+      border-radius: 8px;
+    }
+
+    .theme-toggle-btn {
+      padding: 0.375rem;
+    }
+
+    .theme-toggle-icon {
+      width: 0.875rem;
+      height: 0.875rem;
+    }
+  }
+
+  @media (max-width: 320px) {
+    .theme-toggle-container {
+      top: 0.25rem;
+      right: 0.25rem;
+      padding: 0.1875rem;
+      border-radius: 6px;
+    }
+
+    .theme-toggle-btn {
+      padding: 0.25rem;
+    }
+
+    .theme-toggle-icon {
+      width: 0.75rem;
+      height: 0.75rem;
+    }
   }
 
   .theme-dropdown {
@@ -874,4 +912,206 @@ body {
 
 .feedback-instant:active {
   background-color: rgba(var(--color-primary-rgb), 0.2);
+}
+
+/* Chat-Specific Styles - Using Global Color Variables */
+.chat-container {
+  background-color: var(--color-background);
+  color: var(--color-text);
+}
+
+.chat-sidebar {
+  background: rgba(var(--color-surface-rgb), 0.95);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-right: 1px solid var(--color-border);
+}
+
+.chat-sidebar-header {
+  border-bottom: 1px solid var(--color-border);
+  background: rgba(var(--color-surface-rgb), 0.8);
+}
+
+.chat-new-btn {
+  background: var(--color-primary);
+  color: var(--color-background);
+  border: 1px solid var(--color-primary);
+  transition: all var(--transition-normal);
+}
+
+.chat-new-btn:hover {
+  background: var(--color-secondary);
+  border-color: var(--color-secondary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.chat-new-btn:active {
+  transform: scale(0.98);
+  transition: transform var(--transition-lightning);
+}
+
+.chat-history-item {
+  background: transparent;
+  border-radius: var(--border-radius);
+  transition: all var(--transition-normal);
+  cursor: pointer;
+}
+
+.chat-history-item:hover {
+  background: rgba(var(--color-surface-rgb), 0.6);
+  transform: translateY(-1px);
+}
+
+.chat-history-item.active {
+  background: rgba(var(--color-primary-rgb), 0.1);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.3);
+}
+
+.chat-header {
+  background: rgba(var(--color-surface-rgb), 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.chat-avatar {
+  border: 2px solid var(--color-primary);
+  transition: all var(--transition-normal);
+}
+
+.chat-avatar:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+
+.chat-input-container {
+  background: rgba(var(--color-surface-rgb), 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid var(--color-border);
+}
+
+.chat-input {
+  background: rgba(var(--color-surface-rgb), 0.7);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  border-radius: var(--border-radius);
+  transition: all var(--transition-normal);
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: rgba(var(--color-surface-rgb), 0.9);
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.chat-input::placeholder {
+  color: var(--color-muted);
+}
+
+.chat-send-btn {
+  background: var(--color-primary);
+  color: var(--color-background);
+  border: none;
+  border-radius: var(--border-radius);
+  transition: all var(--transition-normal);
+}
+
+.chat-send-btn:hover:not(:disabled) {
+  background: var(--color-secondary);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.2);
+}
+
+.chat-send-btn:active:not(:disabled) {
+  transform: scale(0.95);
+  transition: transform var(--transition-lightning);
+}
+
+.chat-send-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--color-muted);
+}
+
+.chat-message-user {
+  background: var(--color-primary);
+  color: var(--color-background);
+  border-radius: var(--border-radius) var(--border-radius) 4px
+    var(--border-radius);
+}
+
+.chat-message-ai {
+  background: rgba(var(--color-surface-rgb), 0.8);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius) var(--border-radius) var(--border-radius)
+    4px;
+}
+
+.chat-message {
+  transition: all var(--transition-normal);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.chat-message:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.chat-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.chat-modal {
+  background: rgba(var(--color-surface-rgb), 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-lg);
+}
+
+.chat-btn-secondary {
+  background: rgba(var(--color-surface-rgb), 0.8);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  transition: all var(--transition-normal);
+}
+
+.chat-btn-secondary:hover {
+  background: rgba(var(--color-surface-rgb), 1);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.chat-btn-danger {
+  background: var(--color-error);
+  color: var(--color-background);
+  border: 1px solid var(--color-error);
+  border-radius: var(--border-radius);
+  transition: all var(--transition-normal);
+}
+
+.chat-btn-danger:hover {
+  background: #e74c3c;
+  border-color: #e74c3c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(243, 139, 168, 0.3);
+}
+
+.chat-delete-btn {
+  color: var(--color-muted);
+  transition: all var(--transition-normal);
+}
+
+.chat-delete-btn:hover {
+  color: var(--color-error);
+  transform: scale(1.1);
 }

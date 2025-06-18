@@ -259,24 +259,82 @@ import { themes } from '../config/themes';
 
   /* Mobile responsive */
   @media (max-width: 768px) {
-    .sticky-theme-toggle {
+    .sticky-theme-wrapper {
       top: 0.5rem;
       right: 0.5rem;
       padding: 0.375rem;
       border-radius: 10px;
     }
-    
+
     .sticky-theme-btn {
       padding: 0.5rem;
     }
-    
+
     .sticky-theme-icon {
       width: 1rem;
       height: 1rem;
     }
-    
+
     .sticky-theme-dropdown {
       width: 10rem;
+      right: -0.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .sticky-theme-wrapper {
+      top: 0.375rem;
+      right: 0.375rem;
+      padding: 0.25rem;
+      border-radius: 8px;
+    }
+
+    .sticky-theme-btn {
+      padding: 0.375rem;
+    }
+
+    .sticky-theme-icon {
+      width: 0.875rem;
+      height: 0.875rem;
+    }
+
+    .sticky-theme-dropdown {
+      width: 9rem;
+      right: -1rem;
+    }
+
+    .sticky-theme-option {
+      padding: 0.625rem 0.875rem;
+      font-size: 0.8125rem;
+    }
+  }
+
+  /* Extra small screens */
+  @media (max-width: 320px) {
+    .sticky-theme-wrapper {
+      top: 0.25rem;
+      right: 0.25rem;
+      padding: 0.1875rem;
+      border-radius: 6px;
+    }
+
+    .sticky-theme-btn {
+      padding: 0.25rem;
+    }
+
+    .sticky-theme-icon {
+      width: 0.75rem;
+      height: 0.75rem;
+    }
+
+    .sticky-theme-dropdown {
+      width: 8rem;
+      right: -1.5rem;
+    }
+
+    .sticky-theme-option {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
     }
   }
 </style>

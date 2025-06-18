@@ -29,6 +29,137 @@ import { themes } from '../config/themes';
   </div>
 </div>
 
+<style>
+  /* Mobile responsive styles for theme toggle */
+  .theme-toggle-wrapper {
+    position: relative;
+  }
+
+  .theme-toggle-btn {
+    padding: 0.75rem;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .theme-toggle-btn:hover {
+    background: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary);
+    transform: scale(1.05);
+  }
+
+  .theme-toggle-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: all var(--transition-fast);
+  }
+
+  .theme-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    min-width: 12rem;
+  }
+
+  .theme-dropdown-content {
+    padding: 0.5rem 0;
+  }
+
+  .theme-option {
+    width: 100%;
+    text-align: left;
+    padding: 0.75rem 1rem;
+    background: transparent;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.875rem;
+    transition: all var(--transition-fast);
+  }
+
+  .theme-option:hover {
+    background: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Mobile responsive breakpoints */
+  @media (max-width: 768px) {
+    .theme-toggle-btn {
+      padding: 0.5rem;
+    }
+
+    .theme-toggle-icon {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .theme-dropdown {
+      min-width: 10rem;
+      right: -0.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .theme-toggle-btn {
+      padding: 0.375rem;
+    }
+
+    .theme-toggle-icon {
+      width: 0.875rem;
+      height: 0.875rem;
+    }
+
+    .theme-dropdown {
+      min-width: 9rem;
+      right: -1rem;
+    }
+
+    .theme-option {
+      padding: 0.625rem 0.875rem;
+      font-size: 0.8125rem;
+    }
+  }
+
+  /* Extra small screens */
+  @media (max-width: 320px) {
+    .theme-toggle-btn {
+      padding: 0.25rem;
+    }
+
+    .theme-toggle-icon {
+      width: 0.75rem;
+      height: 0.75rem;
+    }
+
+    .theme-dropdown {
+      min-width: 8rem;
+      right: -1.5rem;
+    }
+
+    .theme-option {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.75rem;
+    }
+  }
+</style>
+
 <script>
   const themeToggle = document.getElementById('theme-toggle');
   const themeDropdown = document.getElementById('theme-dropdown');

@@ -1,0 +1,163 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+---
+
+<Layout title="Theme Toggle Mobile Test" description="Test page for mobile responsive theme toggle">
+  <div class="test-container">
+    <h1>Theme Toggle Mobile Responsiveness Test</h1>
+    
+    <div class="test-section">
+      <h2>Regular Theme Toggle Component</h2>
+      <p>This tests the regular ThemeToggle component with mobile responsive styles:</p>
+      <ThemeToggle />
+    </div>
+
+    <div class="test-section">
+      <h2>Sticky Theme Toggle</h2>
+      <p>The sticky theme toggle is already included in the layout and should be visible in the top-right corner.</p>
+    </div>
+
+    <div class="test-section">
+      <h2>Mobile Breakpoints Test</h2>
+      <div class="breakpoint-info">
+        <div class="breakpoint desktop">Desktop (>768px): Full size icons</div>
+        <div class="breakpoint tablet">Tablet (≤768px): Medium size icons</div>
+        <div class="breakpoint mobile">Mobile (≤480px): Small size icons</div>
+        <div class="breakpoint small">Small (≤320px): Extra small icons</div>
+      </div>
+    </div>
+
+    <div class="test-section">
+      <h2>Instructions</h2>
+      <ol>
+        <li>Resize your browser window to test different breakpoints</li>
+        <li>Check that the theme toggle icons scale appropriately</li>
+        <li>Verify that the dropdown positioning works on mobile</li>
+        <li>Test touch interactions on mobile devices</li>
+      </ol>
+    </div>
+
+    <!-- Add some content to test scrolling with sticky toggle -->
+    <div class="content-spacer">
+      <h3>Scroll Test Content</h3>
+      <p>This content is here to test the sticky theme toggle behavior during scrolling.</p>
+      <div style="height: 200vh; background: linear-gradient(to bottom, transparent, rgba(var(--color-primary-rgb), 0.1));">
+        <p style="padding-top: 50vh;">Scroll down to see how the sticky theme toggle behaves...</p>
+        <p style="padding-top: 50vh;">Keep scrolling...</p>
+        <p style="padding-top: 50vh;">The sticky toggle should remain visible and responsive!</p>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .test-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: var(--font-mono, monospace);
+  }
+
+  .test-section {
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+  }
+
+  .test-section h2 {
+    color: var(--color-primary);
+    margin-bottom: 1rem;
+  }
+
+  .breakpoint-info {
+    display: grid;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .breakpoint {
+    padding: 0.75rem;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 0.875rem;
+  }
+
+  .desktop {
+    background: rgba(var(--color-primary-rgb), 0.1);
+    color: var(--color-primary);
+  }
+
+  .tablet {
+    background: rgba(var(--color-secondary-rgb), 0.1);
+    color: var(--color-secondary);
+  }
+
+  .mobile {
+    background: rgba(var(--color-accent-rgb), 0.1);
+    color: var(--color-accent);
+  }
+
+  .small {
+    background: rgba(255, 100, 100, 0.1);
+    color: #ff6464;
+  }
+
+  .content-spacer {
+    margin-top: 3rem;
+  }
+
+  .content-spacer h3 {
+    color: var(--color-text);
+    margin-bottom: 1rem;
+  }
+
+  ol {
+    padding-left: 1.5rem;
+  }
+
+  ol li {
+    margin: 0.5rem 0;
+    color: var(--color-text);
+  }
+
+  /* Show current breakpoint indicator */
+  .breakpoint::before {
+    content: "○ ";
+    color: rgba(var(--color-text-rgb), 0.3);
+  }
+
+  @media (max-width: 768px) {
+    .tablet::before {
+      content: "● ";
+      color: var(--color-secondary);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .mobile::before {
+      content: "● ";
+      color: var(--color-accent);
+    }
+    
+    .tablet::before {
+      content: "○ ";
+      color: rgba(var(--color-text-rgb), 0.3);
+    }
+  }
+
+  @media (max-width: 320px) {
+    .small::before {
+      content: "● ";
+      color: #ff6464;
+    }
+    
+    .mobile::before,
+    .tablet::before {
+      content: "○ ";
+      color: rgba(var(--color-text-rgb), 0.3);
+    }
+  }
+</style>
