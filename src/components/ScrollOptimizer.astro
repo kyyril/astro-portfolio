@@ -1,236 +1,52 @@
 ---
-// Fast Progressive Scroll System - Original browser scrolling with optimizations
+// Lightweight Native Scroll - Maximum Performance
 ---
 
 <script>
-  // Simple scroll state tracking
-  let isScrolling = false;
-  let scrollTimeout: number;
-  let lastScrollTop = 0;
-  let scrollDirection = 'down';
-
-  // Initialize fast progressive scroll system
-  function initFastScroll() {
-    // Setup optimized scroll container
-    setupScrollContainer();
-
-    // Setup scroll state tracking
-    setupScrollStateHandlers();
-
-    // Device optimizations
-    optimizeForDevice();
-  }
-
-  function setupScrollContainer() {
-    // Enable native smooth scrolling - fast and progressive
-    document.documentElement.style.scrollBehavior = 'smooth';
-
+  function setupNativeScroll() {
+    // Use native browser scrolling - no JavaScript interference
+    document.documentElement.style.scrollBehavior = 'auto';
+    
     // Prevent horizontal overflow
     document.body.style.overflowX = 'hidden';
-
-    // Disable bounce effects for cleaner experience
+    
+    // Disable bounce effects completely
     document.body.style.overscrollBehavior = 'none';
-    document.body.style.overscrollBehaviorY = 'none';
     document.documentElement.style.overscrollBehavior = 'none';
-    document.documentElement.style.overscrollBehaviorY = 'none';
-
-    // Optimize touch scrolling
+    
+    // Optimize touch scrolling for mobile
     document.body.style.touchAction = 'pan-y';
-    (document.body.style as any).webkitOverflowScrolling = 'touch';
-
-    // Add optimized scroll class
-    document.body.classList.add('fast-progressive-scroll');
-  }
-
-
-
-  function setupScrollStateHandlers() {
-    // Simple scroll state tracking using native scroll events
-    function updateScrollState() {
-      const currentScrollTop = window.pageYOffset;
-
-      // Update scroll direction
-      if (currentScrollTop > lastScrollTop) {
-        scrollDirection = 'down';
-      } else if (currentScrollTop < lastScrollTop) {
-        scrollDirection = 'up';
-      }
-
-      // Update body attributes for UI elements
-      document.body.setAttribute('data-scroll-direction', scrollDirection);
-      document.body.setAttribute('data-scroll-position', Math.round(currentScrollTop).toString());
-
-      lastScrollTop = currentScrollTop;
-
-      // Handle scroll start/end states
-      if (!isScrolling) {
-        isScrolling = true;
-        document.body.classList.add('is-scrolling');
-      }
-
-      // Reset scroll end timeout
-      clearTimeout(scrollTimeout);
-      scrollTimeout = window.setTimeout(() => {
-        isScrolling = false;
-        document.body.classList.remove('is-scrolling');
-      }, 150);
-    }
-
-    // Use native scroll event - fast and efficient
-    window.addEventListener('scroll', updateScrollState, { passive: true });
-  }
-
-
-
-
-
-
-
-  function optimizeForDevice() {
+    
     // Check for mobile devices
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
     if (isMobile) {
-      document.body.classList.add('mobile-device');
-
-      // Optimize for mobile scrolling - keep native feel
+      document.body.classList.add('mobile-optimized');
+      // Use native momentum scrolling on iOS
       (document.body.style as any).webkitOverflowScrolling = 'touch';
-      document.body.style.overscrollBehaviorY = 'none'; // Disable bounce
-
-      // Keep smooth scrolling on mobile for better UX
-      document.documentElement.style.scrollBehavior = 'smooth';
     }
-
-    // Check for reduced motion preference - respect accessibility
+    
+    // Respect reduced motion preference
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.documentElement.style.scrollBehavior = 'auto';
       document.body.classList.add('reduced-motion');
     }
-
-    // Optimize for low-end devices - prioritize performance
-    const isLowEnd = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2;
-    if (isLowEnd) {
-      document.body.classList.add('low-end-device');
-      document.documentElement.style.scrollBehavior = 'auto';
-    }
   }
 
-  // Cleanup function
-  function cleanupFastScroll() {
-    if (scrollTimeout) {
-      clearTimeout(scrollTimeout);
-    }
-
-    // Remove scroll classes
-    document.body.classList.remove(
-      'fast-progressive-scroll',
-      'is-scrolling',
-      'mobile-device',
-      'reduced-motion',
-      'low-end-device'
-    );
-
-    // Reset styles
-    document.documentElement.style.scrollBehavior = '';
-  }
-
-  // Simple scroll API for external use
-  (window as any).fastScroll = {
-    scrollTo: (target: number) => {
-      window.scrollTo({ top: target, behavior: 'smooth' });
-    },
-    scrollBy: (delta: number) => {
-      window.scrollBy({ top: delta, behavior: 'smooth' });
-    },
-    getCurrentScroll: () => window.pageYOffset,
-    isScrolling: () => isScrolling
-  };
-
-  // Initialize on DOM ready
-  document.addEventListener('DOMContentLoaded', initFastScroll);
-
-  // Re-initialize on page transitions
-  document.addEventListener('astro:page-load', initFastScroll);
-
-  // Cleanup on page unload
-  document.addEventListener('astro:before-preparation', cleanupFastScroll);
-  window.addEventListener('beforeunload', cleanupFastScroll);
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', setupNativeScroll);
+  document.addEventListener('astro:page-load', setupNativeScroll);
 </script>
 
 <style>
-  /* Fast Progressive Scroll System - Original browser scrolling optimized */
-  .fast-progressive-scroll {
-    /* Native smooth scrolling with optimizations */
-    scroll-behavior: smooth;
-
-    /* Disable bounce effects */
-    overscroll-behavior: none;
-    overscroll-behavior-x: none;
-    overscroll-behavior-y: none;
-    touch-action: pan-y;
-  }
-
-  /* Global bounce prevention for clean experience */
-  html, body {
-    overscroll-behavior: none !important;
-    overscroll-behavior-x: none !important;
-    overscroll-behavior-y: none !important;
-  }
-
-  /* Minimal scroll state indication */
-  .is-scrolling {
-    /* Keep interactions enabled for fast, responsive feel */
-  }
-
-
-
-  /* Mobile device optimizations - keep native feel */
-  .mobile-device {
+  /* Mobile optimizations */
+  .mobile-optimized {
     -webkit-overflow-scrolling: touch;
-    scroll-behavior: smooth;
+    overscroll-behavior: none;
   }
 
-  /* Reduced motion accessibility - respect user preferences */
-  .reduced-motion {
-    scroll-behavior: auto !important;
-  }
-
+  /* Reduced motion support */
   .reduced-motion * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-
-  /* Low-end device optimizations - prioritize performance */
-  .low-end-device {
-    scroll-behavior: auto !important;
-  }
-
-  /* Scroll direction utilities for UI elements */
-  [data-scroll-direction="down"] .hide-on-scroll-down {
-    transform: translateY(-100%);
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  [data-scroll-direction="up"] .show-on-scroll-up {
-    transform: translateY(0);
-    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-
-
-  /* Smooth scroll progress indicator */
-  .scroll-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-    transform-origin: left;
-    z-index: 9998;
-    pointer-events: none;
-  }
 </style>
-
-

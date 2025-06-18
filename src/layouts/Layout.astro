@@ -124,18 +124,16 @@ const canonicalURL = Astro.site
     <Footer />
 
     <script is:inline>
-      // Basic page initialization
+      // Lightweight page initialization
       function initPage() {
-        // Add hover effects to cards
+        // Simple hover effects for cards
         document.querySelectorAll('.terminal-card, .project-card').forEach(card => {
           card.addEventListener('mouseenter', () => {
-            card.style.transform = 'translateY(-2px)';
-            card.style.boxShadow = '0 4px 12px rgba(var(--color-primary-rgb), 0.15)';
+            card.style.opacity = '0.9';
           });
 
           card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
-            card.style.boxShadow = '';
+            card.style.opacity = '';
           });
         });
 
@@ -143,12 +141,10 @@ const canonicalURL = Astro.site
         document.querySelectorAll('input, textarea').forEach(input => {
           input.addEventListener('focus', () => {
             input.style.borderColor = 'var(--color-primary)';
-            input.style.boxShadow = '0 0 0 2px rgba(var(--color-primary-rgb), 0.1)';
           });
 
           input.addEventListener('blur', () => {
             input.style.borderColor = '';
-            input.style.boxShadow = '';
           });
         });
       }

@@ -72,12 +72,9 @@ body {
   -webkit-overflow-scrolling: auto !important;
 }
 
-/* 120fps Smooth Scroll Optimizations */
-.smooth-scroll-120fps {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-  will-change: scroll-position;
+/* Basic scroll optimization */
+.smooth-scroll {
+  scroll-behavior: auto;
 }
 
 .smooth-scroll-120fps * {
@@ -862,17 +859,6 @@ body {
   background: var(--color-primary);
   border-radius: 50%;
   margin-right: 6px;
-  animation: speedPulse 1s infinite;
-}
-
-@keyframes speedPulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.3;
-  }
 }
 
 /* Speed-focused scroll indicator */
@@ -894,22 +880,12 @@ body {
   }
 }
 
-/* Speed-focused hover effects */
+/* Simple hover effects */
 .hover-fast:hover {
-  transform: translateY(-1px);
-  transition: transform 0.05s ease-out;
-}
-
-.glow-fast:hover {
-  box-shadow: 0 0 10px rgba(var(--color-primary-rgb), 0.3);
-  transition: box-shadow 0.05s ease-out;
+  opacity: 0.8;
 }
 
 /* Instant visual feedback */
-.feedback-instant {
-  transition: background-color 0.03s ease-out;
-}
-
 .feedback-instant:active {
   background-color: rgba(var(--color-primary-rgb), 0.2);
 }
@@ -942,13 +918,11 @@ body {
 .chat-new-btn:hover {
   background: var(--color-secondary);
   border-color: var(--color-secondary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.2);
+  opacity: 0.9;
 }
 
 .chat-new-btn:active {
-  transform: scale(0.98);
-  transition: transform var(--transition-lightning);
+  opacity: 0.8;
 }
 
 .chat-history-item {
@@ -960,7 +934,6 @@ body {
 
 .chat-history-item:hover {
   background: rgba(var(--color-surface-rgb), 0.6);
-  transform: translateY(-1px);
 }
 
 .chat-history-item.active {
@@ -982,7 +955,6 @@ body {
 
 .chat-avatar:hover {
   opacity: 0.8;
-  transform: scale(1.05);
 }
 
 .chat-input-container {
@@ -1021,13 +993,11 @@ body {
 
 .chat-send-btn:hover:not(:disabled) {
   background: var(--color-secondary);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.2);
+  opacity: 0.9;
 }
 
 .chat-send-btn:active:not(:disabled) {
-  transform: scale(0.95);
-  transition: transform var(--transition-lightning);
+  opacity: 0.8;
 }
 
 .chat-send-btn:disabled {
@@ -1058,8 +1028,7 @@ body {
 }
 
 .chat-message:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(var(--color-primary-rgb), 0.1);
+  opacity: 0.95;
 }
 
 .chat-overlay {
@@ -1102,8 +1071,7 @@ body {
 .chat-btn-danger:hover {
   background: #e74c3c;
   border-color: #e74c3c;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(243, 139, 168, 0.3);
+  opacity: 0.9;
 }
 
 .chat-delete-btn {
@@ -1113,5 +1081,4 @@ body {
 
 .chat-delete-btn:hover {
   color: var(--color-error);
-  transform: scale(1.1);
 }

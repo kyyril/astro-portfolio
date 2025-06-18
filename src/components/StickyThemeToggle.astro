@@ -73,66 +73,9 @@ import { themes } from '../config/themes';
     }
   });
 
-  // Make theme toggle follow scroll smoothly
-  function initStickyScrollBehavior() {
-    const themeWrapper = document.querySelector('.sticky-theme-wrapper') as HTMLElement;
-    if (!themeWrapper) return;
-
-    let lastScrollY = window.scrollY;
-    let ticking = false;
-
-    function updateThemeTogglePosition() {
-      const currentScrollY = window.scrollY;
-      const scrollDelta = currentScrollY - lastScrollY;
-
-      // Add scrolling class for visual feedback
-      themeWrapper.classList.add('scrolling');
-
-      // Add subtle movement based on scroll direction
-      if (Math.abs(scrollDelta) > 1) {
-        if (scrollDelta > 0) {
-          // Scrolling down - slight move
-          themeWrapper.style.transform = 'translateZ(0) translateY(2px)';
-        } else {
-          // Scrolling up - slight move
-          themeWrapper.style.transform = 'translateZ(0) translateY(-2px)';
-        }
-
-        // Reset position and remove scrolling class after a short delay
-        setTimeout(() => {
-          themeWrapper.style.transform = 'translateZ(0) translateY(0)';
-          themeWrapper.classList.remove('scrolling');
-        }, 200);
-      } else {
-        // Remove scrolling class if no significant movement
-        setTimeout(() => {
-          themeWrapper.classList.remove('scrolling');
-        }, 100);
-      }
-
-      lastScrollY = currentScrollY;
-      ticking = false;
-    }
-
-    function onScroll() {
-      if (!ticking) {
-        requestAnimationFrame(updateThemeTogglePosition);
-        ticking = true;
-      }
-    }
-
-    // Add scroll listener
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    // Cleanup function
-    return () => {
-      window.removeEventListener('scroll', onScroll);
-    };
-  }
-
-  // Initialize sticky behavior
-  document.addEventListener('DOMContentLoaded', initStickyScrollBehavior);
-  document.addEventListener('astro:page-load', initStickyScrollBehavior);
+  // Simple initialization - no scroll animations
+  document.addEventListener('DOMContentLoaded', initThemeToggle);
+  document.addEventListener('astro:page-load', initThemeToggle);
 </script>
 
 <style>
@@ -155,12 +98,8 @@ import { themes } from '../config/themes';
       0 4px 20px rgba(0, 0, 0, 0.15),
       0 0 0 1px rgba(var(--color-primary-rgb), 0.1);
 
-    /* Smooth transitions */
-    transition: all var(--transition-normal);
-
-    /* Ensure it stays visible during scroll */
-    transform: translateZ(0);
-    will-change: transform;
+    /* Simple transitions */
+    transition: opacity var(--transition-fast);
   }
 
   .sticky-theme-toggle {
@@ -169,18 +108,7 @@ import { themes } from '../config/themes';
   }
 
   .sticky-theme-wrapper:hover {
-    box-shadow:
-      0 6px 25px rgba(0, 0, 0, 0.2),
-      0 0 0 1px rgba(var(--color-primary-rgb), 0.2);
-    transform: translateZ(0) scale(1.02);
-  }
-
-  /* Scroll-responsive styles */
-  .sticky-theme-wrapper.scrolling {
-    background: rgba(var(--color-surface-rgb), 0.98);
-    box-shadow:
-      0 6px 30px rgba(0, 0, 0, 0.2),
-      0 0 0 1px rgba(var(--color-primary-rgb), 0.15);
+    opacity: 0.9;
   }
 
   .sticky-theme-btn {
@@ -199,7 +127,6 @@ import { themes } from '../config/themes';
   .sticky-theme-btn:hover {
     background: rgba(var(--color-primary-rgb), 0.1);
     color: var(--color-primary);
-    transform: scale(1.05);
   }
 
   .sticky-theme-icon {
