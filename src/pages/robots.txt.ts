@@ -1,8 +1,8 @@
-import type { APIRoute } from 'astro';
+import type { APIRoute } from "astro";
 
 export const GET: APIRoute = async ({ site }) => {
-  const siteUrl = site?.toString() || 'https://kyyril.pages.dev';
-  
+  const siteUrl = site?.toString() || "https://your-project.vercel.app";
+
   const robotsTxt = `User-agent: *
 Allow: /
 
@@ -51,8 +51,8 @@ Disallow: /`;
 
   return new Response(robotsTxt, {
     headers: {
-      'Content-Type': 'text/plain',
-      'Cache-Control': 'public, max-age=86400', // Cache for 24 hours
+      "Content-Type": "text/plain",
+      "Cache-Control": "public, max-age=86400", // Cache for 24 hours
     },
   });
 };

@@ -1,4 +1,0 @@
-# Cloudflare Pages Redirects and Rules
-
-# Enable compression for all text-based files
-/*    /index.html   200

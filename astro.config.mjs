@@ -4,10 +4,10 @@ import tailwind from "@astrojs/tailwind";
 import mdx from "@astrojs/mdx";
 import node from "@astrojs/node";
 import auth from "auth-astro";
-import cloudflare from "@astrojs/cloudflare";
+import vercel from "@astrojs/vercel";
 
 export default defineConfig({
-  site: "https://kyyril.pages.dev", // Ganti dengan domain Anda
+  site: "https://your-project.vercel.app", // Update with your Vercel domain
   integrations: [
     react({
       experimentalReactChildren: true,
@@ -29,10 +29,11 @@ export default defineConfig({
   adapter:
     process.env.NODE_ENV === "development"
       ? node({ mode: "standalone" })
-      : cloudflare({
-          mode: "directory",
-          imageService: "compile",
-          platformProxy: {
+      : vercel({
+          webAnalytics: {
+            enabled: true,
+          },
+          speedInsights: {
             enabled: true,
           },
         }),
@@ -89,7 +90,7 @@ export default defineConfig({
   vite: {
     optimizeDeps: {
       include: ["react", "react-dom", "@prisma/client"],
-      exclude: ["@astrojs/cloudflare", "gsap"],
+      exclude: ["gsap"],
     },
     ssr: {
       external: ["@prisma/client", "gsap"],

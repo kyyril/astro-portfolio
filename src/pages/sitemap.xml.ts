@@ -1,34 +1,28 @@
-import type { APIRoute } from 'astro';
-import { getCollection } from 'astro:content';
+import type { APIRoute } from "astro";
+import { getCollection } from "astro:content";
 
 export const GET: APIRoute = async ({ site }) => {
-  const siteUrl = site?.toString() || 'https://kyyril.pages.dev';
-  
+  const siteUrl = site?.toString() || "https://your-project.vercel.app";
+
   // Static pages
-  const staticPages = [
-    '',
-    '/projects',
-    '/blog',
-    '/guestbook',
-    '/chat',
-  ];
+  const staticPages = ["", "/projects", "/blog", "/guestbook", "/chat"];
 
   // Get dynamic blog posts
-  const blogPosts = await getCollection('blog');
-  
+  const blogPosts = await getCollection("blog");
+
   // Get dynamic project pages (you might need to adjust this based on your data source)
   const projects = [
-    'sobat-takwa',
-    'cihuy-movie',
-    'design-to-code',
-    'we-share',
-    'toyota-labuhanbatu',
-    'gemini-fine-tuning-studio',
-    'instacook',
-    'saas-notesapp',
-    'hadith-api',
-    'aku-mahasigma',
-    '2'
+    "sobat-takwa",
+    "cihuy-movie",
+    "design-to-code",
+    "we-share",
+    "toyota-labuhanbatu",
+    "gemini-fine-tuning-studio",
+    "instacook",
+    "saas-notesapp",
+    "hadith-api",
+    "aku-mahasigma",
+    "2",
   ];
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
@@ -41,9 +35,9 @@ export const GET: APIRoute = async ({ site }) => {
   ${staticPages
     .map((page) => {
       const url = `${siteUrl}${page}`;
-      const priority = page === '' ? '1.0' : '0.8';
-      const changefreq = page === '' ? 'weekly' : 'monthly';
-      
+      const priority = page === "" ? "1.0" : "0.8";
+      const changefreq = page === "" ? "weekly" : "monthly";
+
       return `
   <url>
     <loc>${url}</loc>
@@ -52,14 +46,14 @@ export const GET: APIRoute = async ({ site }) => {
     <priority>${priority}</priority>
   </url>`;
     })
-    .join('')}
+    .join("")}
   ${blogPosts
     .map((post) => {
       const url = `${siteUrl}/blog/${post.slug}`;
-      const lastmod = post.data.publishedAt 
+      const lastmod = post.data.publishedAt
         ? new Date(post.data.publishedAt).toISOString()
         : new Date().toISOString();
-      
+
       return `
   <url>
     <loc>${url}</loc>
@@ -68,11 +62,11 @@ export const GET: APIRoute = async ({ site }) => {
     <priority>0.7</priority>
   </url>`;
     })
-    .join('')}
+    .join("")}
   ${projects
     .map((project) => {
       const url = `${siteUrl}/projects/${project}`;
-      
+
       return `
   <url>
     <loc>${url}</loc>
@@ -81,13 +75,13 @@ export const GET: APIRoute = async ({ site }) => {
     <priority>0.6</priority>
   </url>`;
     })
-    .join('')}
+    .join("")}
 </urlset>`;
 
   return new Response(sitemap, {
     headers: {
-      'Content-Type': 'application/xml',
-      'Cache-Control': 'public, max-age=3600', // Cache for 1 hour
+      "Content-Type": "application/xml",
+      "Cache-Control": "public, max-age=3600", // Cache for 1 hour
     },
   });
 };

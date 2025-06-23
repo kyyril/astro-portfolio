@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "astro dev --port 4322",
-    "build": "npm run rimraf && npx astro build && cp -r public dist",
+    "build": "npm run rimraf && npx astro build",
     "preview": "astro preview",
     "astro": "astro",
     "db:generate": "prisma generate",
@@ -27,11 +27,11 @@
     "test:perf:all": "npm run test:performance && npm run test:mobile"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.5.4",
     "@astrojs/mdx": "^4.3.0",
     "@astrojs/node": "^9.2.2",
     "@astrojs/react": "^4.3.0",
     "@astrojs/tailwind": "^5.1.2",
+    "@astrojs/vercel": "^8.2.0",
     "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^5.22.0",
     "@types/react": "^18.3.12",
