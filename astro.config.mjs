@@ -27,16 +27,16 @@ export default defineConfig({
   ],
   output: "server",
   adapter:
-    process.env.NODE_ENV === "development"
-      ? node({ mode: "standalone" })
-      : vercel({
+    process.env.NODE_ENV === "production" && process.env.VERCEL
+      ? vercel({
           webAnalytics: {
             enabled: true,
           },
           speedInsights: {
             enabled: true,
           },
-        }),
+        })
+      : node({ mode: "standalone" }),
   collections: {
     blog: {
       type: "content",
