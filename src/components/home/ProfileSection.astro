@@ -65,73 +65,48 @@ import Terminal from "../Terminal.astro";
       <div class="flex flex-wrap gap-4 fade-in">
         <a
           href={`mailto:${contactInfo.email}`}
-          class="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-opacity-80"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg glass-card transition-all duration-300 hover:scale-105"
           style={{
-            backgroundColor: "rgba(var(--color-primary-rgb), 0.2)",
-            borderColor: "rgba(var(--color-primary-rgb), 0.3)",
             color: "var(--color-primary)",
-            border: "1px solid rgba(var(--color-primary-rgb), 0.3)",
           }}
         >
-          <span>📧 Email</span>
+          <span>/Email</span>
         </a>
         <a
           href={contactInfo.github}
           target="_blank"
           rel="noopener noreferrer"
-          class="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-opacity-80"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg glass-card transition-all duration-300 hover:scale-105"
           style={{
-            backgroundColor: "rgba(var(--color-secondary-rgb), 0.2)",
-            borderColor: "rgba(var(--color-secondary-rgb), 0.3)",
             color: "var(--color-secondary)",
-            border: "1px solid rgba(var(--color-secondary-rgb), 0.3)",
           }}
         >
-          <span>🐙 GitHub</span>
+          <span>/GitHub</span>
         </a>
         <a
           href={contactInfo.linkedin}
           target="_blank"
           rel="noopener noreferrer"
-          class="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-opacity-80"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg glass-card transition-all duration-300 hover:scale-105"
           style={{
-            backgroundColor: "rgba(var(--color-accent-rgb), 0.2)",
-            borderColor: "rgba(var(--color-accent-rgb), 0.3)",
             color: "var(--color-accent)",
-            border: "1px solid rgba(var(--color-accent-rgb), 0.3)",
           }}
         >
-          <span>💼 LinkedIn</span>
+          <span>/LinkedIn</span>
         </a>
         <a
           href={contactInfo.cv}
           download
-          class="flex items-center gap-2 px-4 py-2 rounded-lg transition-colors hover:bg-opacity-80"
+          class="flex items-center gap-2 px-4 py-2 rounded-lg glass-card transition-all duration-300 hover:scale-105"
           style={{
-            backgroundColor: "rgba(var(--color-primary-rgb), 0.2)",
-            borderColor: "rgba(var(--color-primary-rgb), 0.3)",
             color: "var(--color-primary)",
-            border: "1px solid rgba(var(--color-primary-rgb), 0.3)",
           }}
         >
-          <span>📄 Download CV</span>
+          <span>/Resume</span>
         </a>
       </div>
 
-      <!-- Status Info -->
-      <div
-        class="flex flex-wrap gap-6 fade-in"
-        style={{ color: "var(--color-text)" }}
-      >
-        <div class="flex items-center gap-2 terminal-card px-3 py-2">
-          <span class="text-green-400">●</span>
-          <span>Available for Remote Work</span>
-        </div>
-        <div class="flex items-center gap-2 terminal-card px-3 py-2">
-          <span class="text-blue-400">🚀</span>
-          <span>Open to New Opportunities</span>
-        </div>
-      </div>
+     
   </div>
 </section>
 

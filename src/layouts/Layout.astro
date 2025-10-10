@@ -7,6 +7,7 @@ import ScrollOptimizer from '../components/ScrollOptimizer.astro';
 import StickyThemeToggle from '../components/StickyThemeToggle.astro';
 import AccessibilityEnhancer from '../components/AccessibilityEnhancer.astro';
 import SEOEnhancer from '../components/SEOEnhancer.astro';
+import StarfieldBackground from '../components/StarfieldBackground.astro';
 
 interface Props {
   title: string;
@@ -91,6 +92,12 @@ const canonicalURL = Astro.site
         --transition-fast: 0.08s ease-out;
         --border-radius: 8px;
         --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+        /* Glass morphism variables */
+        --glass-bg: rgba(255, 255, 255, 0.05);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        --glass-blur: blur(16px);
       }
 
       html {
@@ -163,6 +170,7 @@ const canonicalURL = Astro.site
 
   </head>
   <body>
+    <StarfieldBackground />
     <ThemeProvider />
     <DisableConflictingScrolls />
     <ScrollOptimizer />

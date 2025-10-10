@@ -58,12 +58,12 @@ export const themes: Record<string, ThemeConfig> = {
     displayName: "Catppuccin Mocha",
     colors: {
       primary: "#89b4fa",
-      secondary: "#f5c2e7",
+      secondary: "#cba6f7",
       accent: "#f9e2af",
-      background: "#13131f", // darker
-      surface: "#2a2a3a",
-      text: "#e3eafc",
-      border: "#3e4052",
+      background: "#1e1e2e",
+      surface: "#313244",
+      text: "#cdd6f4",
+      border: "#45475a",
     },
   },
   tokyo: {
