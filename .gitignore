@@ -24,3 +24,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# astro-personal-ref submodule
+astro-personal-ref/
