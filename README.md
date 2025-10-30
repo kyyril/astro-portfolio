@@ -104,7 +104,7 @@ export const themes: Record<string, ThemeConfig> = {
 };
 ```
 
-## 🎉 Acknowledgments
+## Acknowledgments
 
 - **Astro.js** team for the amazing framework
 - **Catppuccin** for the beautiful color scheme
