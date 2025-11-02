@@ -61,8 +61,7 @@ html {
 }
 
 body {
-  background: linear-gradient(135deg, var(--color-background) 0%, #1a1a2e 50%, #16213e 100%);
-  background-attachment: fixed;
+  background-color: var(--color-background);
   color: var(--color-text);
   font-family: "JetBrains Mono", "Consolas", "Monaco", monospace;
   margin: 0;
@@ -72,22 +71,6 @@ body {
   transition: background-color var(--transition-normal),
     color var(--transition-normal);
   overflow-x: hidden;
-  position: relative;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background:
-    radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 64, 255, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, rgba(50, 69, 255, 0.12) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: -1;
 }
 
 

@@ -4,7 +4,6 @@ import tailwind from "@astrojs/tailwind";
 import mdx from "@astrojs/mdx";
 import node from "@astrojs/node";
 import auth from "auth-astro";
-import vercel from "@astrojs/vercel";
 
 export default defineConfig({
   site: "https://your-project.vercel.app", // Update with your Vercel domain
@@ -14,9 +13,6 @@ export default defineConfig({
     }),
     tailwind({
       applyBaseStyles: true,
-      config: {
-        content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
-      },
     }),
     mdx({
       optimize: true,
@@ -26,17 +22,7 @@ export default defineConfig({
     auth(),
   ],
   output: "server",
-  adapter:
-    process.env.NODE_ENV === "production" && process.env.VERCEL
-      ? vercel({
-          webAnalytics: {
-            enabled: true,
-          },
-          speedInsights: {
-            enabled: true,
-          },
-        })
-      : node({ mode: "standalone" }),
+  adapter: node({ mode: "standalone" }),
   collections: {
     blog: {
       type: "content",

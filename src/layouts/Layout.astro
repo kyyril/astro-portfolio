@@ -148,15 +148,7 @@ const canonicalURL = Astro.site
       section={section}
     />
 
-    <!-- Non-critical CSS - Load asynchronously -->
-    <script>
-      // Async CSS loading for performance
-      const cssLink = document.createElement('link');
-      cssLink.rel = 'stylesheet';
-      cssLink.href = '/global.css';
-      document.head.appendChild(cssLink);
-    </script>
-    <noscript><link rel="stylesheet" href="/global.css" /></noscript>
+    <link rel="stylesheet" href="/global.css" />
 
     <!-- View Transitions API for smooth page transitions -->
     <script>

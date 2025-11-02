@@ -31,7 +31,6 @@
     "@astrojs/node": "^9.2.2",
     "@astrojs/react": "^4.3.0",
     "@astrojs/tailwind": "^5.1.2",
-    "@astrojs/vercel": "^8.2.0",
     "@google/generative-ai": "^0.24.1",
     "@prisma/client": "^5.22.0",
     "@types/react": "^18.3.12",
@@ -46,13 +45,12 @@
     "vite": "^6.2.0"
   },
   "devDependencies": {
-    "@fullhuman/postcss-purgecss": "^7.0.2",
     "@playwright/test": "^1.53.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/user-event": "^14.6.1",
     "@vitest/ui": "^3.2.4",
     "cssnano": "^7.0.7",
-    "happy-dom": "^18.0.1",
+    "happy-dom": "^20.0.10",
     "jsdom": "^26.1.0",
     "playwright": "^1.53.0",
     "postcss-preset-env": "^10.2.3",
